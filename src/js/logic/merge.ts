@@ -454,9 +454,9 @@ export async function setupMergeTool() {
     filePanel.classList.remove('hidden');
     pagePanel.classList.add('hidden');
 
-    newFileModeBtn.classList.add('bg-indigo-600', 'text-white');
+    newFileModeBtn.classList.add('bg-accent', 'text-white');
     newFileModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
-    newPageModeBtn.classList.remove('bg-indigo-600', 'text-white');
+    newPageModeBtn.classList.remove('bg-accent', 'text-white');
     newPageModeBtn.classList.add('bg-gray-700', 'text-gray-300');
   });
 
@@ -467,9 +467,9 @@ export async function setupMergeTool() {
     filePanel.classList.add('hidden');
     pagePanel.classList.remove('hidden');
 
-    newPageModeBtn.classList.add('bg-indigo-600', 'text-white');
+    newPageModeBtn.classList.add('bg-accent', 'text-white');
     newPageModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
-    newFileModeBtn.classList.remove('bg-indigo-600', 'text-white');
+    newFileModeBtn.classList.remove('bg-accent', 'text-white');
     newFileModeBtn.classList.add('bg-gray-700', 'text-gray-300');
 
     await renderPageMergeThumbnails();
@@ -480,14 +480,14 @@ export async function setupMergeTool() {
     filePanel.classList.add('hidden');
     pagePanel.classList.remove('hidden');
 
-    newPageModeBtn.classList.add('bg-indigo-600', 'text-white');
+    newPageModeBtn.classList.add('bg-accent', 'text-white');
     newPageModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
-    newFileModeBtn.classList.remove('bg-indigo-600', 'text-white');
+    newFileModeBtn.classList.remove('bg-accent', 'text-white');
     newFileModeBtn.classList.add('bg-gray-700', 'text-gray-300');
 
     await renderPageMergeThumbnails();
   } else {
-    newFileModeBtn.classList.add('bg-indigo-600', 'text-white');
+    newFileModeBtn.classList.add('bg-accent', 'text-white');
     newPageModeBtn.classList.add('bg-gray-700', 'text-gray-300');
   }
 }

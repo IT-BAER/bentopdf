@@ -3,6 +3,7 @@ import { dom, switchView, toolTemplates } from '../ui.js';
 import { setupFileInputHandler } from './fileHandler.js';
 import { toolLogic } from '../logic/index.js';
 import { createIcons, icons } from 'lucide';
+import { updatePageTranslations } from '../i18n/index.js';
 
 const SETUP_AFTER_UPLOAD = ['sign-pdf'];
 
@@ -16,6 +17,10 @@ export function setupToolInterface(toolId: any) {
   state.activeTool = toolId;
   dom.toolContent.innerHTML = toolTemplates[toolId]();
   createIcons({ icons });
+  
+  // Apply translations to dynamically rendered content
+  updatePageTranslations();
+  
   switchView('tool');
 
   const fileInput = document.getElementById('file-input');

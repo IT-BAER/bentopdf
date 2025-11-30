@@ -1,5 +1,18 @@
-<svg width="86" height="166" viewBox="0 0 86 166" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M56.7848 80.9116L0 25.6211L24.8434 1.43151C26.8037 -0.47717 29.9814 -0.47717 31.9414 1.43151L85.177 53.2662L56.7848 80.9116Z" fill="#A5B4FC"/>
-<path d="M-1.30805e-05 80.7335L21.2939 101.467L42.5878 80.7335L21.2939 60L-1.30805e-05 80.7335Z" fill="#E0E7FF"/>
-<path d="M56.7848 83L81.6279 107.19C83.5881 109.098 83.5881 112.192 81.6279 114.101L28.3925 165.936L0 138.29L56.7848 83Z" fill="#6366F1"/>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- PDF document shape -->
+  <rect x="4" y="2" width="18" height="24" rx="2" fill="var(--accent-color, #6366F1)" stroke="var(--accent-color, #6366F1)" stroke-width="1.5"/>
+  <!-- Folded corner -->
+  <path d="M16 2L22 8H16V2Z" fill="white" fill-opacity="0.5"/>
+  <!-- Tool/wrench gear -->
+  <circle cx="22" cy="22" r="8" fill="white"/>
+  <path d="M22 17.5L23.5 19.5L22 21L20.5 19.5L22 17.5Z" fill="var(--accent-color, #6366F1)"/>
+  <path d="M22 26.5L20.5 24.5L22 23L23.5 24.5L22 26.5Z" fill="var(--accent-color, #6366F1)"/>
+  <path d="M17.5 22L19.5 20.5L21 22L19.5 23.5L17.5 22Z" fill="var(--accent-color, #6366F1)"/>
+  <path d="M26.5 22L24.5 23.5L23 22L24.5 20.5L26.5 22Z" fill="var(--accent-color, #6366F1)"/>
+  <circle cx="22" cy="22" r="3" fill="var(--accent-color, #6366F1)"/>
+  <circle cx="22" cy="22" r="1.5" fill="white"/>
+  <!-- Lines on document -->
+  <rect x="7" y="12" width="8" height="1.5" rx="0.75" fill="white" fill-opacity="0.7"/>
+  <rect x="7" y="16" width="10" height="1.5" rx="0.75" fill="white" fill-opacity="0.7"/>
+  <rect x="7" y="20" width="6" height="1.5" rx="0.75" fill="white" fill-opacity="0.7"/>
 </svg>

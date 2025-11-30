@@ -504,7 +504,7 @@ function createPageElement(canvas: HTMLCanvasElement | null, index: number): HTM
   const selectBtn = document.createElement('button');
   selectBtn.className = 'absolute top-2 right-2 p-1 rounded bg-gray-900/70 hover:bg-gray-800 z-10';
   selectBtn.innerHTML = selectedPages.has(index)
-    ? '<i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>'
+    ? '<i data-lucide="check-square" class="w-4 h-4 text-accent"></i>'
     : '<i data-lucide="square" class="w-4 h-4 text-gray-200"></i>';
   selectBtn.onclick = (e) => {
     e.stopPropagation();
@@ -636,7 +636,7 @@ function toggleSelectOptimized(index: number) {
 
   if (selectedPages.has(index)) {
     card.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-500');
-    selectBtn.innerHTML = '<i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>';
+    selectBtn.innerHTML = '<i data-lucide="check-square" class="w-4 h-4 text-accent"></i>';
   } else {
     card.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-500');
     selectBtn.innerHTML = '<i data-lucide="square" class="w-4 h-4 text-gray-200"></i>';
@@ -1085,7 +1085,7 @@ function updatePageDisplay() {
       if (selectBtn) {
         if (selectedPages.has(index)) {
           card.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-500');
-          selectBtn.innerHTML = '<i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>';
+          selectBtn.innerHTML = '<i data-lucide="check-square" class="w-4 h-4 text-accent"></i>';
         } else {
           card.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-500');
           selectBtn.innerHTML = '<i data-lucide="square" class="w-4 h-4 text-gray-200"></i>';

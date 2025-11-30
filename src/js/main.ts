@@ -6,159 +6,26 @@ import { ShortcutsManager } from './logic/shortcuts.js';
 import { createIcons, icons } from 'lucide';
 import * as pdfjsLib from 'pdfjs-dist';
 import '../css/styles.css';
-import { formatShortcutDisplay, formatStars } from './utils/helpers.js';
+import { formatShortcutDisplay } from './utils/helpers.js';
 import { APP_VERSION, injectVersion } from '../version.js';
+import { initI18n, setLanguage, getCategoryName, getToolTranslation, getTranslations, type Language } from './i18n/index.js';
+import { initTheme, accentColors, setAccentColor, getAccentColor, findClosestAccent, createAccentFromHex, applyAccentColorOnly, toggleThemeMode } from './theme/index.js';
 
-const init = () => {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
-
-  // Handle simple mode - hide branding sections but keep logo and copyright
-  // Handle simple mode - hide branding sections but keep logo and copyright
-  if (__SIMPLE_MODE__) {
-    const hideBrandingSections = () => {
-      // Hide navigation but keep logo
-      const nav = document.querySelector('nav');
-      if (nav) {
-        // Hide the entire nav but we'll create a minimal one with just logo
-        nav.style.display = 'none';
-
-        // Create a simple nav with just logo on the right
-        const simpleNav = document.createElement('nav');
-        simpleNav.className =
-          'bg-gray-800 border-b border-gray-700 sticky top-0 z-30';
-        simpleNav.innerHTML = `
-          <div class="container mx-auto px-4">
-            <div class="flex justify-start items-center h-16">
-              <div class="flex-shrink-0 flex items-center cursor-pointer" id="home-logo">
-                <img src="images/favicon.svg" alt="Bento PDF Logo" class="h-8 w-8">
-                <span class="text-white font-bold text-xl ml-2">
-                  <a href="index.html">BentoPDF</a>
-                </span>
-              </div>
-            </div>
-          </div>
-        `;
-        document.body.insertBefore(simpleNav, document.body.firstChild);
-      }
-
-      const heroSection = document.getElementById('hero-section');
-      if (heroSection) {
-        heroSection.style.display = 'none';
-      }
-
-      const githubLink = document.querySelector('a[href*="github.com/alam00000/bentopdf"]');
-      if (githubLink) {
-        (githubLink as HTMLElement).style.display = 'none';
-      }
-
-      const featuresSection = document.getElementById('features-section');
-      if (featuresSection) {
-        featuresSection.style.display = 'none';
-      }
-
-      const securitySection = document.getElementById(
-        'security-compliance-section'
-      );
-      if (securitySection) {
-        securitySection.style.display = 'none';
-      }
-
-      const faqSection = document.getElementById('faq-accordion');
-      if (faqSection) {
-        faqSection.style.display = 'none';
-      }
-
-      const testimonialsSection = document.getElementById(
-        'testimonials-section'
-      );
-      if (testimonialsSection) {
-        testimonialsSection.style.display = 'none';
-      }
-
-      const supportSection = document.getElementById('support-section');
-      if (supportSection) {
-        supportSection.style.display = 'none';
-      }
-
-      // Hide "Used by companies" section
-      const usedBySection = document.querySelector('.hide-section') as HTMLElement;
-      if (usedBySection) {
-        usedBySection.style.display = 'none';
-      }
-
-      // Hide footer but keep copyright
-      const footer = document.querySelector('footer');
-      if (footer) {
-        footer.style.display = 'none';
-
-        const simpleFooter = document.createElement('footer');
-        simpleFooter.className = 'mt-16 border-t-2 border-gray-700 py-8';
-        simpleFooter.innerHTML = `
-          <div class="container mx-auto px-4">
-            <div class="flex items-center mb-4">
-              <img src="images/favicon.svg" alt="Bento PDF Logo" class="h-8 w-8 mr-2">
-              <span class="text-white font-bold text-lg">BentoPDF</span>
-            </div>
-            <p class="text-gray-400 text-sm">
-              &copy; 2025 BentoPDF. All rights reserved.
-            </p>
-            <p class="text-gray-500 text-xs mt-2">
-              Version <span id="app-version-simple">${APP_VERSION}</span>
-            </p>
-          </div>
-        `;
-        document.body.appendChild(simpleFooter);
-      }
-
-      const sectionDividers = document.querySelectorAll('.section-divider');
-      sectionDividers.forEach((divider) => {
-        (divider as HTMLElement).style.display = 'none';
-      });
-
-      document.title = 'BentoPDF - PDF Tools';
-
-      const toolsHeader = document.getElementById('tools-header');
-      if (toolsHeader) {
-        const title = toolsHeader.querySelector('h2');
-        const subtitle = toolsHeader.querySelector('p');
-        if (title) {
-          title.textContent = 'PDF Tools';
-          title.className = 'text-4xl md:text-5xl font-bold text-white mb-3';
-        }
-        if (subtitle) {
-          subtitle.textContent = 'Select a tool to get started';
-          subtitle.className = 'text-lg text-gray-400';
-        }
-      }
-
-      const app = document.getElementById('app');
-      if (app) {
-        app.style.paddingTop = '1rem';
-      }
-    };
-
-    hideBrandingSections();
-  }
-
-  // Hide shortcuts button on touch devices
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  if (isTouchDevice) {
-    const shortcutsBtn = document.getElementById('open-shortcuts-btn');
-    if (shortcutsBtn) {
-      shortcutsBtn.style.display = 'none';
-    }
-  }
-
-
+/**
+ * Render the tool grid with translated category names and tool names
+ */
+const renderToolGrid = () => {
   dom.toolGrid.textContent = '';
+  const currentAccent = getAccentColor();
 
   categories.forEach((category) => {
     const categoryGroup = document.createElement('div');
     categoryGroup.className = 'category-group col-span-full';
 
     const title = document.createElement('h2');
-    title.className = 'text-xl font-bold text-indigo-400 mb-4 mt-8 first:mt-0 text-white';
-    title.textContent = category.name;
+    title.className = 'text-xl font-bold mb-4 mt-8 first:mt-0 text-white';
+    title.style.color = currentAccent.value;
+    title.textContent = getCategoryName(category.name);
 
     const toolsContainer = document.createElement('div');
     toolsContainer.className =
@@ -180,19 +47,23 @@ const init = () => {
       }
 
       const icon = document.createElement('i');
-      icon.className = 'w-10 h-10 mb-3 text-indigo-400';
+      icon.className = 'w-10 h-10 mb-3';
+      icon.style.color = currentAccent.value;
       icon.setAttribute('data-lucide', tool.icon);
+
+      // Get translated tool name and subtitle
+      const translation = getToolTranslation(tool.name);
 
       const toolName = document.createElement('h3');
       toolName.className = 'font-semibold text-white';
-      toolName.textContent = tool.name;
+      toolName.textContent = translation.name;
 
       toolCard.append(icon, toolName);
 
       if (tool.subtitle) {
         const toolSubtitle = document.createElement('p');
         toolSubtitle.className = 'text-xs text-gray-400 mt-1 px-2';
-        toolSubtitle.textContent = tool.subtitle;
+        toolSubtitle.textContent = translation.subtitle || tool.subtitle;
         toolCard.appendChild(toolSubtitle);
       }
 
@@ -203,10 +74,74 @@ const init = () => {
     dom.toolGrid.appendChild(categoryGroup);
   });
 
+  // Re-initialize Lucide icons for newly created elements
+  createIcons({ icons });
+};
+
+const init = () => {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+
+  // Initialize theme (accent colors)
+  initTheme();
+
+  // Initialize i18n
+  initI18n();
+
+  // Setup color picker with debounced re-render for performance
+  const colorPicker = document.getElementById('accent-color-picker') as HTMLInputElement | null;
+  if (colorPicker) {
+    colorPicker.value = getAccentColor().value;
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+    
+    // Live preview on input (CSS only, fast)
+    colorPicker.addEventListener('input', (e) => {
+      const target = e.target as HTMLInputElement;
+      const customAccent = createAccentFromHex(target.value);
+      applyAccentColorOnly(customAccent);
+    });
+    
+    // Save and re-render on change (when picker closes or stops)
+    colorPicker.addEventListener('change', (e) => {
+      const target = e.target as HTMLInputElement;
+      const customAccent = createAccentFromHex(target.value);
+      setAccentColor(customAccent);
+      renderToolGrid();
+    });
+  }
+
+  // Setup language selector
+  const languageSelector = document.getElementById('language-selector') as HTMLSelectElement | null;
+  if (languageSelector) {
+    languageSelector.addEventListener('change', (e) => {
+      const target = e.target as HTMLSelectElement;
+      setLanguage(target.value as Language);
+      renderToolGrid();
+    });
+  }
+
+  // Setup theme toggle button
+  const themeToggleBtn = document.getElementById('theme-toggle-btn');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      toggleThemeMode();
+    });
+  }
+
+  // Hide shortcuts button on touch devices
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (isTouchDevice) {
+    const shortcutsBtn = document.getElementById('open-shortcuts-btn');
+    if (shortcutsBtn) {
+      shortcutsBtn.style.display = 'none';
+    }
+  }
+
+  renderToolGrid();
+
   const searchBar = document.getElementById('search-bar');
-  const categoryGroups = dom.toolGrid.querySelectorAll('.category-group');
 
   searchBar.addEventListener('input', () => {
+    const categoryGroups = dom.toolGrid.querySelectorAll('.category-group');
     // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
     const searchTerm = searchBar.value.toLowerCase().trim();
 
@@ -295,31 +230,6 @@ const init = () => {
 
   createIcons({ icons });
   console.log('Please share our tool and share the love!');
-
-
-  const githubStarsElements = [
-    document.getElementById('github-stars-desktop'),
-    document.getElementById('github-stars-mobile')
-  ];
-
-  if (githubStarsElements.some(el => el) && !__SIMPLE_MODE__) {
-    fetch('https://api.github.com/repos/alam00000/bentopdf')
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.stargazers_count !== undefined) {
-          const formattedStars = formatStars(data.stargazers_count);
-          githubStarsElements.forEach(el => {
-            if (el) el.textContent = formattedStars;
-          });
-        }
-      })
-      .catch(() => {
-        githubStarsElements.forEach(el => {
-          if (el) el.textContent = '-';
-        });
-      });
-  }
-
 
   // Initialize Shortcuts System
   ShortcutsManager.init();
@@ -426,9 +336,10 @@ const init = () => {
 
   if (dom.resetShortcutsBtn) {
     dom.resetShortcutsBtn.addEventListener('click', async () => {
+      const trans = getTranslations();
       const confirmed = await showWarningModal(
-        'Reset Shortcuts',
-        'Are you sure you want to reset all shortcuts to default?<br><br>This action cannot be undone.',
+        trans.shortcutsModal.resetShortcuts,
+        trans.shortcutsModal.resetConfirm,
         true
       );
 
@@ -455,18 +366,19 @@ const init = () => {
         if (file) {
           const reader = new FileReader();
           reader.onload = async (e) => {
+            const trans = getTranslations();
             const content = e.target?.result as string;
             if (ShortcutsManager.importSettings(content)) {
               renderShortcutsList();
               await showWarningModal(
-                'Import Successful',
-                'Shortcuts imported successfully!',
+                trans.shortcutsModal.importSuccessful,
+                trans.shortcutsModal.importSuccessfulMsg,
                 false
               );
             } else {
               await showWarningModal(
-                'Import Failed',
-                'Failed to import shortcuts. Invalid file format.',
+                trans.shortcutsModal.importFailed,
+                trans.shortcutsModal.importFailedMsg,
                 false
               );
             }
@@ -612,7 +524,7 @@ const init = () => {
 
       const header = document.createElement('h3');
       header.className = 'text-gray-400 text-xs font-bold uppercase tracking-wider mb-3 pl-1';
-      header.textContent = category.name;
+      header.textContent = getCategoryName(category.name);
       section.appendChild(header);
 
       const itemsContainer = document.createElement('div');
@@ -633,22 +545,25 @@ const init = () => {
         left.className = 'flex items-center gap-3';
 
         const icon = document.createElement('i');
-        icon.className = 'w-5 h-5 text-indigo-400';
+        icon.className = 'w-5 h-5 text-accent';
         icon.setAttribute('data-lucide', tool.icon);
 
+        // Use translated tool name
+        const toolTranslation = getToolTranslation(tool.name);
         const name = document.createElement('span');
         name.className = 'text-gray-200 font-medium';
-        name.textContent = tool.name;
+        name.textContent = toolTranslation.name;
 
         left.append(icon, name);
 
         const right = document.createElement('div');
         right.className = 'relative';
 
+        const trans = getTranslations();
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'shortcut-input w-32 bg-gray-800 border border-gray-600 text-white text-center text-sm rounded px-2 py-1 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all';
-        input.placeholder = 'Click to set';
+        input.placeholder = trans.shortcutsModal.clickToSet;
         input.value = formatShortcutDisplay(currentShortcut, isMac);
         input.readOnly = true;
 
@@ -716,22 +631,25 @@ const init = () => {
 
           if (!isModifier) {
             const existingToolId = ShortcutsManager.findToolByShortcut(combo);
+            const trans = getTranslations();
 
             if (existingToolId && existingToolId !== toolId) {
               const existingTool = allTools.find(t => getToolId(t) === existingToolId);
-              const existingToolName = existingTool?.name || existingToolId;
+              // Use translated tool name
+              const existingToolTranslation = existingTool ? getToolTranslation(existingTool.name) : null;
+              const existingToolName = existingToolTranslation?.name || existingToolId;
               const displayCombo = formatShortcutDisplay(combo, isMac);
 
               await showWarningModal(
-                'Shortcut Already in Use',
-                `<strong>${displayCombo}</strong> is already assigned to:<br><br>` +
+                trans.shortcutsModal.shortcutInUse,
+                `<strong>${displayCombo}</strong> ${trans.shortcutsModal.shortcutInUseMsg}<br><br>` +
                 `<em>"${existingToolName}"</em><br><br>` +
-                `Please choose a different shortcut.`,
+                `${trans.shortcutsModal.chooseDifferent}`,
                 false
               );
 
               input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-              input.classList.remove('border-indigo-500', 'text-indigo-400');
+              input.classList.remove('border-accent', 'text-accent');
               input.blur();
               return;
             }
@@ -741,17 +659,17 @@ const init = () => {
             if (reservedWarning) {
               const displayCombo = formatShortcutDisplay(combo, isMac);
               const shouldProceed = await showWarningModal(
-                'Reserved Shortcut Warning',
-                `<strong>${displayCombo}</strong> is commonly used for:<br><br>` +
+                trans.shortcutsModal.reservedWarning,
+                `<strong>${displayCombo}</strong> ${trans.shortcutsModal.reservedWarningMsg}<br><br>` +
                 `"<em>${reservedWarning}</em>"<br><br>` +
-                `This shortcut may not work reliably or might conflict with browser/system behavior.<br><br>` +
-                `Do you want to use it anyway?`
+                `${trans.shortcutsModal.reservedWarningNote}<br><br>` +
+                `${trans.shortcutsModal.useAnyway}`
               );
 
               if (!shouldProceed) {
                 // Revert display
                 input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-                input.classList.remove('border-indigo-500', 'text-indigo-400');
+                input.classList.remove('border-accent', 'text-accent');
                 input.blur();
                 return;
               }
@@ -773,12 +691,12 @@ const init = () => {
 
         input.onfocus = () => {
           input.value = 'Press keys...';
-          input.classList.add('border-indigo-500', 'text-indigo-400');
+          input.classList.add('border-accent', 'text-accent');
         };
 
         input.onblur = () => {
           input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-          input.classList.remove('border-indigo-500', 'text-indigo-400');
+          input.classList.remove('border-accent', 'text-accent');
         };
 
         right.append(input);

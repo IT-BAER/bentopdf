@@ -45,13 +45,7 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        about: resolve(__dirname, 'about.html'),
-        contact: resolve(__dirname, 'contact.html'),
-        faq: resolve(__dirname, 'faq.html'),
-        privacy: resolve(__dirname, 'privacy.html'),
-        terms: resolve(__dirname, 'terms.html'),
         bookmark: resolve(__dirname, 'src/pages/bookmark.html'),
-        licensing: resolve(__dirname, 'licensing.html'),
         'table-of-contents': resolve(
           __dirname,
           'src/pages/table-of-contents.html'

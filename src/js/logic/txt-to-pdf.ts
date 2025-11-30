@@ -137,18 +137,18 @@ export async function setupTxtToPdfTool() {
   const switchToUpload = () => {
     uploadPanel.classList.remove('hidden');
     textPanel.classList.add('hidden');
-    uploadBtn.classList.add('bg-indigo-600', 'text-white');
+    uploadBtn.classList.add('bg-accent', 'text-white');
     uploadBtn.classList.remove('bg-gray-700', 'text-gray-300');
-    textBtn.classList.remove('bg-indigo-600', 'text-white');
+    textBtn.classList.remove('bg-accent', 'text-white');
     textBtn.classList.add('bg-gray-700', 'text-gray-300');
   };
 
   const switchToText = () => {
     uploadPanel.classList.add('hidden');
     textPanel.classList.remove('hidden');
-    textBtn.classList.add('bg-indigo-600', 'text-white');
+    textBtn.classList.add('bg-accent', 'text-white');
     textBtn.classList.remove('bg-gray-700', 'text-gray-300');
-    uploadBtn.classList.remove('bg-indigo-600', 'text-white');
+    uploadBtn.classList.remove('bg-accent', 'text-white');
     uploadBtn.classList.add('bg-gray-700', 'text-gray-300');
   };
 
