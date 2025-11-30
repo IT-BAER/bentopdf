@@ -179,9 +179,11 @@ sudo systemctl restart pdf-tools
 
 **To update to the latest version:**
 ```bash
+# If you have the repo cloned locally
 sudo ./install.sh --update
-# or
-sudo ./install.sh -u
+
+# Or update directly from GitHub (no local files needed)
+curl -fsSL https://raw.githubusercontent.com/IT-BAER/bentopdf/main/install.sh | sudo bash -s -- --update
 ```
 
 **To uninstall:**

@@ -5,6 +5,10 @@
 # Usage:
 #   ./install.sh          - Fresh install or reinstall
 #   ./install.sh --update - Update existing installation
+#
+# Remote usage:
+#   curl -fsSL https://raw.githubusercontent.com/IT-BAER/bentopdf/main/install.sh | sudo bash
+#   curl -fsSL https://raw.githubusercontent.com/IT-BAER/bentopdf/main/install.sh | sudo bash -s -- --update
 
 set -e
 
@@ -22,6 +26,7 @@ APP_USER="pdftools"
 APP_PORT="${PDF_TOOLS_PORT:-3000}"
 NODE_VERSION="20"
 REPO_URL="https://github.com/IT-BAER/bentopdf.git"
+RAW_URL="https://raw.githubusercontent.com/IT-BAER/bentopdf/main"
 
 # Parse arguments
 UPDATE_MODE=false
@@ -34,10 +39,14 @@ for arg in "$@"; do
         --help|-h)
             echo "PDF-Tools Installation Script"
             echo ""
-            echo "Usage:"
+            echo "Usage (local):"
             echo "  sudo ./install.sh           Fresh install or reinstall"
             echo "  sudo ./install.sh --update  Update existing installation"
             echo "  sudo ./install.sh --help    Show this help message"
+            echo ""
+            echo "Usage (remote):"
+            echo "  curl -fsSL $RAW_URL/install.sh | sudo bash"
+            echo "  curl -fsSL $RAW_URL/install.sh | sudo bash -s -- --update"
             echo ""
             echo "Environment variables:"
             echo "  PDF_TOOLS_PORT=3000         Port to run the service on (default: 3000)"
@@ -46,6 +55,7 @@ for arg in "$@"; do
             echo "  sudo ./install.sh"
             echo "  PDF_TOOLS_PORT=8080 sudo ./install.sh"
             echo "  sudo ./install.sh --update"
+            echo "  curl -fsSL $RAW_URL/install.sh | sudo bash -s -- --update"
             exit 0
             ;;
     esac
