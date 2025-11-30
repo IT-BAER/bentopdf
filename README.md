@@ -17,14 +17,17 @@ Original project: [https://github.com/alam00000/bentopdf](https://github.com/ala
 
 - **Privacy First**: All processing happens in your browser. Your files are never uploaded to a server, guaranteeing 100% privacy.
 - **No Limits**: Manipulate as many files as you want, as often you want. There are no restrictions or upload limits.
-- **High Performance**: Built with modern web technologies, BentoPDF is fast and efficient, handling even large PDF files with ease.
-- **Completely Free**: BentoPDF is a free and open-source tool for everyone.
+- **High Performance**: Built with modern web technologies, PDF-Tools is fast and efficient, handling even large PDF files with ease.
+- **Completely Free**: PDF-Tools is a free and open-source tool for everyone.
+- **Multi-Language**: Available in English and German with easy-to-extend translation system.
+- **Customizable**: Choose your accent color and switch between dark/light modes.
+- **Self-Hostable**: Easy installation script for Debian/Ubuntu with systemd service support.
 
 ---
 
 ## 🛠️ Features / Tools Supported
 
-BentoPDF offers a comprehensive suite of tools to handle all your PDF needs.
+PDF-Tools offers a comprehensive suite of tools to handle all your PDF needs.
 
 ### Organize & Manage PDFs
 
@@ -127,101 +130,72 @@ BentoPDF offers a comprehensive suite of tools to handle all your PDF needs.
 
 ## 🚀 Getting Started
 
-You can run BentoPDF locally for development or personal use.
+PDF-Tools can be installed and run in multiple ways depending on your needs.
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [npm](https://www.npmjs.com/) (or yarn/pnpm)
-- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/install/) (for containerized setup)
+- [npm](https://www.npmjs.com/) (included with Node.js)
+- Linux server (Debian/Ubuntu for automated install script)
 
-### 🚀 Quick Start with Docker
+### 🚀 Quick Install (Debian/Ubuntu - Recommended)
 
-[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/K4AU2B)
-
-You can run BentoPDF directly from Docker Hub or GitHub Container Registry without cloning the repository:
-
-You can also watch the video on how to set it up 👉
-[BentoPDF Docker Setup](https://drive.google.com/file/d/1C4eJ2nqeaH__1Tlad-xuBHaF2Ha4fSBf/view?usp=drive_link)
-
-**Using Docker Hub:**
+The easiest way to install PDF-Tools as a production service on Debian/Ubuntu:
 
 ```bash
-docker run -p 3000:8080 bentopdf/bentopdf:latest
+# Download and run the install script
+curl -fsSL https://raw.githubusercontent.com/IT-BAER/bentopdf/main/install.sh | sudo bash
 ```
 
-**Using GitHub Container Registry:**
-
-```bash
-docker run -p 3000:8080 ghcr.io/alam00000/bentopdf:latest
-```
-
-Open your browser at: http://localhost:3000
-
-This is the fastest way to try BentoPDF without setting up a development environment.
-
-### 🏠 Self-Hosting
-
-Since BentoPDF is fully client-side, all processing happens in the user's browser and no server-side processing is required. This means you can host BentoPDF as simple static files on any web server or hosting platform.
-
-**Download from Releases (Recommended):**
-
-The easiest way to self-host is to download the pre-built distribution file from our [GitHub releases](https://github.com/alam00000/bentopdf/releases). Each release includes a `dist-{version}.zip` file that contains all necessary files for self-hosting.
-
-1. Go to [BentoPDF Releases](https://github.com/alam00000/bentopdf/releases)
-2. Download the latest `dist-{version}.zip` file
-3. Extract the zip file
-4. Serve the extracted folder with your preferred web server
-   
-**Navigate to the extracted Folder:**
-```bash
-# Navigate to the extracted folder
-cd dist-1.7.3  # Replace with your version
-```
-
-**Serve with Python:**
-
-```bash
-# For Python 3
-python -m http.server 8000
-```
-
-The website can be accessible at: ```http://[::1]:8000/```
-
-**Serve with Node.js:**
-
-```bash
-# Install a simple server
-npx serve .
-
-# Or if you have serve installed globally
-npm install -g serve
-serve .
-```
-
-The website can be accessible at: ```http://localhost:3000/```
-
-**Serve with other tools:**
-
-You can also use other static file servers like:
-- Go: `go run main.go` with a simple Go server
-- PHP: `php -S localhost:8000`
-- Ruby: `ruby -run -e httpd . -p 8000`
-
-The website can be accessible at:
-- Go: ```http://localhost:8080/``` (default) or as specified
-- PHP: ```http://localhost:8000/```
-- Ruby: ```http://localhost:8000/``` (default port can be changed)
-
-Simply serve the extracted folder using any static file server, and BentoPDF will work completely client-side without any server-side dependencies.
-
-**Build from Source (Advanced):**
-
-If you prefer to build from source:
+Or manually:
 
 ```bash
 # Clone the repository
-git clone https://github.com/alam00000/bentopdf.git
+git clone https://github.com/IT-BAER/bentopdf.git
+cd bentopdf
+
+# Run the install script
+sudo ./install.sh
+```
+
+This will:
+- Install Node.js v20 if not present
+- Create a dedicated `pdftools` system user
+- Build the application
+- Set up a systemd service running on port 3000
+- Enable auto-start on boot
+
+**After installation:**
+```bash
+# Check service status
+sudo systemctl status pdf-tools
+
+# View logs
+sudo journalctl -u pdf-tools -f
+
+# Restart service
+sudo systemctl restart pdf-tools
+```
+
+**To update to the latest version:**
+```bash
+sudo ./install.sh --update
+# or
+sudo ./install.sh -u
+```
+
+**To uninstall:**
+```bash
+sudo ./uninstall.sh
+```
+
+### 🛠️ Manual Installation
+
+For development or custom setups:
+
+```bash
+# Clone the repository
+git clone https://github.com/IT-BAER/bentopdf.git
 cd bentopdf
 
 # Install dependencies
@@ -230,44 +204,58 @@ npm install
 # Build the project
 npm run build
 
-# Package the distribution for hosting (optional)
-npm run package
-
 # Serve the dist folder
 npx serve dist
 ```
 
-The website can be accessible at: ```http://localhost:3000/```
+Access at: `http://localhost:3000`
 
-The `npm run package` command creates a `dist-{version}.zip` file that you can use for self-hosting.
+### 🏠 Self-Hosting (Static Files)
 
-### 🚀 Run with Docker Compose (Recommended)
+Since PDF-Tools is fully client-side, you can host it as static files on any web server.
 
-For a more robust setup with auto-restart capabilities:
+**Download from Releases:**
 
-1. **Download the repo and create a `docker-compose.yml` file or use the one given in repo**:
+1. Go to [PDF-Tools Releases](https://github.com/IT-BAER/bentopdf/releases)
+2. Download the latest `dist-{version}.zip` file
+3. Extract and serve with any web server
 
-```yaml
-services:
-  bentopdf:
-    image: bentopdf/bentopdf:latest
-    container_name: bentopdf
-    ports:
-      - '3000:8080'
-    restart: unless-stopped
-```
-
-2. **Start the application**:
+**Serve with different tools:**
 
 ```bash
-docker-compose up -d
+# Navigate to the extracted folder
+cd dist
+
+# Python
+python -m http.server 8000
+
+# Node.js
+npx serve .
+
+# PHP
+php -S localhost:8000
 ```
 
-The application will be available at `http://localhost:3000`.
+### 🔧 Configuration
+
+**Change the port:**
+
+If installed via the install script, edit the service file:
+```bash
+sudo nano /etc/systemd/system/pdf-tools.service
+# Change the port number in the ExecStart line
+sudo systemctl daemon-reload
+sudo systemctl restart pdf-tools
+```
+
+Or set the port during installation:
+```bash
+PDF_TOOLS_PORT=8080 sudo ./install.sh
+```
 
 ### 🏢 Simple Mode for Internal Use
 
-For organizations that want a clean, distraction-free interface focused solely on PDF tools, BentoPDF supports a **Simple Mode** that hides all branding and marketing content.
+For organizations that want a clean, distraction-free interface focused solely on PDF tools, PDF-Tools supports a **Simple Mode** that hides all branding and marketing content.
 
 **What Simple Mode does:**
 
@@ -280,36 +268,18 @@ For more details, see [SIMPLE_MODE.md](SIMPLE_MODE.md).
 
 ### 🔒 Security Features
 
-BentoPDF runs as a non-root user using nginx-unprivileged for enhanced security:
+When running as a systemd service, PDF-Tools includes several security hardening features:
 
-- **Non-Root Execution**: Container runs with minimal privileges using nginx-unprivileged
-- **Port 8080**: Uses high port number to avoid requiring root privileges
-- **Security Best Practices**: Follows Principle of Least Privilege
-
-#### Basic Usage
-
-```bash
-docker build -t bentopdf .
-docker run -p 8080:8080 bentopdf
-```
+- **Dedicated User**: Runs under a non-privileged `pdftools` system user
+- **Restricted Permissions**: Uses systemd's `NoNewPrivileges`, `PrivateTmp`, and `ProtectSystem` directives
+- **Read-Only Filesystem**: Most of the system is mounted read-only
+- **Auto-Restart**: Service automatically restarts on failure
 
 For detailed security configuration, see [SECURITY.md](SECURITY.md).
 
 ### 📦 Version Management
 
-BentoPDF supports semantic versioning with multiple Docker tags available on both Docker Hub and GitHub Container Registry:
-
-**Docker Hub:**
-
-- **Latest**: `bentopdf/bentopdf:latest`
-- **Specific Version**: `bentopdf/bentopdf:1.0.0`
-- **Version with Prefix**: `bentopdf/bentopdf:v1.0.0`
-
-**GitHub Container Registry:**
-
-- **Latest**: `ghcr.io/alam00000/bentopdf:latest`
-- **Specific Version**: `ghcr.io/alam00000/bentopdf:1.0.0`
-- **Version with Prefix**: `ghcr.io/alam00000/bentopdf:v1.0.0`
+PDF-Tools uses semantic versioning. Check the [releases page](https://github.com/IT-BAER/bentopdf/releases) for the latest version.
 
 #### Quick Release
 
@@ -328,12 +298,10 @@ For detailed release instructions, see [RELEASE.md](RELEASE.md).
 
 ### 🚀 Development Setup
 
-#### Option 1: Run with npm
-
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/alam00000/bentopdf.git
+   git clone https://github.com/IT-BAER/bentopdf.git
    cd bentopdf
    ```
 
@@ -349,42 +317,18 @@ For detailed release instructions, see [RELEASE.md](RELEASE.md).
    ```
    The application will be available at `http://localhost:5173`.
 
-#### Option 2: Build and Run with Docker Compose
-
-1. **Clone the Repository**:
-
-   ```bash
-   git clone https://github.com/alam00000/bentopdf.git
-   cd bentopdf
-   ```
-
-2. **Run with Docker Compose**:
-
-   ```bash
-   docker-compose -f docker-compose.dev.yml up -d
-   ```
-
-   The application will be available at `http://localhost:3000`.
-
-   > **Note:** After making any local changes to the code, rebuild the Docker image using:
-
-   ```bash
-   docker-compose -f docker-compose.dev.yml up --build -d
-   ```
-
-   This ensures your latest changes are applied inside the container.
-
 ---
 
-## 🛠️ Tech Stack & Background
+## 🛠️ Tech Stack
 
-BentoPDF was originally built using **HTML**, **CSS**, and **vanilla JavaScript**. As the project grew, it was migrated to a modern stack for better maintainability and scalability:
+PDF-Tools is built with a modern web development stack:
 
 - **Vite**: A fast build tool for modern web development.
 - **TypeScript**: For type safety and an improved developer experience.
 - **Tailwind CSS**: For rapid and consistent UI development.
+- **i18n System**: Custom translation system supporting English and German.
 
-> **Note:** Some parts of the codebase still use legacy structures from the original implementation. Contributors should expect gradual updates as testing and refactoring continue.
+> **Note:** This is a fork of [BentoPDF](https://github.com/alam00000/bentopdf). Some parts of the codebase still use legacy structures from the original implementation.
 
 ---
 
@@ -399,7 +343,7 @@ BentoPDF was originally built using **HTML**, **CSS**, and **vanilla JavaScript*
 - **PDF to Office**: Converts PDF files into editable Word, Excel, and PowerPoint formats.
 - **Office to PDF**: Converts Word, Excel, and PowerPoint documents into optimized PDFs.
 
-Contributions and discussions on the roadmap are welcome! Join the conversation via [Discord](https://discord.gg/AP2Y97juZT).
+Contributions and feature requests are welcome! [Open an issue](https://github.com/IT-BAER/bentopdf/issues) to discuss.
 
 ---
 
@@ -412,13 +356,13 @@ We welcome contributions from the community! Here's how you can get started:
 3.  Make your changes and commit them with a clear message.
 4.  **Open a Pull Request** and describe the changes you've made.
 
-Have an idea for a new tool or an improvement? [Open an issue](https://github.com/alam00000/bentopdf/issues) to discuss it first.
+Have an idea for a new tool or an improvement? [Open an issue](https://github.com/IT-BAER/bentopdf/issues) to discuss it first.
 
 ---
 
 ## Special Thanks
 
-BentoPDF wouldn't be possible without the amazing open-source tools and libraries that power it. We'd like to extend our heartfelt thanks to the creators and maintainers of:
+PDF-Tools wouldn't be possible without the amazing open-source tools and libraries that power it. Special thanks to [BentoPDF](https://github.com/alam00000/bentopdf) for the original project, and to the creators and maintainers of:
 
 - **[PDFLib.js](https://pdf-lib.js.org/)** – For enabling powerful client-side PDF manipulation.
 - **[PDF.js](https://mozilla.github.io/pdf.js/)** – For the robust PDF rendering engine in the browser.
