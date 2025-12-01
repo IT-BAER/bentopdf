@@ -274,6 +274,12 @@ echo -e "${GREEN}✓ serve installed globally${NC}"
 # Step 7: Create systemd service
 echo -e "\n${BLUE}[7/7] Creating systemd service...${NC}"
 
+SERVE_PATH=$(which serve)
+if [ -z "$SERVE_PATH" ] || [ ! -x "$SERVE_PATH" ]; then
+    echo -e "${RED}Error: serve binary not found or not executable. Please ensure npm install completed successfully.${NC}"
+    exit 1
+fi
+
 cat > /etc/systemd/system/${APP_NAME}.service << EOF
 [Unit]
 Description=PDF-Tools - Privacy-first PDF toolkit
@@ -285,7 +291,7 @@ Type=simple
 User=$APP_USER
 Group=$APP_USER
 WorkingDirectory=$APP_DIR/dist
-ExecStart=/usr/bin/serve -s . -l $APP_PORT
+ExecStart=$SERVE_PATH . -l $APP_PORT
 Restart=on-failure
 RestartSec=10
 StandardOutput=syslog

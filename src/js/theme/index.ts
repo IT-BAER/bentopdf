@@ -1,3 +1,5 @@
+import { getConfig, isAccentColorForced } from '../utils/config';
+
 export interface AccentColor {
   name: string;
   value: string;
@@ -5,15 +7,6 @@ export interface AccentColor {
   ring: string;
   text: string;
   bgLight: string;
-}
-
-// Declare global config type
-declare global {
-  interface Window {
-    PDFTOOLS_CONFIG?: {
-      defaultAccentColor?: string;
-    };
-  }
 }
 
 export const accentColors: AccentColor[] = [
@@ -39,7 +32,8 @@ let currentAccent: AccentColor = accentColors[0];
  * Get the default accent color from config or fallback
  */
 function getDefaultAccent(): AccentColor {
-  const configColor = window.PDFTOOLS_CONFIG?.defaultAccentColor;
+  const config = getConfig();
+  const configColor = config.defaultAccentColor;
   if (configColor) {
     // Check if it matches a preset
     const preset = accentColors.find(c => c.value.toLowerCase() === configColor.toLowerCase());
@@ -140,23 +134,30 @@ export function initTheme(): void {
   initThemeMode();
   
   const defaultAccent = getDefaultAccent();
-  const savedAccent = localStorage.getItem(ACCENT_STORAGE_KEY);
   
-  if (savedAccent) {
-    try {
-      const parsed = JSON.parse(savedAccent);
-      if (parsed.value) {
-        currentAccent = parsed;
-      } else {
-        currentAccent = defaultAccent;
-      }
-    } catch {
-      // Try as color name for backwards compatibility
-      const found = accentColors.find(c => c.name === savedAccent);
-      currentAccent = found || defaultAccent;
-    }
-  } else {
+  // If accent color is forced, always use the config color
+  if (isAccentColorForced()) {
     currentAccent = defaultAccent;
+  } else {
+    // Otherwise, try to load saved accent
+    const savedAccent = localStorage.getItem(ACCENT_STORAGE_KEY);
+    
+    if (savedAccent) {
+      try {
+        const parsed = JSON.parse(savedAccent);
+        if (parsed.value) {
+          currentAccent = parsed;
+        } else {
+          currentAccent = defaultAccent;
+        }
+      } catch {
+        // Try as color name for backwards compatibility
+        const found = accentColors.find(c => c.name === savedAccent);
+        currentAccent = found || defaultAccent;
+      }
+    } else {
+      currentAccent = defaultAccent;
+    }
   }
   
   applyAccentColor(currentAccent);

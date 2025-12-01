@@ -40,10 +40,9 @@
 
     <input type="file" id="pdfUploadInput" accept="application/pdf" class="hidden" />
 
-    <div class="min-h-screen flex items-start justify-center p-4 pt-8">
-        <!-- Upload Area (shown initially) -->
-        <div id="upload-area"
-            class="bg-gray-800/60 backdrop-blur-md rounded-xl shadow-xl p-6 max-w-5xl w-full text-gray-200 border border-gray-700/50">
+    <!-- Upload Area (shown initially) -->
+    <div id="upload-area" class="min-h-screen flex items-start justify-center p-4 pt-8">
+        <div class="bg-gray-800/60 backdrop-blur-md rounded-xl shadow-xl p-6 max-w-5xl w-full text-gray-200 border border-gray-700/50">
             <button id="back-to-tools-upload"
                 class="flex items-center gap-2 text-accent hover:opacity-80 mb-6 font-semibold transition-opacity">
                 <i data-lucide="arrow-left" class="cursor-pointer"></i>
@@ -137,10 +136,11 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Tool Container (hidden initially) -->
-        <div id="tool-container"
-            class="bg-gray-800/60 backdrop-blur-md rounded-xl shadow-xl p-6 w-full text-gray-200 border border-gray-700/50 hidden">
+    <!-- Tool Container (hidden initially) -->
+    <div id="tool-container" class="min-h-screen flex items-start justify-center p-4 pt-8 hidden">
+        <div class="bg-gray-800/60 backdrop-blur-md rounded-xl shadow-xl p-6 w-full text-gray-200 border border-gray-700/50">
             <button id="back-to-tools-creator"
                 class="flex items-center gap-2 text-accent hover:opacity-80 mb-6 font-semibold transition-opacity">
                 <i data-lucide="arrow-left" class="cursor-pointer"></i>
