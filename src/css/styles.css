@@ -111,11 +111,18 @@ body {
 /* Frosted glass navbar */
 .navbar-glass {
   background: var(--navbar-bg);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
   transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+/* Ensure backdrop-filter works in Firefox - use @supports for cross-browser compatibility */
+@supports (backdrop-filter: blur(12px)) {
+  .navbar-glass {
+    backdrop-filter: blur(12px);
+  }
 }
 
 /* Light mode specific overrides */
