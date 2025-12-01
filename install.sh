@@ -160,6 +160,23 @@ if [ "$UPDATE_MODE" = true ]; then
     
     # Pull latest changes
     echo -e "\n${BLUE}[3/4] Pulling latest changes...${NC}"
+    
+    # Backup user config if exists
+    CONFIG_BACKUP=""
+    if [ -f "$APP_DIR/dist/config.js" ]; then
+        CONFIG_BACKUP=$(mktemp -t pdf-tools-config.XXXXXX)
+        cp "$APP_DIR/dist/config.js" "$CONFIG_BACKUP"
+        echo -e "${GREEN}✓ Backed up user config${NC}"
+    fi
+    
+    # Reset local changes and clean untracked files to ensure a clean pull
+    if [ -d "$APP_DIR/.git" ]; then
+        git stash --quiet 2>/dev/null || true
+        git clean -fd --quiet 2>/dev/null || true
+        git reset --hard HEAD --quiet 2>/dev/null || true
+    fi
+    
+    # Pull latest
     sudo -u "$APP_USER" git pull origin main 2>/dev/null || git pull origin main
     
     NEW_VERSION=$(get_current_version)
@@ -169,6 +186,16 @@ if [ "$UPDATE_MODE" = true ]; then
     echo -e "\n${BLUE}[4/4] Rebuilding application...${NC}"
     sudo -u "$APP_USER" npm install --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps
     sudo -u "$APP_USER" npm run build 2>/dev/null || npm run build
+    
+    # Restore user config if it was backed up
+    if [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
+        if cp "$CONFIG_BACKUP" "$APP_DIR/dist/config.js"; then
+            rm "$CONFIG_BACKUP"
+            echo -e "${GREEN}✓ Restored user config${NC}"
+        else
+            echo -e "${YELLOW}Warning: Failed to restore user config. Backup saved at: $CONFIG_BACKUP${NC}"
+        fi
+    fi
     
     # Fix permissions
     chown -R "$APP_USER:$APP_USER" "$APP_DIR"
