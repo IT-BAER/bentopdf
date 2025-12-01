@@ -274,6 +274,8 @@ echo -e "${GREEN}✓ serve installed globally${NC}"
 # Step 7: Create systemd service
 echo -e "\n${BLUE}[7/7] Creating systemd service...${NC}"
 
+SERVE_PATH=$(which serve)
+
 cat > /etc/systemd/system/${APP_NAME}.service << EOF
 [Unit]
 Description=PDF-Tools - Privacy-first PDF toolkit
@@ -285,7 +287,7 @@ Type=simple
 User=$APP_USER
 Group=$APP_USER
 WorkingDirectory=$APP_DIR/dist
-ExecStart=/usr/bin/serve -s . -l $APP_PORT
+ExecStart=$SERVE_PATH -s . -l $APP_PORT
 Restart=on-failure
 RestartSec=10
 StandardOutput=syslog
