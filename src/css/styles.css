@@ -352,13 +352,12 @@ input[type='file']::file-selector-button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4f46e5;
+  background: var(--accent-color);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4338ca;
-  /* indigo-700 */
+  background: var(--accent-hover);
 }
 
 /* Style for drag-and-drop placeholder */
