@@ -10,6 +10,7 @@ import { formatShortcutDisplay } from './utils/helpers.js';
 import { APP_VERSION, injectVersion } from '../version.js';
 import { initI18n, setLanguage, getCategoryName, getToolTranslation, getTranslations, type Language } from './i18n/index.js';
 import { initTheme, accentColors, setAccentColor, getAccentColor, findClosestAccent, createAccentFromHex, applyAccentColorOnly, toggleThemeMode } from './theme/index.js';
+import { applyBrandingConfig, getConfig } from './utils/config.js';
 
 /**
  * Render the tool grid with translated category names and tool names
@@ -87,9 +88,13 @@ const init = () => {
   // Initialize i18n
   initI18n();
 
+  // Apply branding configuration (app name, logo, feature toggles)
+  applyBrandingConfig();
+
   // Setup color picker with debounced re-render for performance
+  const config = getConfig();
   const colorPicker = document.getElementById('accent-color-picker') as HTMLInputElement | null;
-  if (colorPicker) {
+  if (colorPicker && !config.forceAccentColor) {
     colorPicker.value = getAccentColor().value;
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
     

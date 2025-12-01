@@ -1,5 +1,6 @@
 import { en } from './en';
 import { de } from './de';
+import { getDefaultLanguage } from '../utils/config';
 
 export type Language = 'en' | 'de';
 export type TranslationKey = keyof typeof en;
@@ -19,8 +20,13 @@ let currentLanguage: Language = DEFAULT_LANGUAGE;
  * Initialize the i18n system
  */
 export function initI18n(): void {
+  const configLanguage = getDefaultLanguage();
   const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
-  if (savedLanguage && translations[savedLanguage]) {
+  
+  // Priority: 1. Config forced language, 2. Saved preference, 3. Browser detection
+  if (configLanguage && translations[configLanguage]) {
+    currentLanguage = configLanguage;
+  } else if (savedLanguage && translations[savedLanguage]) {
     currentLanguage = savedLanguage;
   } else {
     // Try to detect browser language
