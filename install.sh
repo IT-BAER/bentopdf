@@ -275,6 +275,10 @@ echo -e "${GREEN}✓ serve installed globally${NC}"
 echo -e "\n${BLUE}[7/7] Creating systemd service...${NC}"
 
 SERVE_PATH=$(which serve)
+if [ -z "$SERVE_PATH" ] || [ ! -x "$SERVE_PATH" ]; then
+    echo -e "${RED}Error: serve binary not found. Installation may have failed.${NC}"
+    exit 1
+fi
 
 cat > /etc/systemd/system/${APP_NAME}.service << EOF
 [Unit]
