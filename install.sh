@@ -187,13 +187,89 @@ if [ "$UPDATE_MODE" = true ]; then
     sudo -u "$APP_USER" npm install --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps
     sudo -u "$APP_USER" npm run build 2>/dev/null || npm run build
     
-    # Restore user config if it was backed up
+    # Merge user config with new config options
     if [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
-        if cp "$CONFIG_BACKUP" "$APP_DIR/dist/config.js"; then
+        NEW_CONFIG="$APP_DIR/dist/config.js"
+        MERGED_CONFIG=$(mktemp -t pdf-tools-merged.XXXXXX)
+        
+        # Extract user's customized values from backup (lines that don't start with // or /*)
+        # and merge with new config to add any new options
+        if [ -f "$NEW_CONFIG" ]; then
+            # Use node to intelligently merge configs
+            node -e "
+const fs = require('fs');
+const oldConfig = fs.readFileSync('$CONFIG_BACKUP', 'utf8');
+const newConfig = fs.readFileSync('$NEW_CONFIG', 'utf8');
+
+// Extract the config object from both files
+const extractConfig = (content) => {
+    const match = content.match(/window\.PDFTOOLS_CONFIG\s*=\s*(\{[\s\S]*?\});/);
+    if (match) {
+        try {
+            // Use eval in a controlled way to parse the object
+            return eval('(' + match[1] + ')');
+        } catch (e) {
+            return null;
+        }
+    }
+    return null;
+};
+
+const oldObj = extractConfig(oldConfig);
+const newObj = extractConfig(newConfig);
+
+if (oldObj && newObj) {
+    // Merge: keep user values, add new keys from new config
+    const merged = { ...newObj, ...oldObj };
+    
+    // Build the merged config file with proper formatting
+    let output = '/**\n * PDF-Tools Configuration File\n';
+    output += ' * \n';
+    output += ' * This file allows server administrators to customize the application.\n';
+    output += ' * For instant changes (no rebuild): Edit /opt/pdf-tools/dist/config.js\n';
+    output += ' * For permanent changes: Edit public/config.js and rebuild\n';
+    output += ' */\n\n';
+    output += 'window.PDFTOOLS_CONFIG = {\n';
+    
+    const entries = Object.entries(merged);
+    entries.forEach(([key, value], index) => {
+        const comma = index < entries.length - 1 ? ',' : '';
+        if (typeof value === 'string') {
+            output += '  ' + key + ': \"' + value + '\"' + comma + '\n';
+        } else if (value === null) {
+            output += '  ' + key + ': null' + comma + '\n';
+        } else {
+            output += '  ' + key + ': ' + value + comma + '\n';
+        }
+    });
+    
+    output += '};\n';
+    
+    fs.writeFileSync('$MERGED_CONFIG', output);
+    console.log('merged');
+} else {
+    // Fallback: just use old config
+    fs.copyFileSync('$CONFIG_BACKUP', '$MERGED_CONFIG');
+    console.log('fallback');
+}
+" 2>/dev/null && MERGE_RESULT=$? || MERGE_RESULT=1
+            
+            if [ -f "$MERGED_CONFIG" ] && [ -s "$MERGED_CONFIG" ]; then
+                cp "$MERGED_CONFIG" "$APP_DIR/dist/config.js"
+                rm "$MERGED_CONFIG"
+                rm "$CONFIG_BACKUP"
+                echo -e "${GREEN}✓ Merged user config with new options${NC}"
+            else
+                # Fallback: restore old config as-is
+                cp "$CONFIG_BACKUP" "$APP_DIR/dist/config.js"
+                rm "$CONFIG_BACKUP"
+                echo -e "${YELLOW}Note: Restored user config (new options may need to be added manually)${NC}"
+            fi
+        else
+            # No new config, just restore old one
+            cp "$CONFIG_BACKUP" "$APP_DIR/dist/config.js"
             rm "$CONFIG_BACKUP"
             echo -e "${GREEN}✓ Restored user config${NC}"
-        else
-            echo -e "${YELLOW}Warning: Failed to restore user config. Backup saved at: $CONFIG_BACKUP${NC}"
         fi
     fi
     
