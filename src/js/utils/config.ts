@@ -18,6 +18,7 @@ declare global {
       forceAccentColor?: boolean;
       
       // Feature toggles
+      showHeader?: boolean;
       showColorPicker?: boolean;
       showThemeToggle?: boolean;
       showLanguageSelector?: boolean;
@@ -34,6 +35,7 @@ export interface PDFToolsConfig {
   faviconUrl: string | null;
   defaultAccentColor: string;
   forceAccentColor: boolean;
+  showHeader: boolean;
   showColorPicker: boolean;
   showThemeToggle: boolean;
   showLanguageSelector: boolean;
@@ -46,6 +48,7 @@ const DEFAULT_CONFIG: PDFToolsConfig = {
   faviconUrl: null,
   defaultAccentColor: '#6366f1',
   forceAccentColor: false,
+  showHeader: true,
   showColorPicker: true,
   showThemeToggle: true,
   showLanguageSelector: true,
@@ -64,6 +67,7 @@ export function getConfig(): PDFToolsConfig {
     faviconUrl: windowConfig.faviconUrl ?? DEFAULT_CONFIG.faviconUrl,
     defaultAccentColor: windowConfig.defaultAccentColor ?? DEFAULT_CONFIG.defaultAccentColor,
     forceAccentColor: windowConfig.forceAccentColor ?? DEFAULT_CONFIG.forceAccentColor,
+    showHeader: windowConfig.showHeader ?? DEFAULT_CONFIG.showHeader,
     showColorPicker: windowConfig.showColorPicker ?? DEFAULT_CONFIG.showColorPicker,
     showThemeToggle: windowConfig.showThemeToggle ?? DEFAULT_CONFIG.showThemeToggle,
     showLanguageSelector: windowConfig.showLanguageSelector ?? DEFAULT_CONFIG.showLanguageSelector,
@@ -77,6 +81,11 @@ export function getConfig(): PDFToolsConfig {
  */
 export function applyBrandingConfig(): void {
   const config = getConfig();
+  
+  // Hide header completely if configured
+  if (!config.showHeader) {
+    hideHeader();
+  }
   
   // Apply app name to header and footer
   applyAppName(config.appName);
@@ -183,6 +192,25 @@ function hideElement(id: string): void {
   if (element) {
     element.style.display = 'none';
   }
+}
+
+/**
+ * Hide the navigation header completely
+ */
+function hideHeader(): void {
+  // Hide navbar on main page
+  const navbar = document.querySelector('nav.navbar-glass') as HTMLElement | null;
+  if (navbar) {
+    navbar.style.display = 'none';
+  }
+  
+  // Also hide any other nav elements that might be headers
+  const allNavs = document.querySelectorAll('nav');
+  allNavs.forEach(nav => {
+    if (nav.classList.contains('navbar-glass') || nav.classList.contains('sticky')) {
+      (nav as HTMLElement).style.display = 'none';
+    }
+  });
 }
 
 /**

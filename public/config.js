@@ -21,6 +21,8 @@ window.PDFTOOLS_CONFIG = {
   forceAccentColor: false,         // If true, locks accent color and hides the color picker
 
   // Feature toggles
+  showHeader: true,                // Show/hide the entire navigation header
+                                   // Set to false to completely hide the top navbar
   showColorPicker: true,           // Show/hide the accent color picker in navbar
   showThemeToggle: true,           // Show/hide the dark/light theme toggle
   showLanguageSelector: true,      // Show/hide the language selector
