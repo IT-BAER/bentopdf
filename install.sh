@@ -1,4 +1,5 @@
 #!/bin/bash
+<<<<<<< Updated upstream
 
 # PDF-Tools Installation Script for Debian/Ubuntu
 # This script installs PDF-Tools and sets it up as a systemd service
@@ -9,6 +10,13 @@
 # Remote usage:
 #   curl -fsSL https://raw.githubusercontent.com/IT-BAER/bentopdf/main/install.sh | sudo bash
 #   curl -fsSL https://raw.githubusercontent.com/IT-BAER/bentopdf/main/install.sh | sudo bash -s -- --update
+=======
+# ============================================
+# PDF-Tools Installation & Update Script
+# ============================================
+# This script builds the PDF-Tools application
+# ============================================
+>>>>>>> Stashed changes
 
 set -e
 
@@ -16,6 +24,7 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+<<<<<<< Updated upstream
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
@@ -376,3 +385,47 @@ else
     echo -e "${YELLOW}Check status with: sudo systemctl status ${APP_NAME}${NC}"
     echo -e "${YELLOW}Check logs with: sudo journalctl -u ${APP_NAME} -f${NC}"
 fi
+=======
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}========================================${NC}"
+echo -e "${YELLOW}  PDF-Tools Installation/Update Script ${NC}"
+echo -e "${YELLOW}========================================${NC}"
+
+# Get version from package.json
+VERSION=$(grep '"version"' package.json | sed 's/.*"version": "\(.*\)".*/\1/')
+echo -e "${GREEN}Version: v${VERSION}${NC}"
+echo ""
+
+# Check if npm is installed
+if ! command -v npm &> /dev/null; then
+    echo -e "${RED}Error: npm is not installed${NC}"
+    exit 1
+fi
+
+# Step 1: Install dependencies if needed
+if [ ! -d "node_modules" ]; then
+    echo -e "${YELLOW}[1/2] Installing dependencies...${NC}"
+    npm install
+    echo -e "${GREEN}✓ Dependencies installed${NC}"
+    echo ""
+else
+    echo -e "${YELLOW}[1/2] Dependencies already installed${NC}"
+    echo ""
+fi
+
+# Step 2: Build
+echo -e "${YELLOW}[2/2] Building project...${NC}"
+npm run build
+echo -e "${GREEN}✓ Build complete${NC}"
+echo ""
+
+echo -e "${GREEN}========================================${NC}"
+echo -e "${GREEN}  ✓ PDF-Tools v${VERSION} built!       ${NC}"
+echo -e "${GREEN}                                        ${NC}"
+echo -e "${GREEN}  Output: ./dist/                       ${NC}"
+echo -e "${GREEN}                                        ${NC}"
+echo -e "${GREEN}  To customize branding, edit:          ${NC}"
+echo -e "${GREEN}    dist/config.js                      ${NC}"
+echo -e "${GREEN}========================================${NC}"
+>>>>>>> Stashed changes

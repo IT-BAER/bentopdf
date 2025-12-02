@@ -324,7 +324,11 @@ body {
   box-shadow:
     0 10px 15px -3px rgba(0, 0, 0, 0.2),
     0 4px 6px -2px rgba(0, 0, 0, 0.1);
+<<<<<<< Updated upstream
   border-color: var(--accent-color);
+=======
+  border-color: #ef7d00;
+>>>>>>> Stashed changes
 }
 
 .btn {
@@ -339,7 +343,7 @@ body {
 
 /* Custom file input */
 input[type='file']::file-selector-button {
-  @apply bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg cursor-pointer hover:bg-indigo-700 transition-colors duration-200 mr-4;
+  @apply bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg cursor-pointer hover:bg-orange-600 transition-colors duration-200 mr-4;
 }
 
 /* Custom scrollbar */
@@ -352,18 +356,27 @@ input[type='file']::file-selector-button {
 }
 
 ::-webkit-scrollbar-thumb {
+<<<<<<< Updated upstream
   background: var(--accent-color);
+=======
+  background: #ef7d00;
+>>>>>>> Stashed changes
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
+<<<<<<< Updated upstream
   background: var(--accent-hover);
+=======
+  background: #d96e00;
+  /* orange-600 */
+>>>>>>> Stashed changes
 }
 
 /* Style for drag-and-drop placeholder */
 .sortable-ghost {
   opacity: 0.4;
-  border: 2px dashed #4f46e5;
+  border: 2px dashed #ef7d00;
 }
 
 #embed-pdf-container>div {
@@ -460,8 +473,8 @@ footer a {
 }
 
 .cta-button {
-  background-color: #4f46e5;
-  /* indigo-600 */
+  background-color: #ef7d00;
+  /* orange-500 */
   color: white;
   font-weight: 600;
   padding: 12px 24px;
@@ -471,8 +484,8 @@ footer a {
 }
 
 .cta-button:hover {
-  background-color: #4338ca;
-  /* indigo-700 */
+  background-color: #d96e00;
+  /* orange-600 */
 }
 
 .marker-text {
@@ -510,7 +523,7 @@ footer a {
   right: 0;
   bottom: 0;
   height: 6px;
-  background: linear-gradient(120deg, #6366f1, #8b5cf6);
+  background: linear-gradient(120deg, #ef7d00, #f59e0b);
   z-index: -1;
 }
 
@@ -518,8 +531,13 @@ footer a {
 
 .section-divider {
   height: 1px;
+<<<<<<< Updated upstream
   background: linear-gradient(to right, transparent, #4d44f7, transparent);
   /* Fades from transparent to indigo and back */
+=======
+  background: linear-gradient(to right, transparent, #ef7d00, transparent);
+  /* Fades from transparent to orange and back */
+>>>>>>> Stashed changes
   margin: 2rem auto;
   /* my-16 */
   max-width: 42rem;
@@ -528,6 +546,7 @@ footer a {
 }
 
 .btn-gradient {
+<<<<<<< Updated upstream
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -536,6 +555,17 @@ footer a {
   border-radius: 0.75rem;
   background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
   color: var(--accent-btn-text, #ffffff);
+=======
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  /* py-3 px-8 */
+  border-radius: 0.5rem;
+  /* rounded-lg */
+  background-image: linear-gradient(to bottom, #f59e0b, #ef7d00);
+  /* from-orange-400 to-orange-500 */
+  color: #ffffff;
+  /* text-white */
+>>>>>>> Stashed changes
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: 0.01em;
@@ -558,6 +588,7 @@ footer a {
 
 .btn-gradient:hover {
   box-shadow:
+<<<<<<< Updated upstream
     0 10px 25px -5px rgba(var(--accent-color-rgb, 99, 102, 241), 0.4),
     0 8px 10px -6px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
   transform: translateY(-2px);
@@ -571,13 +602,26 @@ footer a {
   transform: translateY(0);
   box-shadow:
     0 4px 12px -2px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
+=======
+    0 10px 15px -3px rgba(239, 125, 0, 0.3),
+    0 4px 6px -4px rgba(239, 125, 0, 0.3);
+  /* hover:shadow-xl hover:shadow-orange-500/30 */
+  transform: translateY(-0.25rem);
+  /* hover:-translate-y-1 */
+>>>>>>> Stashed changes
 }
 
 .btn-gradient:focus {
   outline: none;
   box-shadow:
+<<<<<<< Updated upstream
     0 0 0 3px rgba(var(--accent-color-rgb, 99, 102, 241), 0.4),
     0 10px 25px -5px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
+=======
+    0 0 0 2px #111827,
+    0 0 0 4px #fbbf24;
+  /* focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-orange-400 */
+>>>>>>> Stashed changes
 }
 
 .btn-gradient:disabled {
@@ -898,8 +942,8 @@ footer a {
   /* h-16 */
   border: 5px solid #374151;
   /* border-gray-700 */
-  border-bottom-color: #4f46e5;
-  /* border-indigo-600 */
+  border-bottom-color: #ef7d00;
+  /* border-orange-500 */
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;
@@ -928,9 +972,9 @@ footer a {
 
 /* Highlight for selected signature in the saved list */
 .saved-signature.selected {
-  border-color: #4f46e5;
-  /* indigo-600 */
-  box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+  border-color: #ef7d00;
+  /* orange-500 */
+  box-shadow: 0 0 10px rgba(239, 125, 0, 0.5);
 }
 
 /* Cursor change when hovering over a placed signature */

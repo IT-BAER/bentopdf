@@ -1,10 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<<<<<<< Updated upstream
   <title>JSON to PDF Converter - PDF-Tools</title>
+=======
+  <title>JSON zu PDF Konverter - PDF Tools</title>
+>>>>>>> Stashed changes
   <link rel="icon" type="image/png" href="../../images/favicon.svg" />
   <link href="../../src/css/styles.css" rel="stylesheet" />
 </head>
@@ -14,6 +18,7 @@
     <div class="container mx-auto px-4">
       <div class="flex justify-between items-center h-16">
         <div class="flex-shrink-0 flex items-center cursor-pointer" id="home-logo">
+<<<<<<< Updated upstream
           <img src="../../public/images/favicon.svg" alt="PDF-Tools Logo" class="h-8 w-8" />
           <span class="text-white font-bold text-xl ml-2">
             <a href="/">PDF-Tools</a>
@@ -24,6 +29,34 @@
             class="w-8 h-8 rounded-lg border border-gray-600 bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-gray-300 hover:text-white transition-colors"
             title="Toggle Theme">
             <i data-lucide="moon" class="w-4 h-4"></i>
+=======
+          <img src="../../public/images/favicon.svg" alt="PDF Tools Logo" class="h-8 w-8" />
+          <span class="text-white font-bold text-xl ml-2">
+            <a href="/">PDF Tools</a>
+          </span>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-8 text-white">
+          <a href="/" class="nav-link">Startseite</a>
+          <a href="/" class="nav-link">Alle Werkzeuge</a>
+        </div>
+
+        <!-- Mobile Hamburger Button -->
+        <div class="md:hidden flex items-center">
+          <button id="mobile-menu-button" type="button"
+            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500 transition-colors"
+            aria-controls="mobile-menu" aria-expanded="false">
+            <span class="sr-only">Hauptmenü öffnen</span>
+            <svg id="menu-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+>>>>>>> Stashed changes
           </button>
           <input type="color" id="accent-color-picker" 
             class="w-8 h-8 rounded-lg border border-gray-600 cursor-pointer bg-transparent"
@@ -36,12 +69,24 @@
         </div>
       </div>
     </div>
+<<<<<<< Updated upstream
+=======
+
+    <!-- Mobile Menu Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700">
+      <div class="px-2 pt-2 pb-3 space-y-1 text-center">
+        <a href="/" class="mobile-nav-link">Startseite</a>
+        <a href="/" class="mobile-nav-link">Alle Werkzeuge</a>
+      </div>
+    </div>
+>>>>>>> Stashed changes
   </nav>
 
   <div class="min-h-screen flex items-center justify-center p-4 bg-gray-900">
     <div id="tool-uploader"
       class="bg-gray-800 rounded-xl shadow-xl p-8 max-w-2xl w-full text-gray-200 border border-gray-700">
       <button id="back-to-tools"
+<<<<<<< Updated upstream
         class="flex items-center gap-2 text-accent hover:opacity-80 mb-6 font-semibold transition-opacity">
         <i data-lucide="arrow-left" class="cursor-pointer"></i>
         <span class="cursor-pointer" data-i18n="backToTools">Back to Tools</span>
@@ -53,6 +98,19 @@
       <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-3 mb-6">
         <p class="text-yellow-200 text-sm">
           <strong data-i18n="jsonToPdf.noteTitle">Note:</strong> <span data-i18n="jsonToPdf.noteText">Only JSON files created by the PDF-to-JSON converter tool are supported. Standard JSON files from other tools will not work.</span>
+=======
+        class="flex items-center gap-2 text-orange-400 hover:text-orange-300 mb-6 font-semibold">
+        <i data-lucide="arrow-left" class="cursor-pointer"></i>
+        <span class="cursor-pointer">Zurück zu Werkzeugen</span>
+      </button>
+      <h1 class="text-2xl font-bold text-white mb-2">JSON zu PDF Konverter</h1>
+      <p class="text-gray-400 mb-6">
+        Laden Sie mehrere JSON-Dateien hoch, um sie alle in das PDF-Format zu konvertieren. Dateien werden als ZIP-Archiv heruntergeladen.
+      </p>
+      <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-3 mb-6">
+        <p class="text-yellow-200 text-sm">
+          <strong>Hinweis:</strong> Nur JSON-Dateien, die mit dem PDF-zu-JSON-Konverter erstellt wurden, werden unterstützt. Standard-JSON-Dateien aus anderen Werkzeugen funktionieren nicht.
+>>>>>>> Stashed changes
         </p>
       </div>
 
@@ -62,10 +120,17 @@
           <div class="flex flex-col items-center justify-center pt-5 pb-6">
             <i data-lucide="upload-cloud" class="w-10 h-10 mb-3 text-gray-400"></i>
             <p class="mb-2 text-sm text-gray-300">
+<<<<<<< Updated upstream
               <span class="font-semibold" data-i18n="subpages.clickToSelectFiles">Click to select files</span> <span data-i18n="subpages.orDragDrop">or drag and drop</span>
             </p>
             <p class="text-xs text-gray-500" data-i18n="subpages.multipleJsonFiles">Multiple JSON files</p>
             <p class="text-xs text-gray-500" data-i18n="subpages.filesNeverLeave">Your files never leave your device.</p>
+=======
+              <span class="font-semibold">Klicken Sie, um Dateien auszuwählen</span> oder per Drag & Drop
+            </p>
+            <p class="text-xs text-gray-500">Mehrere JSON-Dateien</p>
+            <p class="text-xs text-gray-500">Ihre Dateien verlassen niemals Ihr Gerät.</p>
+>>>>>>> Stashed changes
           </div>
           <input type="file" id="jsonFiles" accept="application/json" multiple
             class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
@@ -74,11 +139,17 @@
         <!-- File Display Area -->
         <div id="fileList" class="mt-4 hidden"></div>
 
+<<<<<<< Updated upstream
         <div class="flex justify-center mt-6">
           <button id="convertBtn" disabled class="btn-gradient">
             <span data-i18n="jsonToPdf.convertBtn">Convert to PDF</span>
           </button>
         </div>
+=======
+        <button id="convertBtn" disabled class="btn-gradient w-full mt-6">
+          In PDF konvertieren
+        </button>
+>>>>>>> Stashed changes
       </div>
 
       <!-- Status Message -->
@@ -88,6 +159,7 @@
 
   <footer class="mt-16 border-t-2 border-gray-700 py-8">
     <div class="container mx-auto px-4">
+<<<<<<< Updated upstream
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
         <div class="mb-8 md:mb-0">
           <div class="flex items-center justify-center md:justify-start mb-4">
@@ -147,6 +219,18 @@
           <p class="text-gray-500 text-xs mt-2">Based on BentoPDF (AGPL-3.0)</p>
         </div>
       </div>
+=======
+      <div class="flex items-center gap-3 mb-2">
+        <img src="../../public/images/favicon.svg" alt="PDF Tools Logo" class="h-8 w-8" />
+        <span class="text-white font-bold text-xl">PDF Tools</span>
+      </div>
+      <p class="text-gray-400 text-sm">
+        &copy; 2025 PDF Tools. Alle Rechte vorbehalten.
+      </p>
+      <p class="text-gray-500 text-xs mt-1">
+        Version <span id="app-version"></span>
+      </p>
+>>>>>>> Stashed changes
     </div>
   </footer>
   <script type="module" src="../js/logic/json-to-pdf.ts"></script>

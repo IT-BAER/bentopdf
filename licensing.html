@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <title>Lizenzierung - PDF Tools</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ef7d00">
+    <meta name="description" content="Lizenzinformationen für PDF Tools und verwendete Open-Source-Bibliotheken." />
+    <link rel="stylesheet" href="./src/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-sm shadow-lg border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <img src="/images/android-chrome-192x192.png" alt="PDF Tools Logo" class="h-8 w-8" />
+                        <span class="ml-2 text-xl font-bold text-white tracking-tight">PDF Tools</span>
+                    </a>
+                </div>
+                <div class="hidden sm:flex items-center space-x-8">
+                    <a href="/" class="nav-link text-slate-300 hover:text-orange-400 transition-colors text-sm font-medium">Startseite</a>
+                    <a href="/about.html" class="nav-link text-slate-300 hover:text-orange-400 transition-colors text-sm font-medium">Über uns</a>
+                    <a href="/contact.html" class="nav-link text-slate-300 hover:text-orange-400 transition-colors text-sm font-medium">Kontakt</a>
+                    <a href="/licensing.html" class="nav-link text-orange-400 transition-colors text-sm font-medium">Lizenzierung</a>
+                    <a href="/#all-tools" class="nav-link text-slate-300 hover:text-orange-400 transition-colors text-sm font-medium">Alle Werkzeuge</a>
+                    <a href="https://github.com/nicholasadamou/bentopdf" target="_blank" class="text-slate-300 hover:text-white transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+                <div class="sm:hidden flex items-center">
+                    <button id="mobile-menu-button" type="button" class="text-slate-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500">
+                        <span class="sr-only">Hauptmenü öffnen</span>
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden sm:hidden bg-slate-800/95 backdrop-blur-sm border-t border-slate-700/50">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="/" class="block px-3 py-2 text-slate-300 hover:text-orange-400 hover:bg-slate-700/50 rounded-lg transition-colors">Startseite</a>
+                <a href="/about.html" class="block px-3 py-2 text-slate-300 hover:text-orange-400 hover:bg-slate-700/50 rounded-lg transition-colors">Über uns</a>
+                <a href="/contact.html" class="block px-3 py-2 text-slate-300 hover:text-orange-400 hover:bg-slate-700/50 rounded-lg transition-colors">Kontakt</a>
+                <a href="/licensing.html" class="block px-3 py-2 text-orange-400 hover:bg-slate-700/50 rounded-lg transition-colors">Lizenzierung</a>
+                <a href="/#all-tools" class="block px-3 py-2 text-slate-300 hover:text-orange-400 hover:bg-slate-700/50 rounded-lg transition-colors">Alle Werkzeuge</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4">
+                <span class="text-orange-400">Lizenz</span>informationen
+            </h1>
+            <p class="text-xl text-slate-400">
+                Open Source und transparent – unsere Lizenzierung im Überblick.
+            </p>
+        </div>
+
+        <div class="space-y-8">
+            <!-- Project License -->
+            <section class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center text-orange-400 mr-4">
+                        <i class="fas fa-scale-balanced text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">PDF Tools Lizenz</h2>
+                </div>
+                <p class="text-slate-300 mb-4">
+                    PDF Tools ist Open-Source-Software und wird unter der MIT-Lizenz veröffentlicht. 
+                    Dies bedeutet, dass Sie die Software frei nutzen, modifizieren und verteilen können.
+                </p>
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/30">
+                    <h3 class="text-lg font-semibold text-white mb-3">MIT-Lizenz erlaubt:</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Kommerzielle Nutzung</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Modifikation des Quellcodes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Verteilung und Weitergabe</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Private Nutzung</span>
+                        </li>
+                    </ul>
+                </div>
+                <a href="https://github.com/nicholasadamou/bentopdf/blob/main/LICENSE" target="_blank"
+                   class="inline-flex items-center mt-6 text-orange-400 hover:text-orange-300 transition-colors">
+                    <span>Vollständige Lizenz auf GitHub ansehen</span>
+                    <i class="fas fa-external-link-alt ml-2"></i>
+                </a>
+            </section>
+
+            <!-- Third-Party Libraries -->
+            <section class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 mr-4">
+                        <i class="fas fa-cubes text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Verwendete Bibliotheken</h2>
+                </div>
+                <p class="text-slate-300 mb-6">
+                    PDF Tools nutzt verschiedene Open-Source-Bibliotheken. Wir sind den Entwicklern dieser 
+                    Projekte dankbar für ihre hervorragende Arbeit.
+                </p>
+                
+                <div class="space-y-4">
+                    <!-- PDF-lib -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-700/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-white">pdf-lib</h3>
+                            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">MIT</span>
+                        </div>
+                        <p class="text-slate-400 text-sm">
+                            Bibliothek zum Erstellen und Bearbeiten von PDF-Dokumenten in JavaScript.
+                        </p>
+                    </div>
+
+                    <!-- PDF.js -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-700/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-white">PDF.js (Mozilla)</h3>
+                            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Apache 2.0</span>
+                        </div>
+                        <p class="text-slate-400 text-sm">
+                            PDF-Rendering-Engine von Mozilla für die Anzeige von PDFs im Browser.
+                        </p>
+                    </div>
+
+                    <!-- cpdf -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-700/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-white">Coherent PDF</h3>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">LGPL</span>
+                        </div>
+                        <p class="text-slate-400 text-sm">
+                            Leistungsstarke PDF-Bearbeitungsbibliothek für erweiterte Operationen.
+                        </p>
+                    </div>
+
+                    <!-- Tailwind CSS -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-700/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-white">Tailwind CSS</h3>
+                            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">MIT</span>
+                        </div>
+                        <p class="text-slate-400 text-sm">
+                            Utility-First CSS-Framework für das moderne Design.
+                        </p>
+                    </div>
+
+                    <!-- Font Awesome -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-700/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-white">Font Awesome</h3>
+                            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Font Awesome Free</span>
+                        </div>
+                        <p class="text-slate-400 text-sm">
+                            Icon-Bibliothek für die Benutzeroberfläche.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attribution -->
+            <section class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mr-4">
+                        <i class="fas fa-heart text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Danksagungen</h2>
+                </div>
+                <p class="text-slate-300">
+                    PDF Tools wäre ohne die großartige Open-Source-Community nicht möglich. 
+                    Wir danken allen Entwicklern und Mitwirkenden der verwendeten Bibliotheken 
+                    sowie allen, die zu diesem Projekt beitragen.
+                </p>
+            </section>
+
+            <!-- Self-Hosting Info -->
+            <section class="bg-gradient-to-r from-orange-500/20 to-amber-500/20 rounded-2xl p-8 border border-orange-500/30">
+                <h2 class="text-2xl font-bold text-white mb-4">Selbst hosten?</h2>
+                <p class="text-slate-300 mb-6">
+                    Sie möchten PDF Tools auf Ihrem eigenen Server betreiben? Das ist problemlos möglich! 
+                    Besuchen Sie unser GitHub-Repository für Anleitungen zur Installation und Konfiguration.
+                </p>
+                <a href="https://github.com/nicholasadamou/bentopdf" target="_blank"
+                   class="inline-flex items-center px-6 py-3 bg-slate-700 text-white font-semibold rounded-xl hover:bg-slate-600 transition-all duration-300 border border-slate-600">
+                    <i class="fab fa-github mr-2"></i>
+                    GitHub-Repository besuchen
+                </a>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-700/50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <img src="/images/android-chrome-192x192.png" alt="PDF Tools Logo" class="h-8 w-8" />
+                        <span class="ml-2 text-xl font-bold text-white">PDF Tools</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">
+                        Kostenlose, datenschutzfreundliche PDF-Werkzeuge, die direkt in Ihrem Browser laufen.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Schnellzugriff</h3>
+                    <ul class="space-y-2 text-slate-400 text-sm">
+                        <li><a href="/" class="hover:text-orange-400 transition-colors">Startseite</a></li>
+                        <li><a href="/#all-tools" class="hover:text-orange-400 transition-colors">Alle Werkzeuge</a></li>
+                        <li><a href="/about.html" class="hover:text-orange-400 transition-colors">Über uns</a></li>
+                        <li><a href="/contact.html" class="hover:text-orange-400 transition-colors">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Rechtliches</h3>
+                    <ul class="space-y-2 text-slate-400 text-sm">
+                        <li><a href="/privacy.html" class="hover:text-orange-400 transition-colors">Datenschutzerklärung</a></li>
+                        <li><a href="/terms.html" class="hover:text-orange-400 transition-colors">Nutzungsbedingungen</a></li>
+                        <li><a href="/licensing.html" class="hover:text-orange-400 transition-colors">Lizenzierung</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-700/50 mt-8 pt-8 text-center text-slate-500 text-sm">
+                <p>&copy; <span id="currentYear"></span> PDF Tools. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
+</body>
+
+</html>

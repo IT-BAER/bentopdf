@@ -1,7 +1,8 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
 
 <head>
+<<<<<<< Updated upstream
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PDF-Tools</title>
@@ -202,12 +203,41 @@
                 <input type="checkbox" id="full-width-toggle" class="sr-only peer">
                 <div
                   class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
-                </div>
-              </label>
-            </div>
-          </div>
-        </div>
+=======
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" id="favicon" href="/images/favicon.png">
+    <link rel="apple-touch-icon" id="apple-touch-icon" href="/images/favicon.png">
+    <script src="/config.js"></script>
+    <title>PDF Tools - PDF-Werkzeuge</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ef7d00">
+    <meta name="description"
+        content="Kostenlose, datenschutzfreundliche PDF-Werkzeuge zum Zusammenführen, Aufteilen, Komprimieren, Konvertieren und mehr – alles lokal in Ihrem Browser." />
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="./src/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
 
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <!-- Simple Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-sm shadow-lg border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <img id="nav-logo" src="/images/favicon.png" alt="PDF Tools Logo" class="h-8 w-auto" />
+                        <span class="ml-2 text-xl font-bold text-white tracking-tight">PDF Tools</span>
+                    </a>
+>>>>>>> Stashed changes
+                </div>
+            </div>
+        </div>
+    </nav>
+
+<<<<<<< Updated upstream
         <div class="p-6 border-t border-gray-700 flex justify-between items-center bg-gray-850 rounded-b-xl">
           <div id="shortcuts-tab-footer" class="flex gap-3">
             <button id="import-shortcuts-btn"
@@ -226,21 +256,152 @@
             class="text-red-400 hover:text-red-300 text-sm font-medium transition-colors" data-i18n="resetToDefaults">
             Reset to Defaults
           </button>
+=======
+    <!-- Tools Section -->
+    <section id="all-tools" class="py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div id="tools-header" class="text-center mb-8">
+                <h1 class="text-3xl sm:text-4xl font-bold text-white mb-3">
+                    <span class="text-orange-400">PDF-Werkzeuge</span>
+                </h1>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    Wählen Sie ein Werkzeug, um zu beginnen
+                </p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="max-w-xl mx-auto mb-8">
+                <div class="relative">
+                    <input id="search-bar" type="text" placeholder="Werkzeuge suchen..."
+                        class="w-full px-5 py-3 pl-12 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 pointer-events-none"></i>
+                    <span id="shortcut" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 text-xs bg-slate-700 px-2 py-1 rounded">Ctrl + K</span>
+                </div>
+            </div>
+
+            <!-- Tool Grid -->
+            <div id="tool-grid" class="grid gap-6">
+                <!-- Categories will be populated by JavaScript -->
+            </div>
         </div>
-      </div>
+    </section>
+
+    <!-- Tool Interface (hidden by default) -->
+    <section id="tool-interface" class="hidden max-w-4xl mx-auto px-4 py-8">
+        <button id="back-to-grid" class="mb-6 flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <i class="fas fa-arrow-left"></i>
+            <span>Zurück zur Übersicht</span>
+        </button>
+        <div id="tool-content" class="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+            <!-- Tool content will be injected here -->
+        </div>
+    </section>
+
+    <!-- Alert Modal -->
+    <div id="alert-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 border border-slate-700 shadow-2xl">
+            <h3 id="alert-title" class="text-xl font-bold text-white mb-2"></h3>
+            <p id="alert-message" class="text-slate-300 mb-6"></p>
+            <button id="alert-ok-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-slate-800 rounded-2xl p-8 flex flex-col items-center border border-slate-700 shadow-2xl">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent mb-4"></div>
+            <p id="loader-text" class="text-white font-medium">Verarbeite...</p>
+        </div>
+    </div>
+
+    <!-- Settings/Shortcuts Modal -->
+    <div id="shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-slate-800 rounded-2xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col border border-slate-700 shadow-2xl">
+            <div class="p-4 border-b border-slate-700 flex items-center justify-between">
+                <h2 class="text-xl font-bold text-white">Einstellungen</h2>
+                <button id="close-shortcuts-modal" class="text-slate-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="p-4 border-b border-slate-700">
+                <div class="flex gap-2">
+                    <button id="shortcuts-tab-btn" class="px-4 py-2 rounded-lg bg-orange-600 text-white font-medium transition-colors">
+                        Tastenkürzel
+                    </button>
+                    <button id="preferences-tab-btn" class="px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-700 font-medium transition-colors">
+                        Einstellungen
+                    </button>
+                </div>
+            </div>
+
+            <!-- Shortcuts Tab Content -->
+            <div id="shortcuts-tab-content" class="flex-1 overflow-y-auto p-4">
+                <div class="mb-4">
+                    <input id="shortcut-search" type="text" placeholder="Tastenkürzel suchen..."
+                        class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+                <div id="shortcuts-list" class="space-y-2">
+                    <!-- Shortcuts will be populated here -->
+                </div>
+            </div>
+
+            <!-- Preferences Tab Content -->
+            <div id="preferences-tab-content" class="hidden flex-1 overflow-y-auto p-4">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
+                        <div>
+                            <h3 class="text-white font-medium">Volle Breite</h3>
+                            <p class="text-slate-400 text-sm">Werkzeug-Interface auf volle Breite erweitern</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="full-width-toggle" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-orange-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shortcuts Tab Footer -->
+            <div id="shortcuts-tab-footer" class="p-4 border-t border-slate-700 flex justify-between items-center">
+                <button id="reset-shortcuts-btn" class="text-red-400 hover:text-red-300 text-sm font-medium transition-colors">
+                    Zurücksetzen
+                </button>
+                <div class="flex gap-2">
+                    <button id="import-shortcuts-btn" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors">
+                        Importieren
+                    </button>
+                    <button id="export-shortcuts-btn" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors">
+                        Exportieren
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preferences Tab Footer -->
+            <div id="preferences-tab-footer" class="hidden p-4 border-t border-slate-700">
+                <p class="text-slate-500 text-sm text-center">Einstellungen werden automatisch gespeichert</p>
+            </div>
+>>>>>>> Stashed changes
+        </div>
     </div>
 
     <!-- Warning Modal -->
-    <div id="warning-modal"
-      class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-      <div
-        class="bg-gray-800 rounded-xl border border-gray-700 shadow-2xl max-w-md w-full overflow-hidden animate-scale-in">
-        <div class="p-6">
-          <div class="flex items-start gap-4 mb-4">
-            <div id="warning-icon"
-              class="w-12 h-12 flex items-center justify-center rounded-full bg-yellow-500/10 flex-shrink-0">
-              <i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-500"></i>
+    <div id="warning-modal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 border border-slate-700 shadow-2xl">
+            <h3 id="warning-title" class="text-xl font-bold text-white mb-2"></h3>
+            <div id="warning-message" class="text-slate-300 mb-6"></div>
+            <div class="flex gap-3">
+                <button id="warning-cancel-btn" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                    Abbrechen
+                </button>
+                <button id="warning-confirm-btn" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                    Fortfahren
+                </button>
             </div>
+<<<<<<< Updated upstream
             <div class="flex-1">
               <h3 id="warning-title" class="text-xl font-bold text-white mb-2" data-i18n="warning">Warning</h3>
               <p id="warning-message" class="text-gray-300 text-sm leading-relaxed"></p>
@@ -264,14 +425,17 @@
 
     <div id="signature-ghost" class="hidden"></div>
 
-    <!-- Scroll to Top Button -->
-    <button id="scroll-to-top-btn"
-      class="fixed bottom-12 right-8 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 opacity-0 translate-y-10 invisible z-40"
-      aria-label="Scroll to top">
-      <i data-lucide="arrow-up" class="w-6 h-6"></i>
-    </button>
-  </div>
+=======
+        </div>
+    </div>
 
+>>>>>>> Stashed changes
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top-btn" class="fixed bottom-6 right-6 z-40 bg-orange-500 hover:bg-orange-600 text-white w-12 h-12 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible flex items-center justify-center" aria-label="Nach oben scrollen">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+<<<<<<< Updated upstream
   <footer class="mt-16 border-t-2 border-gray-700 py-8">
     <div class="container mx-auto px-4">
       <div class="flex items-center mb-4">
@@ -292,6 +456,23 @@
   <script type="module" src="src/js/utils/lucide-init.ts"></script>
   <script type="module" src="src/version.ts"></script>
   <script type="module" src="src/js/main.ts"></script>
+=======
+    <!-- Simple Footer -->
+    <footer class="bg-slate-900 border-t border-slate-700/50 py-8 px-4 sm:px-6 lg:px-8 mt-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-center mb-4">
+                <img id="footer-logo" src="/images/favicon.png" alt="PDF Tools Logo" class="h-8 w-auto" />
+                <span class="ml-2 text-xl font-bold text-white">PDF Tools</span>
+            </div>
+            <div class="text-center text-slate-500 text-sm">
+                <p>&copy; <span id="currentYear"></span> PDF Tools. Alle Rechte vorbehalten.</p>
+                <p class="mt-1 text-xs" id="app-version"></p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="./src/js/main.ts"></script>
+>>>>>>> Stashed changes
 </body>
 
 </html>

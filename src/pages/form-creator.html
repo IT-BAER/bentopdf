@@ -1,10 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<<<<<<< Updated upstream
     <title>Create PDF Form - PDF-Tools</title>
+=======
+    <title>PDF-Formular erstellen - PDF Tools</title>
+>>>>>>> Stashed changes
     <link rel="icon" type="image/png" href="../../images/favicon.svg" />
     <link href="../../src/css/styles.css" rel="stylesheet" />
 </head>
@@ -14,6 +18,7 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center h-16">
                 <div class="flex-shrink-0 flex items-center cursor-pointer" id="home-logo">
+<<<<<<< Updated upstream
                     <img src="../../public/images/favicon.svg" alt="PDF-Tools Logo" class="h-8 w-8" />
                     <span class="text-white font-bold text-xl ml-2">
                         <a href="/">PDF-Tools</a>
@@ -24,6 +29,36 @@
                         class="w-8 h-8 rounded-lg border border-gray-600 bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-gray-300 hover:text-white transition-colors"
                         title="Toggle Theme">
                         <i data-lucide="moon" class="w-4 h-4"></i>
+=======
+                    <img src="../../public/images/favicon.svg" alt="PDF Tools Logo" class="h-8 w-8" />
+                    <span class="text-white font-bold text-xl ml-2">
+                        <a href="/">PDF Tools</a>
+                    </span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8 text-white">
+                    <a href="/" class="nav-link">Startseite</a>
+                    <a href="/" class="nav-link">Alle Werkzeuge</a>
+                </div>
+
+                <!-- Mobile Hamburger Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" type="button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500 transition-colors"
+                        aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Hauptmenü öffnen</span>
+                        <svg id="menu-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+>>>>>>> Stashed changes
                     </button>
                     <input type="color" id="accent-color-picker" 
                         class="w-8 h-8 rounded-lg border border-gray-600 cursor-pointer bg-transparent"
@@ -36,6 +71,17 @@
                 </div>
             </div>
         </div>
+<<<<<<< Updated upstream
+=======
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700">
+            <div class="px-2 pt-2 pb-3 space-y-1 text-center">
+                <a href="/" class="mobile-nav-link">Startseite</a>
+                <a href="/" class="mobile-nav-link">Alle Werkzeuge</a>
+            </div>
+        </div>
+>>>>>>> Stashed changes
     </nav>
 
     <input type="file" id="pdfUploadInput" accept="application/pdf" class="hidden" />
@@ -44,6 +90,7 @@
     <div id="upload-area" class="min-h-screen flex items-start justify-center p-4 pt-8">
         <div class="bg-gray-800/60 backdrop-blur-md rounded-xl shadow-xl p-6 max-w-5xl w-full text-gray-200 border border-gray-700/50">
             <button id="back-to-tools-upload"
+<<<<<<< Updated upstream
                 class="flex items-center gap-2 text-accent hover:opacity-80 mb-6 font-semibold transition-opacity">
                 <i data-lucide="arrow-left" class="cursor-pointer"></i>
                 <span class="cursor-pointer" data-i18n="backToTools">Back to Tools</span>
@@ -52,6 +99,16 @@
             <h1 class="text-2xl font-bold text-white mb-2" data-i18n="formCreator.title">Create PDF Form</h1>
             <p class="text-gray-400 mb-6" data-i18n="formCreator.description">
                 Upload an existing PDF or create a blank PDF to start adding form fields.
+=======
+                class="flex items-center gap-2 text-orange-400 hover:text-orange-300 mb-6 font-semibold">
+                <i data-lucide="arrow-left" class="cursor-pointer"></i>
+                <span class="cursor-pointer">Zurück zu Werkzeugen</span>
+            </button>
+
+            <h1 class="text-2xl font-bold text-white mb-2">PDF-Formular erstellen</h1>
+            <p class="text-gray-400 mb-6">
+                Laden Sie eine vorhandene PDF hoch oder erstellen Sie eine leere PDF, um Formularfelder hinzuzufügen.
+>>>>>>> Stashed changes
             </p>
 
             <!-- Recent Forms Section (hidden by default) -->
@@ -72,10 +129,17 @@
                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
                     <i data-lucide="upload-cloud" class="w-10 h-10 mb-3 text-gray-400"></i>
                     <p class="mb-2 text-sm text-gray-300">
+<<<<<<< Updated upstream
                         <span class="font-semibold" data-i18n="subpages.clickToSelect">Click to select a file</span> <span data-i18n="subpages.orDragDrop">or drag and drop</span>
                     </p>
                     <p class="text-xs text-gray-500" data-i18n="subpages.singlePdfFile">A single PDF file</p>
                     <p class="text-xs text-gray-500" data-i18n="subpages.filesNeverLeave">Your files never leave your device.</p>
+=======
+                        <span class="font-semibold">Klicken Sie, um eine PDF auszuwählen</span> oder per Drag & Drop
+                    </p>
+                    <p class="text-xs text-gray-500">Einzelne PDF-Datei</p>
+                    <p class="text-xs text-gray-500">Ihre Dateien verlassen niemals Ihr Gerät.</p>
+>>>>>>> Stashed changes
                 </div>
                 <input type="file" id="pdfFileInput" accept="application/pdf"
                     class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
@@ -89,7 +153,11 @@
                     <div class="w-full border-t border-gray-600"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
+<<<<<<< Updated upstream
                     <span class="px-4 bg-gray-800 text-gray-400 font-medium" data-i18n="formCreator.or">OR</span>
+=======
+                    <span class="px-4 bg-gray-800 text-gray-400 font-medium">ODER</span>
+>>>>>>> Stashed changes
                 </div>
             </div>
 
@@ -97,11 +165,16 @@
                 <button id="blankPdfBtn"
                     class="bg-gray-700/50 hover:bg-gray-600/50 text-white px-6 py-3 rounded-lg flex items-center justify-center gap-3 transition-colors border border-gray-600/50">
                     <i data-lucide="file-plus" class="w-5 h-5"></i>
+<<<<<<< Updated upstream
                     <span class="font-semibold" data-i18n="formCreator.createBlankPdf">Create Blank PDF</span>
+=======
+                    <span class="font-semibold">Leere PDF erstellen</span>
+>>>>>>> Stashed changes
                 </button>
             </div>
 
                 <div id="pageSizeSelector" class="mt-4 hidden">
+<<<<<<< Updated upstream
                     <label class="form-label" data-i18n="formCreator.pageSize">Page Size:</label>
                     <select id="pageSizeSelect" class="form-select">
                         <option value="letter" data-i18n="formCreator.pageSizeLetter">Letter (8.5" × 11")</option>
@@ -111,11 +184,24 @@
                         <option value="tabloid" data-i18n="formCreator.pageSizeTabloid">Tabloid (11" × 17")</option>
                         <option value="a3" data-i18n="formCreator.pageSizeA3">A3 (297mm × 420mm)</option>
                         <option value="custom" data-i18n="formCreator.pageSizeCustom">Custom</option>
+=======
+                    <label class="block text-sm font-semibold text-gray-300 mb-2">Seitengröße:</label>
+                    <select id="pageSizeSelect"
+                        class="w-full bg-gray-600 border border-gray-500 text-white rounded px-3 py-2 text-sm focus:ring-orange-500 focus:border-orange-500">
+                        <option value="letter">Letter (8,5" × 11")</option>
+                        <option value="a4">A4 (210mm × 297mm)</option>
+                        <option value="a5">A5 (148mm × 210mm)</option>
+                        <option value="legal">Legal (8,5" × 14")</option>
+                        <option value="tabloid">Tabloid (11" × 17")</option>
+                        <option value="a3">A3 (297mm × 420mm)</option>
+                        <option value="custom">Benutzerdefiniert</option>
+>>>>>>> Stashed changes
                     </select>
 
                     <div id="customDimensionsInput" class="mt-3 hidden space-y-2">
                         <div class="flex gap-2">
                             <div class="flex-1">
+<<<<<<< Updated upstream
                                 <label class="form-label" data-i18n="formCreator.width">Width (pts)</label>
                                 <input type="number" id="customWidth" placeholder="612" min="72" max="14400" class="form-input">
                             </div>
@@ -133,6 +219,25 @@
                             <span data-i18n="formCreator.startCreating">Start Creating</span>
                         </button>
                     </div>
+=======
+                                <label class="block text-xs text-gray-400 mb-1">Breite (Pkt)</label>
+                                <input type="number" id="customWidth" placeholder="612" min="72" max="14400"
+                                    class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-orange-500 focus:border-orange-500">
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs text-gray-400 mb-1">Höhe (Pkt)</label>
+                                <input type="number" id="customHeight" placeholder="792" min="72" max="14400"
+                                    class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-orange-500 focus:border-orange-500">
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 italic">1 Zoll = 72 Punkte</p>
+                    </div>
+
+                    <button id="confirmBlankBtn"
+                        class="w-full mt-3 bg-orange-600 hover:bg-orange-500 text-white p-2 rounded transition-colors">
+                        Mit Erstellen beginnen
+                    </button>
+>>>>>>> Stashed changes
                 </div>
             </div>
         </div>
@@ -142,6 +247,7 @@
     <div id="tool-container" class="min-h-screen flex items-start justify-center p-4 pt-8 hidden">
         <div class="bg-gray-800/60 backdrop-blur-md rounded-xl shadow-xl p-6 w-full text-gray-200 border border-gray-700/50">
             <button id="back-to-tools-creator"
+<<<<<<< Updated upstream
                 class="flex items-center gap-2 text-accent hover:opacity-80 mb-6 font-semibold transition-opacity">
                 <i data-lucide="arrow-left" class="cursor-pointer"></i>
                 <span class="cursor-pointer" data-i18n="backToTools">Back to Tools</span>
@@ -151,6 +257,16 @@
             <p class="text-gray-400 mb-6" data-i18n="formCreator.toolDescription">
                 Drag and drop fields onto the canvas to create a fillable PDF form. Customize field properties and
                 download your form.
+=======
+                class="flex items-center gap-2 text-orange-400 hover:text-orange-300 mb-6 font-semibold">
+                <i data-lucide="arrow-left" class="cursor-pointer"></i>
+                <span class="cursor-pointer">Zurück zu Werkzeugen</span>
+            </button>
+
+            <h1 class="text-2xl font-bold text-white mb-2">PDF-Formular erstellen</h1>
+            <p class="text-gray-400 mb-6">
+                Ziehen Sie Felder auf die Arbeitsfläche, um ein ausfüllbares PDF-Formular zu erstellen. Passen Sie Feldeigenschaften an und laden Sie Ihr Formular herunter.
+>>>>>>> Stashed changes
             </p>
 
             <!-- Main Form Creator Area -->
@@ -161,19 +277,32 @@
                     <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600/50">
                         <h2 class="font-semibold text-gray-200 mb-3 flex items-center gap-2">
                             <i data-lucide="settings" class="w-4 h-4"></i>
+<<<<<<< Updated upstream
                             <span data-i18n="formCreator.properties">Properties</span>
                         </h2>
                         <div id="propertiesPanel" class="space-y-3">
                             <p class="text-gray-500 text-sm" data-i18n="formCreator.selectField">Select a field to edit properties</p>
+=======
+                            Eigenschaften
+                        </h2>
+                        <div id="propertiesPanel" class="space-y-3">
+                            <p class="text-gray-500 text-sm">Wählen Sie ein Feld aus, um Eigenschaften zu bearbeiten</p>
+>>>>>>> Stashed changes
                         </div>
                     </div>
 
                     <!-- Field Count -->
                     <div class="mt-4 bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600/50">
                         <p class="text-sm text-gray-400">
+<<<<<<< Updated upstream
                             <span id="fieldCount" class="text-accent font-bold text-lg">0</span> <span data-i18n="formCreator.fields">field(s)</span>
                         </p>
                         <p class="text-xs text-gray-500 mt-1" data-i18n="formCreator.deleteHint">Press Delete to remove selected field</p>
+=======
+                            <span id="fieldCount" class="text-orange-400 font-bold text-lg">0</span> Feld(er)
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">Drücken Sie Entf, um ausgewähltes Feld zu löschen</p>
+>>>>>>> Stashed changes
                     </div>
                 </aside>
 
@@ -187,7 +316,7 @@
                                 disabled>
                                 <i data-lucide="chevron-left" class="w-4 h-4"></i>
                             </button>
-                            <span id="pageIndicator" class="text-sm text-gray-300 px-2">Page 1 of 1</span>
+                            <span id="pageIndicator" class="text-sm text-gray-300 px-2">Seite 1 von 1</span>
                             <button id="nextPageBtn"
                                 class="bg-gray-600/50 hover:bg-gray-500/50 text-white p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled>
@@ -198,12 +327,21 @@
                             <button id="resetBtn"
                                 class="bg-gray-600/50 hover:bg-gray-500/50 text-white p-2 px-3 rounded-lg flex items-center gap-2 transition-colors">
                                 <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+<<<<<<< Updated upstream
                                 <span class="text-sm" data-i18n="formCreator.reset">Reset</span>
                             </button>
                             <button id="addPageBtn"
                                 class="btn-gradient p-2 px-3 rounded-lg flex items-center gap-2 transition-colors">
                                 <i data-lucide="file-plus" class="w-4 h-4"></i>
                                 <span class="text-sm" data-i18n="formCreator.addPage">Add Page</span>
+=======
+                                <span class="text-sm">Zurücksetzen</span>
+                            </button>
+                            <button id="addPageBtn"
+                                class="bg-orange-600 hover:bg-orange-500 text-white p-2 px-3 rounded flex items-center gap-2 transition-colors">
+                                <i data-lucide="file-plus" class="w-4 h-4"></i>
+                                <span class="text-sm">Seite hinzufügen</span>
+>>>>>>> Stashed changes
                             </button>
                         </div>
                     </div>
@@ -212,33 +350,56 @@
                     <div class="bg-gray-700/50 rounded-lg p-2 mb-4 border border-gray-600/50">
                         <div class="flex flex-wrap gap-2 justify-center items-center max-w-full overflow-hidden">
                             <div class="text-gray-400 text-sm font-semibold mr-2 flex items-center gap-1">
+<<<<<<< Updated upstream
                                 <i data-lucide="wrench" class="w-4 h-4"></i> <span data-i18n="formCreator.fieldsLabel">Fields:</span>
                             </div>
 
                             <div class="tool-item bg-gray-600/50 hover:bg-accent text-white p-2 rounded-lg cursor-move transition-colors flex items-center gap-2 border border-gray-500/50"
                                 draggable="true" data-type="text" title="Text Field">
+=======
+                                <i data-lucide="wrench" class="w-4 h-4"></i> Felder:
+                            </div>
+
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+                                draggable="true" data-type="text" title="Textfeld">
+>>>>>>> Stashed changes
                                 <i data-lucide="type" class="w-4 h-4"></i>
                                 <span class="text-xs" data-i18n="formCreator.fieldText">Text</span>
                             </div>
 
+<<<<<<< Updated upstream
                             <div class="tool-item bg-gray-600/50 hover:bg-accent text-white p-2 rounded-lg cursor-move transition-colors flex items-center gap-2 border border-gray-500/50"
                                 draggable="true" data-type="checkbox" title="Checkbox">
+=======
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+                                draggable="true" data-type="checkbox" title="Kontrollkästchen">
+>>>>>>> Stashed changes
                                 <i data-lucide="check-square" class="w-4 h-4"></i>
                                 <span class="text-xs" data-i18n="formCreator.fieldCheckbox">Checkbox</span>
                             </div>
 
+<<<<<<< Updated upstream
                             <div class="tool-item bg-gray-600/50 hover:bg-accent text-white p-2 rounded-lg cursor-move transition-colors flex items-center gap-2 border border-gray-500/50"
                                 draggable="true" data-type="radio" title="Radio Button">
+=======
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+                                draggable="true" data-type="radio" title="Optionsschaltfläche">
+>>>>>>> Stashed changes
                                 <i data-lucide="circle-dot" class="w-4 h-4"></i>
                                 <span class="text-xs" data-i18n="formCreator.fieldRadio">Radio</span>
                             </div>
 
+<<<<<<< Updated upstream
                             <div class="tool-item bg-gray-600/50 hover:bg-accent text-white p-2 rounded-lg cursor-move transition-colors flex items-center gap-2 border border-gray-500/50"
+=======
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+>>>>>>> Stashed changes
                                 draggable="true" data-type="dropdown" title="Dropdown">
                                 <i data-lucide="chevron-down-square" class="w-4 h-4"></i>
                                 <span class="text-xs" data-i18n="formCreator.fieldDropdown">Dropdown</span>
                             </div>
 
+<<<<<<< Updated upstream
                             <div class="tool-item bg-gray-600/50 hover:bg-accent text-white p-2 rounded-lg cursor-move transition-colors flex items-center gap-2 border border-gray-500/50"
                                 draggable="true" data-type="optionlist" title="Option List">
                                 <i data-lucide="list" class="w-4 h-4"></i>
@@ -247,10 +408,21 @@
 
                             <div class="tool-item bg-gray-600/50 hover:bg-accent text-white p-2 rounded-lg cursor-move transition-colors flex items-center gap-2 border border-gray-500/50"
                                 draggable="true" data-type="button" title="Button">
+=======
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+                                draggable="true" data-type="optionlist" title="Optionsliste">
+                                <i data-lucide="list" class="w-4 h-4"></i>
+                                <span class="text-xs">Liste</span>
+                            </div>
+
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+                                draggable="true" data-type="button" title="Schaltfläche">
+>>>>>>> Stashed changes
                                 <i data-lucide="square-mouse-pointer" class="w-4 h-4"></i>
                                 <span class="text-xs" data-i18n="formCreator.fieldButton">Button</span>
                             </div>
 
+<<<<<<< Updated upstream
                             <div class="tool-item bg-gray-600/50 hover:bg-accent text-white p-2 rounded-lg cursor-move transition-colors flex items-center gap-2 border border-gray-500/50"
                                 draggable="true" data-type="signature" title="Signature">
                                 <i data-lucide="pen-tool" class="w-4 h-4"></i>
@@ -267,6 +439,24 @@
                                 draggable="true" data-type="image" title="Image Field">
                                 <i data-lucide="image" class="w-4 h-4"></i>
                                 <span class="text-xs" data-i18n="formCreator.fieldImage">Image</span>
+=======
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+                                draggable="true" data-type="signature" title="Unterschrift">
+                                <i data-lucide="pen-tool" class="w-4 h-4"></i>
+                                <span class="text-xs">Unterschrift</span>
+                            </div>
+
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+                                draggable="true" data-type="date" title="Datumsfeld">
+                                <i data-lucide="calendar" class="w-4 h-4"></i>
+                                <span class="text-xs">Datum</span>
+                            </div>
+
+                            <div class="tool-item bg-gray-600 hover:bg-orange-600 text-white p-2 rounded cursor-move transition-colors flex items-center gap-2"
+                                draggable="true" data-type="image" title="Bildfeld">
+                                <i data-lucide="image" class="w-4 h-4"></i>
+                                <span class="text-xs">Bild</span>
+>>>>>>> Stashed changes
                             </div>
                         </div>
                     </div>
@@ -280,6 +470,7 @@
                         </div>
                     </div>
 
+<<<<<<< Updated upstream
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-3">
                         <button id="saveBtn" class="btn-secondary flex items-center justify-center gap-2 py-3">
@@ -291,6 +482,12 @@
                             <span data-i18n="formCreator.downloadPdf">Download PDF Form</span>
                         </button>
                     </div>
+=======
+                    <!-- Download Button -->
+                    <button id="downloadBtn" class="btn-gradient w-full flex items-center justify-center gap-2 py-3">
+                        <span>PDF-Formular herunterladen</span>
+                    </button>
+>>>>>>> Stashed changes
                 </main>
             </div>
         </div>
@@ -298,6 +495,7 @@
 
     <footer class="mt-16 border-t border-gray-700/50 py-8">
         <div class="container mx-auto px-4">
+<<<<<<< Updated upstream
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center">
                     <img src="../../public/images/favicon.svg" alt="PDF-Tools Logo" class="h-8 w-8 mr-2" />
@@ -310,6 +508,18 @@
                     <span data-i18n="version">Version</span> <span id="app-version"></span>
                 </p>
             </div>
+=======
+            <div class="flex items-center gap-3 mb-2">
+                <img src="../../public/images/favicon.svg" alt="PDF Tools Logo" class="h-8 w-8" />
+                <span class="text-white font-bold text-xl">PDF Tools</span>
+            </div>
+            <p class="text-gray-400 text-sm">
+                &copy; 2025 PDF Tools. Alle Rechte vorbehalten.
+            </p>
+            <p class="text-gray-500 text-xs mt-1">
+                Version <span id="app-version"></span>
+            </p>
+>>>>>>> Stashed changes
         </div>
     </footer>
 
@@ -317,11 +527,19 @@
     <div id="errorModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm">
         <div class="bg-gray-800/90 backdrop-blur-md rounded-xl shadow-2xl max-w-md w-full mx-4 border border-gray-700/50">
             <div class="p-6">
+<<<<<<< Updated upstream
                 <h3 id="errorModalTitle" class="text-xl font-bold text-white mb-3" data-i18n="formCreator.errorTitle">Error</h3>
                 <p id="errorModalMessage" class="text-gray-300 mb-6" data-i18n="formCreator.errorDefault">An error occurred.</p>
                 <button id="errorModalClose"
                     class="w-full btn-gradient font-semibold py-2 px-4 rounded-lg transition-colors" data-i18n="formCreator.close">
                     Close
+=======
+                <h3 id="errorModalTitle" class="text-xl font-bold text-white mb-3">Fehler</h3>
+                <p id="errorModalMessage" class="text-gray-300 mb-6">Ein Fehler ist aufgetreten.</p>
+                <button id="errorModalClose"
+                    class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded transition-colors">
+                    Schließen
+>>>>>>> Stashed changes
                 </button>
             </div>
         </div>
