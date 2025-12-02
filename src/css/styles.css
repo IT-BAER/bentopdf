@@ -324,11 +324,7 @@ body {
   box-shadow:
     0 10px 15px -3px rgba(0, 0, 0, 0.2),
     0 4px 6px -2px rgba(0, 0, 0, 0.1);
-<<<<<<< Updated upstream
   border-color: var(--accent-color);
-=======
-  border-color: #ef7d00;
->>>>>>> Stashed changes
 }
 
 .btn {
@@ -356,21 +352,12 @@ input[type='file']::file-selector-button {
 }
 
 ::-webkit-scrollbar-thumb {
-<<<<<<< Updated upstream
   background: var(--accent-color);
-=======
-  background: #ef7d00;
->>>>>>> Stashed changes
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-<<<<<<< Updated upstream
   background: var(--accent-hover);
-=======
-  background: #d96e00;
-  /* orange-600 */
->>>>>>> Stashed changes
 }
 
 /* Style for drag-and-drop placeholder */
@@ -531,13 +518,8 @@ footer a {
 
 .section-divider {
   height: 1px;
-<<<<<<< Updated upstream
   background: linear-gradient(to right, transparent, #4d44f7, transparent);
   /* Fades from transparent to indigo and back */
-=======
-  background: linear-gradient(to right, transparent, #ef7d00, transparent);
-  /* Fades from transparent to orange and back */
->>>>>>> Stashed changes
   margin: 2rem auto;
   /* my-16 */
   max-width: 42rem;
@@ -546,7 +528,6 @@ footer a {
 }
 
 .btn-gradient {
-<<<<<<< Updated upstream
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -555,17 +536,6 @@ footer a {
   border-radius: 0.75rem;
   background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
   color: var(--accent-btn-text, #ffffff);
-=======
-  display: inline-block;
-  padding: 0.75rem 2rem;
-  /* py-3 px-8 */
-  border-radius: 0.5rem;
-  /* rounded-lg */
-  background-image: linear-gradient(to bottom, #f59e0b, #ef7d00);
-  /* from-orange-400 to-orange-500 */
-  color: #ffffff;
-  /* text-white */
->>>>>>> Stashed changes
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: 0.01em;
@@ -588,7 +558,6 @@ footer a {
 
 .btn-gradient:hover {
   box-shadow:
-<<<<<<< Updated upstream
     0 10px 25px -5px rgba(var(--accent-color-rgb, 99, 102, 241), 0.4),
     0 8px 10px -6px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
   transform: translateY(-2px);
@@ -602,26 +571,13 @@ footer a {
   transform: translateY(0);
   box-shadow:
     0 4px 12px -2px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
-=======
-    0 10px 15px -3px rgba(239, 125, 0, 0.3),
-    0 4px 6px -4px rgba(239, 125, 0, 0.3);
-  /* hover:shadow-xl hover:shadow-orange-500/30 */
-  transform: translateY(-0.25rem);
-  /* hover:-translate-y-1 */
->>>>>>> Stashed changes
 }
 
 .btn-gradient:focus {
   outline: none;
   box-shadow:
-<<<<<<< Updated upstream
     0 0 0 3px rgba(var(--accent-color-rgb, 99, 102, 241), 0.4),
     0 10px 25px -5px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
-=======
-    0 0 0 2px #111827,
-    0 0 0 4px #fbbf24;
-  /* focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-orange-400 */
->>>>>>> Stashed changes
 }
 
 .btn-gradient:disabled {

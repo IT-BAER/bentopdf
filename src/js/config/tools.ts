@@ -13,11 +13,7 @@ export const categories = [
         id: 'merge',
         name: 'PDF zusammenführen',
         icon: 'combine',
-<<<<<<< Updated upstream
         subtitle: 'Combine multiple PDFs into one file. Preserves Bookmarks.',
-=======
-        subtitle: 'Mehrere PDFs zu einer Datei kombinieren.',
->>>>>>> Stashed changes
       },
       {
         id: 'split',
@@ -314,11 +310,7 @@ export const categories = [
         id: 'alternate-merge',
         name: 'Seiten abwechselnd mischen',
         icon: 'shuffle',
-<<<<<<< Updated upstream
         subtitle: 'Merge PDFs by alternating pages from each PDF. Preserves Bookmarks',
-=======
-        subtitle: 'PDFs durch abwechselnde Seiten kombinieren.',
->>>>>>> Stashed changes
       },
       {
         id: 'organize',

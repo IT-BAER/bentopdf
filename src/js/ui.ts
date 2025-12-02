@@ -289,15 +289,9 @@ const createFileInputHTML = (options = {}) => {
         <div id="drop-zone" class="relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer bg-gray-900 hover:bg-gray-700 transition-colors duration-300">
             <div class="flex flex-col items-center justify-center pt-5 pb-6">
                 <i data-lucide="upload-cloud" class="w-10 h-10 mb-3 text-gray-400"></i>
-<<<<<<< Updated upstream
                 <p class="mb-2 text-sm text-gray-400"><span class="font-semibold" data-i18n="subpages.clickToSelect">Click to select a file</span> <span data-i18n="subpages.orDragDrop">or drag and drop</span></p>
                 <p class="text-xs text-gray-500" data-i18n="subpages.${multiple ? 'pdfsOrImages' : 'singlePdfFile'}">${multiple ? 'PDFs or Images' : 'A single PDF file'}</p>
                 <p class="text-xs text-gray-500" data-i18n="subpages.filesNeverLeave">Your files never leave your device.</p>
-=======
-                <p class="mb-2 text-sm text-gray-400"><span class="font-semibold">Klicken Sie, um eine Datei auszuwählen</span> oder per Drag & Drop</p>
-                <p class="text-xs text-gray-500">${multiple ? 'PDFs oder Bilder' : 'Eine einzelne PDF-Datei'}</p>
-                <p class="text-xs text-gray-500">Ihre Dateien verlassen niemals Ihr Gerät.</p>
->>>>>>> Stashed changes
             </div>
             <input id="file-input" type="file" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" ${multiple} accept="${acceptedFiles}">
         </div>
@@ -306,7 +300,6 @@ const createFileInputHTML = (options = {}) => {
             ? `
             <!-- NEW: Add control buttons for multi-file uploads -->
             <div id="file-controls" class="hidden mt-4 flex gap-3">
-<<<<<<< Updated upstream
                 <button id="add-more-btn" class="btn-secondary">
                     <i data-lucide="plus" class="w-4 h-4"></i>
                     <span data-i18n="toolInterface.common.addMore">Add More</span>
@@ -314,13 +307,6 @@ const createFileInputHTML = (options = {}) => {
                 <button id="clear-files-btn" class="btn-danger">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                     <span data-i18n="toolInterface.common.clearAll">Clear All</span>
-=======
-                <button id="add-more-btn" class="btn bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-2 rounded-lg flex items-center gap-2">
-                    <i data-lucide="plus"></i> Weitere Dateien hinzufügen
-                </button>
-                <button id="clear-files-btn" class="btn bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg flex items-center gap-2">
-                    <i data-lucide="x"></i> Alle löschen
->>>>>>> Stashed changes
                 </button>
             </div>
         `
@@ -331,7 +317,6 @@ const createFileInputHTML = (options = {}) => {
 
 export const toolTemplates = {
     merge: () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.merge.title">Merge PDFs</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.merge.description">Combine whole files, or select specific pages to merge into a new document.</p>
     ${createFileInputHTML({ multiple: true, showControls: true })} 
@@ -344,33 +329,15 @@ export const toolTemplates = {
             <button id="page-mode-btn" class="flex-1 py-2.5 px-4 rounded-lg bg-gray-700 text-gray-300 hover:text-white font-medium text-sm transition-all" data-i18n="toolInterface.merge.pageMode">
                 <i data-lucide="layout-grid" class="w-4 h-4 inline mr-1.5 align-text-bottom"></i>Page Mode
             </button>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">PDFs zusammenführen</h2>
-    <p class="mb-6 text-gray-400">Kombinieren Sie ganze Dateien oder wählen Sie bestimmte Seiten aus, um sie zu einem neuen Dokument zusammenzuführen.</p>
-    ${createFileInputHTML({ multiple: true, showControls: true })} 
-
-    <div id="merge-options" class="hidden mt-6">
-        <div class="flex gap-2 p-1 rounded-lg bg-gray-900 border border-gray-700 mb-4">
-            <button id="file-mode-btn" class="flex-1 btn bg-orange-600 text-white font-semibold py-2 rounded-md">Datei-Modus</button>
-            <button id="page-mode-btn" class="flex-1 btn text-gray-300 font-semibold py-2 rounded-md">Seiten-Modus</button>
->>>>>>> Stashed changes
         </div>
 
         <div id="file-mode-panel">
             <div class="p-3 bg-gray-900 rounded-lg border border-gray-700 mb-3">
-<<<<<<< Updated upstream
                 <p class="text-sm text-gray-300"><strong class="text-white" data-i18n="toolInterface.common.howItWorks">How it works:</strong></p>
                 <ul class="list-disc list-inside text-xs text-gray-400 mt-1 space-y-1">
                     <li data-i18n="toolInterface.merge.fileHint1">Click and drag the <i data-lucide="grip-vertical" class="inline-block w-3 h-3"></i> icon to change the order of the files.</li>
                     <li data-i18n="toolInterface.merge.fileHint2">In the "Pages" box for each file, you can specify ranges (e.g., "1-3, 5") to merge only those pages.</li>
                     <li data-i18n="toolInterface.merge.fileHint3">Leave the "Pages" box blank to include all pages from that file.</li>
-=======
-                <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
-                <ul class="list-disc list-inside text-xs text-gray-400 mt-1 space-y-1">
-                    <li>Klicken und ziehen Sie das <i data-lucide="grip-vertical" class="inline-block w-3 h-3"></i> Symbol, um die Reihenfolge der Dateien zu ändern.</li>
-                    <li>Im "Seiten"-Feld für jede Datei können Sie Bereiche angeben (z.B. "1-3, 5"), um nur diese Seiten zusammenzuführen.</li>
-                    <li>Lassen Sie das "Seiten"-Feld leer, um alle Seiten dieser Datei einzuschließen.</li>
->>>>>>> Stashed changes
                 </ul>
             </div>
             <ul id="file-list" class="space-y-2"></ul>
@@ -378,46 +345,29 @@ export const toolTemplates = {
 
         <div id="page-mode-panel" class="hidden">
              <div class="p-3 bg-gray-900 rounded-lg border border-gray-700 mb-3">
-<<<<<<< Updated upstream
                 <p class="text-sm text-gray-300"><strong class="text-white" data-i18n="toolInterface.common.howItWorks">How it works:</strong></p>
                  <ul class="list-disc list-inside text-xs text-gray-400 mt-1 space-y-1">
                     <li data-i18n="toolInterface.merge.pageHint1">All pages from your uploaded PDFs are shown below.</li>
                     <li data-i18n="toolInterface.merge.pageHint2">Simply drag and drop the individual page thumbnails to create the exact order you want for your new file.</li>
-=======
-                <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
-                 <ul class="list-disc list-inside text-xs text-gray-400 mt-1 space-y-1">
-                    <li>Alle Seiten aus Ihren hochgeladenen PDFs werden unten angezeigt.</li>
-                    <li>Ziehen Sie einfach die einzelnen Seitenvorschauen per Drag & Drop, um die gewünschte Reihenfolge für Ihre neue Datei zu erstellen.</li>
->>>>>>> Stashed changes
                 </ul>
             </div>
              <div id="page-merge-preview" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 p-4 bg-gray-900 rounded-lg border border-gray-700 min-h-[200px]"></div>
         </div>
         
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" disabled data-i18n="toolInterface.merge.button">
             <i data-lucide="git-merge" class="w-5 h-5"></i>
             Merge PDFs
         </button>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6" disabled>PDFs zusammenführen</button>
->>>>>>> Stashed changes
     </div>
 `,
 
     split: () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.split.title">Split PDF</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.split.description">Extract pages from a PDF using various methods.</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">PDF aufteilen</h2>
-    <p class="mb-6 text-gray-400">Seiten aus einer PDF mit verschiedenen Methoden extrahieren.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
     <div id="split-options" class="hidden mt-6">
         
-<<<<<<< Updated upstream
         <label for="split-mode" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.split.splitMode">Split Mode</label>
         <select id="split-mode" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 mb-4">
             <option value="range" data-i18n="toolInterface.split.extractByRange">Extract by Page Range (Default)</option>
@@ -426,21 +376,10 @@ export const toolTemplates = {
             <option value="visual" data-i18n="toolInterface.split.selectVisually">Select Pages Visually</option>
             <option value="bookmarks" data-i18n="toolInterface.split.splitByBookmarks">Split by Bookmarks</option>
             <option value="n-times" data-i18n="toolInterface.split.splitNTimes">Split N Times</option>
-=======
-        <label for="split-mode" class="block mb-2 text-sm font-medium text-gray-300">Aufteilungsmodus</label>
-        <select id="split-mode" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 mb-4">
-            <option value="range">Nach Seitenbereich extrahieren (Standard)</option>
-            <option value="even-odd">Nach geraden/ungeraden Seiten aufteilen</option>
-            <option value="all">Alle Seiten in separate Dateien aufteilen</option>
-            <option value="visual">Seiten visuell auswählen</option>
-            <option value="bookmarks">Nach Lesezeichen aufteilen</option>
-            <option value="n-times">N-mal aufteilen</option>
->>>>>>> Stashed changes
         </select>
 
         <div id="range-panel">
             <div class="p-3 bg-gray-900 rounded-lg border border-gray-700 mb-3">
-<<<<<<< Updated upstream
                 <p class="text-sm text-gray-300"><strong class="text-white" data-i18n="toolInterface.common.howItWorks">How it works:</strong></p>
                 <ul class="list-disc list-inside text-xs text-gray-400 mt-1 space-y-1">
                     <li data-i18n="toolInterface.split.rangeHint1">Enter page numbers separated by commas (e.g., 2, 8, 14).</li>
@@ -451,76 +390,40 @@ export const toolTemplates = {
             <p class="mb-2 font-medium text-white"><span data-i18n="toolInterface.split.totalPages">Total Pages:</span> <span id="total-pages"></span></p>
             <label for="page-range" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.split.pageRange">Enter page range:</label>
             <input type="text" id="page-range" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5" placeholder="e.g., 1-5, 8">
-=======
-                <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
-                <ul class="list-disc list-inside text-xs text-gray-400 mt-1 space-y-1">
-                    <li>Geben Sie Seitenzahlen getrennt durch Kommas ein (z.B. 2, 8, 14).</li>
-                    <li>Geben Sie Seitenbereiche mit einem Bindestrich ein (z.B. 5-10).</li>
-                    <li>Kombinieren Sie sie für komplexe Auswahlen (z.B. 1-3, 7, 12-15).</li>
-                </ul>
-            </div>
-            <p class="mb-2 font-medium text-white">Gesamtseiten: <span id="total-pages"></span></p>
-            <label for="page-range" class="block mb-2 text-sm font-medium text-gray-300">Seitenbereich eingeben:</label>
-            <input type="text" id="page-range" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5" placeholder="z.B. 1-5, 8">
->>>>>>> Stashed changes
         </div>
 
         <div id="even-odd-panel" class="hidden">
             <div class="p-3 bg-gray-900 rounded-lg border border-gray-700 mb-3">
-<<<<<<< Updated upstream
                 <p class="text-sm text-gray-300"><strong class="text-white" data-i18n="toolInterface.common.howItWorks">How it works:</strong></p>
                 <p class="text-xs text-gray-400 mt-1" data-i18n="toolInterface.split.evenOddHint">This will create a new PDF containing only the even or only the odd pages from your original document.</p>
-=======
-                <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
-                <p class="text-xs text-gray-400 mt-1">Dies erstellt eine neue PDF mit nur den geraden oder nur den ungeraden Seiten aus Ihrem Originaldokument.</p>
->>>>>>> Stashed changes
             </div>
             <div class="flex gap-4">
                 <label class="flex-1 flex items-center justify-center gap-2 p-3 rounded-md hover:bg-gray-700 cursor-pointer has-[:checked]:bg-orange-600">
                     <input type="radio" name="even-odd-choice" value="odd" checked class="hidden">
-<<<<<<< Updated upstream
                     <span class="font-semibold text-white" data-i18n="toolInterface.split.oddPagesOnly">Odd Pages Only</span>
-=======
-                    <span class="font-semibold text-white">Nur ungerade Seiten</span>
->>>>>>> Stashed changes
                 </label>
                 <label class="flex-1 flex items-center justify-center gap-2 p-3 rounded-md hover:bg-gray-700 cursor-pointer has-[:checked]:bg-orange-600">
                     <input type="radio" name="even-odd-choice" value="even" class="hidden">
-<<<<<<< Updated upstream
                     <span class="font-semibold text-white" data-i18n="toolInterface.split.evenPagesOnly">Even Pages Only</span>
-=======
-                    <span class="font-semibold text-white">Nur gerade Seiten</span>
->>>>>>> Stashed changes
                 </label>
             </div>
         </div>
         
         <div id="visual-select-panel" class="hidden">
              <div class="p-3 bg-gray-900 rounded-lg border border-gray-700 mb-3">
-<<<<<<< Updated upstream
                 <p class="text-sm text-gray-300"><strong class="text-white" data-i18n="toolInterface.common.howItWorks">How it works:</strong></p>
                 <p class="text-xs text-gray-400 mt-1" data-i18n="toolInterface.split.visualHint">Click on the page thumbnails below to select them. Click again to deselect. All selected pages will be extracted.</p>
-=======
-                <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
-                <p class="text-xs text-gray-400 mt-1">Klicken Sie auf die Seitenvorschauen unten, um sie auszuwählen. Klicken Sie erneut zum Abwählen. Alle ausgewählten Seiten werden extrahiert.</p>
->>>>>>> Stashed changes
             </div>
              <div id="page-selector-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 p-4 bg-gray-900 rounded-lg border border-gray-700 min-h-[150px]"></div>
         </div>
 
         <div id="all-pages-panel" class="hidden p-3 bg-gray-900 rounded-lg border border-gray-700">
-<<<<<<< Updated upstream
             <p class="text-sm text-gray-300"><strong class="text-white" data-i18n="toolInterface.common.howItWorks">How it works:</strong></p>
             <p class="text-xs text-gray-400 mt-1" data-i18n="toolInterface.split.allPagesHint">This mode will create a separate PDF file for every single page in your document and download them together in one ZIP archive.</p>
-=======
-            <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
-            <p class="text-xs text-gray-400 mt-1">Dieser Modus erstellt für jede einzelne Seite in Ihrem Dokument eine separate PDF-Datei und lädt sie zusammen in einem ZIP-Archiv herunter.</p>
->>>>>>> Stashed changes
         </div>
 
         <div id="bookmarks-panel" class="hidden">
             <div class="p-3 bg-gray-900 rounded-lg border border-gray-700 mb-3">
-<<<<<<< Updated upstream
                 <p class="text-sm text-gray-300"><strong class="text-white" data-i18n="toolInterface.common.howItWorks">How it works:</strong></p>
                 <p class="text-xs text-gray-400 mt-1" data-i18n="toolInterface.split.bookmarksHint">Split the PDF at bookmark locations. Each bookmark will start a new PDF file.</p>
             </div>
@@ -534,27 +437,11 @@ export const toolTemplates = {
                     <option value="all" selected data-i18n="toolInterface.split.allLevels">All Levels</option>
                 </select>
                 <p class="mt-1 text-xs text-gray-400" data-i18n="toolInterface.split.bookmarkLevelHint">Select which bookmark nesting level to use for splitting</p>
-=======
-                <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
-                <p class="text-xs text-gray-400 mt-1">Die PDF an Lesezeichen-Positionen aufteilen. Jedes Lesezeichen startet eine neue PDF-Datei.</p>
-            </div>
-            <div class="mb-4">
-                <label for="bookmark-level" class="block mb-2 text-sm font-medium text-gray-300">Lesezeichen-Ebene</label>
-                <select id="bookmark-level" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5">
-                    <option value="0">Ebene 0 (Nur oberste Ebene)</option>
-                    <option value="1">Ebene 1</option>
-                    <option value="2">Ebene 2</option>
-                    <option value="3">Ebene 3</option>
-                    <option value="all" selected>Alle Ebenen</option>
-                </select>
-                <p class="mt-1 text-xs text-gray-400">Wählen Sie, welche Lesezeichen-Verschachtelungsebene zum Aufteilen verwendet werden soll</p>
->>>>>>> Stashed changes
             </div>
         </div>
 
         <div id="n-times-panel" class="hidden">
             <div class="p-3 bg-gray-900 rounded-lg border border-gray-700 mb-3">
-<<<<<<< Updated upstream
                 <p class="text-sm text-gray-300"><strong class="text-white" data-i18n="toolInterface.common.howItWorks">How it works:</strong></p>
                 <p class="text-xs text-gray-400 mt-1" data-i18n="toolInterface.split.nTimesHint">Split the PDF into N equal parts. For example, a 40-page PDF with N=5 will create 8 PDFs with 5 pages each.</p>
             </div>
@@ -565,24 +452,11 @@ export const toolTemplates = {
             </div>
             <div id="n-times-warning" class="hidden p-3 bg-yellow-900/30 border border-yellow-500/30 rounded-lg mb-3">
                 <p class="text-sm text-yellow-200"><strong data-i18n="toolInterface.common.note">Note:</strong> <span id="n-times-warning-text"></span></p>
-=======
-                <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
-                <p class="text-xs text-gray-400 mt-1">Die PDF in N gleiche Teile aufteilen. Zum Beispiel wird eine 40-seitige PDF mit N=5 8 PDFs mit je 5 Seiten erstellen.</p>
-            </div>
-            <div class="mb-4">
-                <label for="split-n-value" class="block mb-2 text-sm font-medium text-gray-300">Anzahl der Seiten pro Aufteilung (N)</label>
-                <input type="number" id="split-n-value" min="1" value="5" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5">
-                <p class="mt-1 text-xs text-gray-400">Jede resultierende PDF enthält N Seiten (außer möglicherweise die letzte)</p>
-            </div>
-            <div id="n-times-warning" class="hidden p-3 bg-yellow-900/30 border border-yellow-500/30 rounded-lg mb-3">
-                <p class="text-sm text-yellow-200"><strong>Hinweis:</strong> <span id="n-times-warning-text"></span></p>
->>>>>>> Stashed changes
             </div>
         </div>
         
         <div id="zip-option-wrapper" class="hidden mt-4">
             <label class="flex items-center gap-2 text-sm font-medium text-gray-300">
-<<<<<<< Updated upstream
                 <input type="checkbox" id="download-as-zip" class="w-4 h-4 rounded text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500">
                 <span data-i18n="toolInterface.split.downloadAsZip">Download pages as individual files in a ZIP</span>
             </label>
@@ -592,25 +466,12 @@ export const toolTemplates = {
             <i data-lucide="scissors" class="w-5 h-5"></i>
             Split PDF
         </button>
-=======
-                <input type="checkbox" id="download-as-zip" class="w-4 h-4 rounded text-orange-600 bg-gray-700 border-gray-600 focus:ring-orange-500">
-                Seiten als einzelne Dateien in einem ZIP herunterladen
-            </label>
-        </div>
-        
-        <button id="process-btn" class="btn-gradient w-full mt-6">PDF aufteilen</button>
->>>>>>> Stashed changes
 
     </div>
 `,
     encrypt: () => `
-<<<<<<< Updated upstream
   <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.encrypt.title">Encrypt PDF</h2>
   <p class="mb-6 text-gray-400" data-i18n="toolInterface.encrypt.description">Add 256-bit AES password protection to your PDF.</p>
-=======
-  <h2 class="text-2xl font-bold text-white mb-4">PDF verschlüsseln</h2>
-  <p class="mb-6 text-gray-400">256-Bit AES-Passwortschutz zu Ihrer PDF hinzufügen.</p>
->>>>>>> Stashed changes
   ${createFileInputHTML()}
   <div id="file-display-area" class="mt-4 space-y-2"></div>
   <div id="encrypt-options" class="hidden space-y-4 mt-6">
@@ -673,7 +534,6 @@ export const toolTemplates = {
           <h3 class="font-semibold text-base mb-2">✓ Hochwertige Verschlüsselung</h3>
           <p class="text-sm text-gray-300">256-Bit AES-Verschlüsselung ohne Qualitätsverlust. Text bleibt auswählbar und durchsuchbar.</p>
       </div>
-<<<<<<< Updated upstream
       <button id="process-btn" class="btn-gradient mt-6">
           <i data-lucide="lock" class="w-5 h-5"></i>
           <span data-i18n="toolInterface.encrypt.button">Encrypt & Download</span>
@@ -683,19 +543,10 @@ export const toolTemplates = {
     decrypt: () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.decrypt.title">Decrypt PDF</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.decrypt.description">Upload an encrypted PDF and provide its password to create an unlocked version.</p>
-=======
-      <button id="process-btn" class="btn-gradient w-full mt-6">Verschlüsseln & Herunterladen</button>
-  </div>
-`,
-    decrypt: () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF entschlüsseln</h2>
-        <p class="mb-6 text-gray-400">Laden Sie eine verschlüsselte PDF hoch und geben Sie das Passwort ein, um eine entsperrte Version zu erstellen.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="decrypt-options" class="hidden space-y-4 mt-6">
             <div>
-<<<<<<< Updated upstream
                 <label for="password-input" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.decrypt.password">Enter PDF Password</label>
                 <input type="password" id="password-input" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5" placeholder="Enter the current password">
             </div>
@@ -703,17 +554,10 @@ export const toolTemplates = {
                 <i data-lucide="unlock" class="w-5 h-5"></i>
                 Decrypt & Download
             </button>
-=======
-                <label for="password-input" class="block mb-2 text-sm font-medium text-gray-300">PDF-Passwort eingeben</label>
-                <input type="password" id="password-input" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5" placeholder="Aktuelles Passwort eingeben">
-            </div>
-            <button id="process-btn" class="btn-gradient w-full mt-6">Entschlüsseln & Herunterladen</button>
->>>>>>> Stashed changes
         </div>
         <canvas id="pdf-canvas" class="hidden"></canvas>
     `,
     organize: () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.organize.title">Organize PDF</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.organize.description">Reorder, rotate, or delete pages. Drag and drop pages to reorder them.</p>
         ${createFileInputHTML()}
@@ -728,25 +572,11 @@ export const toolTemplates = {
     rotate: () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.rotate.title">Rotate PDF</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.rotate.description">Rotate all or specific pages in a PDF document.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Seiten organisieren</h2>
-        <p class="mb-6 text-gray-400">Seiten neu anordnen, drehen oder löschen. Ziehen Sie Seiten per Drag & Drop, um sie neu anzuordnen.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <div id="page-organizer" class="hidden grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 my-6"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">Änderungen speichern</button>
-    `,
-
-    rotate: () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF drehen</h2>
-        <p class="mb-6 text-gray-400">Alle oder bestimmte Seiten in einem PDF-Dokument drehen.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         
         <div id="rotate-all-controls" class="hidden my-6">
             <div class="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
-<<<<<<< Updated upstream
                 <h3 class="text-sm font-semibold text-gray-400 mb-3 text-center" data-i18n="toolInterface.rotate.batchActions">BATCH ACTIONS</h3>
                 <div class="flex justify-center gap-4">
                     <button id="rotate-all-left-btn" class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-200 bg-gray-800 border border-gray-600 rounded-lg shadow-sm hover:bg-gray-700 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500 transform transition-all duration-150 active:scale-95">
@@ -756,23 +586,11 @@ export const toolTemplates = {
                     <button id="rotate-all-right-btn" class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-200 bg-gray-800 border border-gray-600 rounded-lg shadow-sm hover:bg-gray-700 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500 transform transition-all duration-150 active:scale-95">
                         <i data-lucide="rotate-cw" class="mr-2 h-4 w-4"></i>
                         <span data-i18n="toolInterface.rotate.rotateAllRight">Rotate All Right</span>
-=======
-                <h3 class="text-sm font-semibold text-gray-400 mb-3 text-center">STAPELAKTIONEN</h3>
-                <div class="flex justify-center gap-4">
-                    <button id="rotate-all-left-btn" class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-200 bg-gray-800 border border-gray-600 rounded-lg shadow-sm hover:bg-gray-700 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500 transform transition-all duration-150 active:scale-95">
-                        <i data-lucide="rotate-ccw" class="mr-2 h-4 w-4"></i>
-                        Alle nach links drehen
-                    </button>
-                    <button id="rotate-all-right-btn" class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-200 bg-gray-800 border border-gray-600 rounded-lg shadow-sm hover:bg-gray-700 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500 transform transition-all duration-150 active:scale-95">
-                        <i data-lucide="rotate-cw" class="mr-2 h-4 w-4"></i>
-                        Alle nach rechts drehen
->>>>>>> Stashed changes
                     </button>
                 </div>
             </div>
         </div>
         <div id="page-rotator" class="hidden grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 my-6"></div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" data-i18n="toolInterface.rotate.button">
             <i data-lucide="rotate-cw" class="w-5 h-5"></i>
             Save Rotations
@@ -782,14 +600,6 @@ export const toolTemplates = {
     'add-page-numbers': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.pageNumbers.title">Add Page Numbers</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.pageNumbers.description">Add customizable page numbers to your PDF file.</p>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">Drehungen speichern</button>
-    `,
-
-    'add-page-numbers': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">Seitenzahlen hinzufügen</h2>
-        <p class="mb-6 text-gray-400">Fügen Sie anpassbare Seitenzahlen zu Ihrer PDF-Datei hinzu.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="pagenum-options" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
@@ -820,7 +630,6 @@ export const toolTemplates = {
                 <input type="color" id="text-color" value="#000000" class="w-full h-[42px] bg-gray-700 border border-gray-600 rounded-lg p-1 cursor-pointer">
             </div>
         </div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" data-i18n="toolInterface.pageNumbers.button">
             <i data-lucide="hash" class="w-5 h-5"></i>
             Add Page Numbers
@@ -829,13 +638,6 @@ export const toolTemplates = {
     'pdf-to-jpg': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.pdfToJpg.title">PDF to JPG</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.pdfToJpg.description">Convert each page of a PDF file into a high-quality JPG image.</p>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">Seitenzahlen hinzufügen</button>
-    `,
-    'pdf-to-jpg': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF zu JPG</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie jede Seite einer PDF-Datei in ein hochwertiges JPG-Bild.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="jpg-preview" class="hidden mt-6">
@@ -847,7 +649,6 @@ export const toolTemplates = {
                 </div>
                 <p class="mt-1 text-xs text-gray-400">Höhere Qualität = größere Dateigröße</p>
             </div>
-<<<<<<< Updated upstream
             <p class="mb-4 text-white text-center">Click "Download All as ZIP" to get images for all pages.</p>
             <button id="process-btn" class="btn-gradient">Download All as ZIP</button>
         </div>
@@ -855,15 +656,6 @@ export const toolTemplates = {
     'jpg-to-pdf': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.jpgToPdf.title">JPG to PDF</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.jpgToPdf.description">Convert one or more JPG images into a single PDF file.</p>
-=======
-            <p class="mb-4 text-white text-center">Klicken Sie auf "Alle als ZIP herunterladen", um Bilder für alle Seiten zu erhalten.</p>
-            <button id="process-btn" class="btn-gradient w-full">Alle als ZIP herunterladen</button>
-        </div>
-    `,
-    'jpg-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">JPG zu PDF</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie ein oder mehrere JPG-Bilder in eine einzelne PDF-Datei.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML({ multiple: true, accept: 'image/jpeg', showControls: true })}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="jpg-to-pdf-options" class="hidden mt-6">
@@ -877,7 +669,6 @@ export const toolTemplates = {
                 <p class="mt-1 text-xs text-gray-400">Steuert die Bildkomprimierung beim Einbetten in PDF</p>
             </div>
         </div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" data-i18n="toolInterface.jpgToPdf.button">
             <i data-lucide="file-output" class="w-5 h-5"></i>
             Convert to PDF
@@ -895,21 +686,6 @@ export const toolTemplates = {
     crop: () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.crop.title">Crop PDF</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.crop.description">Click and drag to select a crop area on any page. You can set different crop areas for each page.</p>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">In PDF konvertieren</button>
-    `,
-    'scan-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">Scannen zu PDF</h2>
-        <p class="mb-6 text-gray-400">Verwenden Sie die Kamera Ihres Geräts, um Dokumente zu scannen und als PDF zu speichern. Auf dem Desktop wird ein Dateiauswahldialog geöffnet.</p>
-        ${createFileInputHTML({ accept: 'image/*' })}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">PDF aus Scans erstellen</button>
-    `,
-
-    crop: () => `
-    <h2 class="text-2xl font-bold text-white mb-4">PDF zuschneiden</h2>
-    <p class="mb-6 text-gray-400">Klicken und ziehen Sie, um einen Zuschneidebereich auf einer beliebigen Seite auszuwählen. Sie können für jede Seite unterschiedliche Zuschneidebereiche festlegen.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="crop-editor" class="hidden">
         <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-4 p-3 bg-gray-900 rounded-lg border border-gray-700">
@@ -922,7 +698,6 @@ export const toolTemplates = {
             </div>
              <div class="border-l border-gray-600 h-6 mx-2 hidden md:block"></div>
             <div id="crop-controls" class="flex items-center gap-2">
-<<<<<<< Updated upstream
                  <button id="clear-crop-btn" class="btn-secondary text-sm" title="Clear crop on this page" data-i18n="toolInterface.crop.clearPage">
                      <i data-lucide="eraser" class="w-4 h-4"></i>
                      Clear Page
@@ -931,16 +706,11 @@ export const toolTemplates = {
                      <i data-lucide="trash-2" class="w-4 h-4"></i>
                      Clear All
                  </button>
-=======
-                 <button id="clear-crop-btn" class="btn bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-4 py-2 rounded-lg text-sm" title="Zuschnitt auf dieser Seite löschen">Seite löschen</button>
-                 <button id="clear-all-crops-btn" class="btn bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm" title="Alle Zuschneideauswahlen löschen">Alle löschen</button>
->>>>>>> Stashed changes
             </div>
         </div>
         <div id="canvas-container" class="relative w-full overflow-auto bg-gray-900 rounded-lg border border-gray-600" style="height: 70vh;">
             <canvas id="canvas-editor" class="mx-auto cursor-crosshair"></canvas>
         </div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" data-i18n="toolInterface.crop.button">
             <i data-lucide="crop" class="w-5 h-5"></i>
             Apply Crop & Save PDF
@@ -950,38 +720,20 @@ export const toolTemplates = {
     compress: () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.compress.title">Compress PDF</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.compress.description">Reduce file size by choosing the compression method that best suits your document. Supports multiple PDFs.</p>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">Zuschnitt anwenden & PDF speichern</button>
-    </div>
-`,
-    compress: () => `
-    <h2 class="text-2xl font-bold text-white mb-4">PDF komprimieren</h2>
-    <p class="mb-6 text-gray-400">Reduzieren Sie die Dateigröße, indem Sie die Komprimierungsmethode wählen, die am besten zu Ihrem Dokument passt. Unterstützt mehrere PDFs.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML({ multiple: true, showControls: true })}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
     <div id="compress-options" class="hidden mt-6 space-y-6">
         <div>
-<<<<<<< Updated upstream
             <label for="compression-level" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.compress.level">Compression Level</label>
             <select id="compression-level" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="balanced" data-i18n="toolInterface.compress.balanced">Balanced (Recommended)</option>
                 <option value="high-quality" data-i18n="toolInterface.compress.highQuality">High Quality (Larger file)</option>
                 <option value="small-size" data-i18n="toolInterface.compress.smallSize">Smallest Size (Lower quality)</option>
                 <option value="extreme" data-i18n="toolInterface.compress.extreme">Extreme (Very low quality)</option>
-=======
-            <label for="compression-level" class="block mb-2 text-sm font-medium text-gray-300">Komprimierungsstufe</label>
-            <select id="compression-level" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="balanced">Ausgewogen (Empfohlen)</option>
-                <option value="high-quality">Hohe Qualität (Größere Datei)</option>
-                <option value="small-size">Kleinste Größe (Niedrigere Qualität)</option>
-                <option value="extreme">Extrem (Sehr niedrige Qualität)</option>
->>>>>>> Stashed changes
             </select>
         </div>
 
         <div>
-<<<<<<< Updated upstream
             <label for="compression-algorithm" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.compress.algorithm">Compression Algorithm</label>
             <select id="compression-algorithm" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="vector" data-i18n="toolInterface.compress.vector">Vector (For Text Heavy PDF)</option>
@@ -1022,39 +774,6 @@ export const toolTemplates = {
     'edit-metadata': () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.editMetadata.title">Edit PDF Metadata</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.editMetadata.description">Modify the core metadata fields of your PDF. Leave a field blank to clear it.</p>
-=======
-            <label for="compression-algorithm" class="block mb-2 text-sm font-medium text-gray-300">Komprimierungsalgorithmus</label>
-            <select id="compression-algorithm" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="vector">Vektor (Für textlastige PDFs)</option>
-                <option value="photon">Photon (Für komplexe Bilder & Zeichnungen)</option>
-            </select>
-            <p class="mt-2 text-xs text-gray-400">
-                Wählen Sie 'Vektor' für textbasierte PDFs oder 'Photon' für gescannte Dokumente und komplexe Bilder.
-            </p>
-        </div>
-
-        <button id="process-btn" class="btn-gradient w-full mt-4" disabled>PDF komprimieren</button>
-    </div>
-`,
-    'pdf-to-greyscale': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF in Graustufen</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie alle Seiten einer PDF in Graustufen. Dies geschieht durch Rendern jeder Seite, Anwenden eines Filters und Neuerstellen der PDF.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">In Graustufen konvertieren</button>
-    `,
-    'pdf-to-zip': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDFs in ZIP kombinieren</h2>
-        <p class="mb-6 text-gray-400">Wählen Sie mehrere PDF-Dateien aus, um sie zusammen in einem einzelnen ZIP-Archiv herunterzuladen.</p>
-        ${createFileInputHTML({ multiple: true, showControls: true })}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">ZIP-Datei erstellen</button>
-    `,
-
-    'edit-metadata': () => `
-    <h2 class="text-2xl font-bold text-white mb-4">PDF-Metadaten bearbeiten</h2>
-    <p class="mb-6 text-gray-400">Ändern Sie die Kern-Metadatenfelder Ihrer PDF. Lassen Sie ein Feld leer, um es zu löschen.</p>
->>>>>>> Stashed changes
     
     <div class="p-3 mb-6 bg-gray-900 border border-yellow-500/30 text-yellow-200/80 rounded-lg text-sm flex items-start gap-3">
         <i data-lucide="info" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
@@ -1112,7 +831,6 @@ export const toolTemplates = {
         
     </div>
 
-<<<<<<< Updated upstream
     <button id="process-btn" class="hidden btn-gradient mt-6">
         <i data-lucide="file-pen" class="w-5 h-5"></i>
         <span data-i18n="toolInterface.editMetadata.button">Update Metadata & Download</span>
@@ -1142,28 +860,6 @@ export const toolTemplates = {
     'pdf-to-png': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.pdfToPng.title">PDF to PNG</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.pdfToPng.description">Convert each page of a PDF file into a high-quality PNG image.</p>
-=======
-    <button id="process-btn" class="hidden btn-gradient w-full mt-6">Metadaten aktualisieren & Herunterladen</button>
-`,
-
-    'remove-metadata': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF-Metadaten entfernen</h2>
-        <p class="mb-6 text-gray-400">Entfernen Sie identifizierende Metadaten vollständig aus Ihrer PDF.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="hidden mt-6 btn-gradient w-full">Metadaten entfernen & Herunterladen</button>
-    `,
-    flatten: () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF reduzieren</h2>
-        <p class="mb-6 text-gray-400">Machen Sie PDF-Formulare und Anmerkungen nicht bearbeitbar, indem Sie sie reduzieren.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="hidden mt-6 btn-gradient w-full">PDF reduzieren</button>
-    `,
-    'pdf-to-png': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF zu PNG</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie jede Seite einer PDF-Datei in ein hochwertiges PNG-Bild.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="png-preview" class="hidden mt-6">
@@ -1175,7 +871,6 @@ export const toolTemplates = {
                 </div>
                 <p class="mt-1 text-xs text-gray-400">Höhere Skalierung = bessere Qualität aber größere Dateigröße</p>
             </div>
-<<<<<<< Updated upstream
             <p class="mb-4 text-white text-center">Your file is ready. Click the button to download a ZIP file containing all PNG images.</p>
             <button id="process-btn" class="btn-gradient">
                 <i data-lucide="download" class="w-5 h-5"></i>
@@ -1186,15 +881,6 @@ export const toolTemplates = {
     'png-to-pdf': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.pngToPdf.title">PNG to PDF</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.pngToPdf.description">Convert one or more PNG images into a single PDF file.</p>
-=======
-            <p class="mb-4 text-white text-center">Ihre Datei ist bereit. Klicken Sie auf den Button, um eine ZIP-Datei mit allen PNG-Bildern herunterzuladen.</p>
-            <button id="process-btn" class="btn-gradient w-full">Alle als ZIP herunterladen</button>
-        </div>
-    `,
-    'png-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PNG zu PDF</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie ein oder mehrere PNG-Bilder in eine einzelne PDF-Datei.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML({ multiple: true, accept: 'image/png', showControls: true })}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="png-to-pdf-options" class="hidden mt-6">
@@ -1208,7 +894,6 @@ export const toolTemplates = {
                 <p class="mt-1 text-xs text-gray-400">Steuert die Bildkomprimierung beim Einbetten in PDF</p>
             </div>
         </div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" data-i18n="toolInterface.pngToPdf.button">
             <i data-lucide="file-output" class="w-5 h-5"></i>
             Convert to PDF
@@ -1217,13 +902,6 @@ export const toolTemplates = {
     'pdf-to-webp': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.pdfToWebp.title">PDF to WebP</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.pdfToWebp.description">Convert each page of a PDF file into a modern WebP image.</p>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">In PDF konvertieren</button>
-    `,
-    'pdf-to-webp': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF zu WebP</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie jede Seite einer PDF-Datei in ein modernes WebP-Bild.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="webp-preview" class="hidden mt-6">
@@ -1235,7 +913,6 @@ export const toolTemplates = {
                 </div>
                 <p class="mt-1 text-xs text-gray-400">Höhere Qualität = größere Dateigröße</p>
             </div>
-<<<<<<< Updated upstream
             <p class="mb-4 text-white text-center">Your file is ready. Click the button to download a ZIP file containing all WebP images.</p>
             <button id="process-btn" class="btn-gradient">
                 <i data-lucide="download" class="w-5 h-5"></i>
@@ -1256,22 +933,6 @@ export const toolTemplates = {
     edit: () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.edit.title">PDF Studio</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.edit.description">An all-in-one PDF workspace where you can annotate, draw, highlight, redact, add comments and shapes, take screenshots, and view PDFs.</p>
-=======
-            <p class="mb-4 text-white text-center">Ihre Datei ist bereit. Klicken Sie auf den Button, um eine ZIP-Datei mit allen WebP-Bildern herunterzuladen.</p>
-            <button id="process-btn" class="btn-gradient w-full">Alle als ZIP herunterladen</button>
-        </div>
-    `,
-    'webp-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">WebP zu PDF</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie ein oder mehrere WebP-Bilder in eine einzelne PDF-Datei.</p>
-        ${createFileInputHTML({ multiple: true, accept: 'image/webp', showControls: true })}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">In PDF konvertieren</button>
-    `,
-    edit: () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF Studio</h2>
-        <p class="mb-6 text-gray-400">Ein All-in-One PDF-Arbeitsbereich, in dem Sie kommentieren, zeichnen, hervorheben, schwärzen, Kommentare und Formen hinzufügen, Screenshots machen und PDFs anzeigen können.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="embed-pdf-wrapper" class="hidden mt-6 w-full h-[75vh] border border-gray-600 rounded-lg">
@@ -1279,7 +940,6 @@ export const toolTemplates = {
         </div>
     `,
     'delete-pages': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.deletePages.title">Delete Pages</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.deletePages.description">Remove specific pages or ranges of pages from your PDF file.</p>
         ${createFileInputHTML()}
@@ -1315,54 +975,12 @@ export const toolTemplates = {
             <label for="pages-to-extract" class="block mb-2 text-sm font-medium text-gray-300">Enter pages to extract (e.g., 2, 4-6, 9):</label>
             <input type="text" id="pages-to-extract" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 mb-6" placeholder="e.g., 2, 4-6, 9">
             <button id="process-btn" class="btn-gradient">Extract & Download ZIP</button>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Seiten löschen</h2>
-        <p class="mb-6 text-gray-400">Entfernen Sie bestimmte Seiten oder Seitenbereiche aus Ihrer PDF-Datei.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <div id="delete-options" class="hidden mt-6">
-            <p class="mb-2 font-medium text-white">Gesamtseiten: <span id="total-pages"></span></p>
-            <label for="pages-to-delete" class="block mb-2 text-sm font-medium text-gray-300">Geben Sie zu löschende Seiten ein (z.B. 2, 4-6, 9):</label>
-            <input type="text" id="pages-to-delete" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 mb-6" placeholder="z.B. 2, 4-6, 9">
-            <button id="process-btn" class="btn-gradient w-full">Seiten löschen & Herunterladen</button>
-        </div>
-    `,
-    'add-blank-page': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">Leere Seiten hinzufügen</h2>
-        <p class="mb-6 text-gray-400">Fügen Sie eine oder mehrere leere Seiten an einer bestimmten Position in Ihrem Dokument ein.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <div id="blank-page-options" class="hidden mt-6">
-            <p class="mb-2 font-medium text-white">Gesamtseiten: <span id="total-pages"></span></p>
-            <label for="page-number" class="block mb-2 text-sm font-medium text-gray-300">Leere Seiten nach Seitennummer einfügen:</label>
-            <input type="number" id="page-number" min="0" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 mb-4" placeholder="Geben Sie 0 ein, um am Anfang hinzuzufügen">
-            <label for="page-count" class="block mb-2 text-sm font-medium text-gray-300">Anzahl der einzufügenden leeren Seiten:</label>
-            <input type="number" id="page-count" min="1" value="1" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 mb-6" placeholder="Anzahl der Seiten eingeben">
-            <button id="process-btn" class="btn-gradient w-full">Seiten hinzufügen & Herunterladen</button>
-        </div>
-    `,
-    'extract-pages': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">Seiten extrahieren</h2>
-        <p class="mb-6 text-gray-400">Extrahieren Sie bestimmte Seiten aus einer PDF in separate Dateien. Ihre Dateien werden als ZIP-Archiv heruntergeladen.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <div id="extract-options" class="hidden mt-6">
-            <p class="mb-2 font-medium text-white">Gesamtseiten: <span id="total-pages"></span></p>
-            <label for="pages-to-extract" class="block mb-2 text-sm font-medium text-gray-300">Geben Sie zu extrahierende Seiten ein (z.B. 2, 4-6, 9):</label>
-            <input type="text" id="pages-to-extract" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 mb-6" placeholder="z.B. 2, 4-6, 9">
-            <button id="process-btn" class="btn-gradient w-full">Extrahieren & ZIP herunterladen</button>
->>>>>>> Stashed changes
         </div>
     `,
 
     'add-watermark': () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.watermark.title">Add Watermark</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.watermark.description">Apply a text or image watermark to every page of your PDF document.</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">Wasserzeichen hinzufügen</h2>
-    <p class="mb-6 text-gray-400">Fügen Sie ein Text- oder Bildwasserzeichen zu jeder Seite Ihres PDF-Dokuments hinzu.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -1421,21 +1039,12 @@ export const toolTemplates = {
         </div>
 
     </div>
-<<<<<<< Updated upstream
     <button id="process-btn" class="hidden btn-gradient mt-6">Add Watermark & Download</button>
 `,
 
     'add-header-footer': () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.headerFooter.title">Add Header & Footer</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.headerFooter.description">Add custom text to the top and bottom margins of every page.</p>
-=======
-    <button id="process-btn" class="hidden btn-gradient w-full mt-6">Wasserzeichen hinzufügen & Herunterladen</button>
-`,
-
-    'add-header-footer': () => `
-    <h2 class="text-2xl font-bold text-white mb-4">Kopf- & Fußzeile hinzufügen</h2>
-    <p class="mb-6 text-gray-400">Fügen Sie benutzerdefinierten Text in die oberen und unteren Ränder jeder Seite ein.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
     <div id="header-footer-options" class="hidden mt-6 space-y-4">
@@ -1488,21 +1097,12 @@ export const toolTemplates = {
             </div>
         </div>
     </div>
-<<<<<<< Updated upstream
     <button id="process-btn" class="hidden btn-gradient mt-6">Apply Header & Footer</button>
 `,
 
     'image-to-pdf': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.imageToPdf.title">Image to PDF Converter</h2>
         <p class="mb-4 text-gray-400" data-i18n="toolInterface.imageToPdf.description">Combine multiple images into a single PDF. Drag and drop to reorder.</p>
-=======
-    <button id="process-btn" class="hidden btn-gradient w-full mt-6">Kopf- & Fußzeile anwenden</button>
-`,
-
-    'image-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">Bild zu PDF Konverter</h2>
-        <p class="mb-4 text-gray-400">Kombinieren Sie mehrere Bilder in einer einzelnen PDF. Per Drag & Drop neu anordnen.</p>
->>>>>>> Stashed changes
         
         <div class="mb-6 p-3 bg-gray-900/50 border border-gray-700 rounded-lg">
           <p class="text-sm text-gray-300 mb-2"><strong class="text-white">Unterstützte Formate:</strong></p>
@@ -1522,7 +1122,6 @@ export const toolTemplates = {
             <p class="mt-1 text-xs text-gray-400">Höhere Qualität = größere PDF-Größe</p>
           </div>
         </div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" data-i18n="toolInterface.imageToPdf.button">
             <i data-lucide="file-output" class="w-5 h-5"></i>
             Convert to PDF
@@ -1532,14 +1131,6 @@ export const toolTemplates = {
     'change-permissions': () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.changePermissions.title">Change PDF Permissions</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.changePermissions.description">Modify passwords and permissions without losing quality.</p>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">In PDF konvertieren</button>
-    `,
-
-    'change-permissions': () => `
-    <h2 class="text-2xl font-bold text-white mb-4">PDF-Berechtigungen ändern</h2>
-    <p class="mb-6 text-gray-400">Ändern Sie Passwörter und Berechtigungen ohne Qualitätsverlust.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
     <div id="permissions-options" class="hidden mt-6 space-y-4">
@@ -1603,27 +1194,17 @@ export const toolTemplates = {
             </div>
         </fieldset>
     </div>
-<<<<<<< Updated upstream
     <button id="process-btn" class="hidden btn-gradient mt-6">Apply Changes</button>
 `,
 
     'pdf-to-markdown': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.pdfToMarkdown.title">PDF to Markdown</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.pdfToMarkdown.description">Convert a PDF's text content into a structured Markdown file.</p>
-=======
-    <button id="process-btn" class="hidden btn-gradient w-full mt-6">Änderungen anwenden</button>
-`,
-
-    'pdf-to-markdown': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF zu Markdown</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie den Textinhalt einer PDF in eine strukturierte Markdown-Datei.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML({ accept: '.pdf' })}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div class="hidden mt-4 p-3 bg-gray-900 border border-yellow-500/30 text-yellow-200 rounded-lg" id="quality-note">
             <p class="text-sm text-gray-400"><b>Hinweis:</b> Dies ist eine textfokussierte Konvertierung. Tabellen und Bilder werden nicht berücksichtigt.</p>
         </div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="hidden btn-gradient mt-6">Convert to Markdown</button>
     `,
     'txt-to-pdf': () => `
@@ -1634,18 +1215,6 @@ export const toolTemplates = {
             <div class="flex gap-2 p-1 rounded-lg bg-gray-900 border border-gray-700 mb-4">
                 <button id="txt-mode-upload-btn" class="flex-1 btn bg-accent text-white font-semibold py-2 rounded-md" data-i18n="toolInterface.txtToPdf.uploadFiles">Upload Files</button>
                 <button id="txt-mode-text-btn" class="flex-1 btn bg-gray-700 text-gray-300 font-semibold py-2 rounded-md" data-i18n="toolInterface.txtToPdf.typeText">Type Text</button>
-=======
-        <button id="process-btn" class="hidden btn-gradient w-full mt-6">In Markdown konvertieren</button>
-    `,
-    'txt-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">Text zu PDF</h2>
-        <p class="mb-6 text-gray-400">Laden Sie eine oder mehrere Textdateien hoch oder geben Sie Text ein, um ihn mit benutzerdefinierter Formatierung in PDF zu konvertieren.</p>
-        
-        <div class="mb-4">
-            <div class="flex gap-2 p-1 rounded-lg bg-gray-900 border border-gray-700 mb-4">
-                <button id="txt-mode-upload-btn" class="flex-1 btn bg-indigo-600 text-white font-semibold py-2 rounded-md">Dateien hochladen</button>
-                <button id="txt-mode-text-btn" class="flex-1 btn bg-gray-700 text-gray-300 font-semibold py-2 rounded-md">Text eingeben</button>
->>>>>>> Stashed changes
             </div>
             
             <div id="txt-upload-panel">
@@ -1654,21 +1223,13 @@ export const toolTemplates = {
             </div>
             
             <div id="txt-text-panel" class="hidden">
-<<<<<<< Updated upstream
                 <textarea id="text-input" rows="12" class="w-full bg-gray-900 border border-gray-600 text-gray-300 rounded-lg p-2.5 font-sans" placeholder="Start typing here..." data-i18n-placeholder="toolInterface.txtToPdf.placeholder"></textarea>
-=======
-                <textarea id="text-input" rows="12" class="w-full bg-gray-900 border border-gray-600 text-gray-300 rounded-lg p-2.5 font-sans" placeholder="Hier mit der Eingabe beginnen..."></textarea>
->>>>>>> Stashed changes
             </div>
         </div>
         
         <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-<<<<<<< Updated upstream
                 <label for="font-family" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.txtToPdf.fontFamily">Font Family</label>
-=======
-                <label for="font-family" class="block mb-2 text-sm font-medium text-gray-300">Schriftfamilie</label>
->>>>>>> Stashed changes
                 <select id="font-family" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5">
                     <option value="Helvetica">Helvetica</option>
                     <option value="TimesRoman">Times New Roman</option>
@@ -1676,26 +1237,17 @@ export const toolTemplates = {
                 </select>
             </div>
             <div>
-<<<<<<< Updated upstream
                 <label for="font-size" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.txtToPdf.fontSize">Font Size</label>
                 <input type="number" id="font-size" value="12" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5">
             </div>
             <div>
                 <label for="page-size" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.txtToPdf.pageSize">Page Size</label>
-=======
-                <label for="font-size" class="block mb-2 text-sm font-medium text-gray-300">Schriftgröße</label>
-                <input type="number" id="font-size" value="12" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5">
-            </div>
-            <div>
-                <label for="page-size" class="block mb-2 text-sm font-medium text-gray-300">Seitengröße</label>
->>>>>>> Stashed changes
                 <select id="page-size" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5">
                     <option value="A4">A4</option>
                     <option value="Letter">Letter</option>
                 </select>
             </div>
             <div>
-<<<<<<< Updated upstream
                 <label for="text-color" class="block mb-2 text-sm font-medium text-gray-300" data-i18n="toolInterface.txtToPdf.textColor">Text Color</label>
                 <input type="color" id="text-color" value="#000000" class="w-full h-[42px] bg-gray-700 border border-gray-600 rounded-lg p-1 cursor-pointer">
             </div>
@@ -1712,30 +1264,11 @@ export const toolTemplates = {
     'view-metadata': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.viewMetadata.title">View PDF Metadata</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.viewMetadata.description">Upload a PDF to view its internal properties, such as Title, Author, and Creation Date.</p>
-=======
-                <label for="text-color" class="block mb-2 text-sm font-medium text-gray-300">Textfarbe</label>
-                <input type="color" id="text-color" value="#000000" class="w-full h-[42px] bg-gray-700 border border-gray-600 rounded-lg p-1 cursor-pointer">
-            </div>
-        </div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">PDF erstellen</button>
-    `,
-    'invert-colors': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF-Farben invertieren</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie Ihre PDF in einen "Dunkelmodus", indem Sie die Farben invertieren. Dies funktioniert am besten bei einfachen Text- und Bilddokumenten.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="hidden btn-gradient w-full mt-6">Farben invertieren & Herunterladen</button>
-    `,
-    'view-metadata': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF-Metadaten anzeigen</h2>
-        <p class="mb-6 text-gray-400">Laden Sie eine PDF hoch, um ihre internen Eigenschaften wie Titel, Autor und Erstellungsdatum anzuzeigen.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="metadata-results" class="hidden mt-6 p-4 bg-gray-900 border border-gray-700 rounded-lg"></div>
     `,
     'reverse-pages': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.reversePages.title">Reverse PDF Pages</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.reversePages.description">Flip the order of all pages in your document, making the last page the first.</p>
         ${createFileInputHTML({ multiple: true, accept: 'application/pdf', showControls: true })}
@@ -1745,17 +1278,6 @@ export const toolTemplates = {
     'md-to-pdf': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.mdToPdf.title">Markdown to PDF</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.mdToPdf.description">Write in Markdown, select your formatting options, and get a high-quality, multi-page PDF. <br><strong class="text-gray-300">Note:</strong> Images linked from the web (e.g., https://...) require an internet connection to be rendered.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">PDF-Seiten umkehren</h2>
-        <p class="mb-6 text-gray-400">Kehren Sie die Reihenfolge aller Seiten in Ihrem Dokument um, sodass die letzte Seite zur ersten wird.</p>
-        ${createFileInputHTML({ multiple: true, accept: 'application/pdf', showControls: true })}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="hidden btn-gradient w-full mt-6">Umkehren & Herunterladen</button>
-    `,
-    'md-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">Markdown zu PDF</h2>
-        <p class="mb-6 text-gray-400">Schreiben Sie in Markdown, wählen Sie Ihre Formatierungsoptionen und erhalten Sie eine hochwertige, mehrseitige PDF. <br><strong class="text-gray-300">Hinweis:</strong> Für Bilder aus dem Web (z.B. https://...) ist eine Internetverbindung erforderlich.</p>
->>>>>>> Stashed changes
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div>
                 <label for="page-format" class="block mb-2 text-sm font-medium text-gray-300">Seitenformat</label>
@@ -1784,7 +1306,6 @@ export const toolTemplates = {
             <label for="md-input" class="block mb-2 text-sm font-medium text-gray-300">Markdown-Editor</label>
             <textarea id="md-input" class="w-full h-full bg-gray-900 border border-gray-600 text-gray-300 rounded-lg p-3 font-mono resize-none" placeholder="# Willkommen bei Markdown..."></textarea>
         </div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" data-i18n="toolInterface.mdToPdf.button">
             <i data-lucide="file-output" class="w-5 h-5"></i>
             Create PDF from Markdown
@@ -1839,44 +1360,6 @@ export const toolTemplates = {
             <i data-lucide="download" class="w-5 h-5"></i>
             Convert to BMP & Download ZIP
         </button>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">PDF aus Markdown erstellen</button>
-    `,
-    'svg-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">SVG zu PDF</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie ein oder mehrere SVG-Vektorbilder in eine einzelne PDF-Datei.</p>
-        ${createFileInputHTML({ multiple: true, accept: 'image/svg+xml', showControls: true })}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">In PDF konvertieren</button>
-    `,
-    'bmp-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">BMP zu PDF</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie ein oder mehrere BMP-Bilder in eine einzelne PDF-Datei.</p>
-        ${createFileInputHTML({ multiple: true, accept: 'image/bmp', showControls: true })}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">In PDF konvertieren</button>
-    `,
-    'heic-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">HEIC zu PDF</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie ein oder mehrere HEIC-Bilder (High Efficiency) von Ihrem iPhone oder Ihrer Kamera in eine einzelne PDF-Datei.</p>
-        ${createFileInputHTML({ multiple: true, accept: '.heic,.heif', showControls: true })}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">In PDF konvertieren</button>
-    `,
-    'tiff-to-pdf': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">TIFF zu PDF</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie ein oder mehrere ein- oder mehrseitige TIFF-Bilder in eine einzelne PDF-Datei.</p>
-        ${createFileInputHTML({ multiple: true, accept: 'image/tiff', showControls: true })}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">In PDF konvertieren</button>
-    `,
-    'pdf-to-bmp': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">PDF zu BMP</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie jede Seite einer PDF-Datei in ein BMP-Bild. Ihre Dateien werden als ZIP-Archiv heruntergeladen.</p>
-        ${createFileInputHTML()}
-        <div id="file-display-area" class="mt-4 space-y-2"></div>
-        <button id="process-btn" class="btn-gradient w-full mt-6">In BMP konvertieren & ZIP herunterladen</button>
->>>>>>> Stashed changes
     `,
     'pdf-to-tiff': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.pdfToTiff.title">PDF to TIFF</h2>
@@ -1887,13 +1370,8 @@ export const toolTemplates = {
     `,
 
     'split-in-half': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.splitInHalf.title">Split Pages in Half</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.splitInHalf.description">Choose a method to divide every page of your document into two separate pages.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Seiten halbieren</h2>
-        <p class="mb-6 text-gray-400">Wählen Sie eine Methode, um jede Seite Ihres Dokuments in zwei separate Seiten zu teilen.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -1904,21 +1382,12 @@ export const toolTemplates = {
                 <option value="horizontal">Horizontal teilen (obere & untere Hälfte)</option>
             </select>
 
-<<<<<<< Updated upstream
             <button id="process-btn" class="btn-gradient mt-6">Split PDF</button>
         </div>
     `,
     'page-dimensions': () => `
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.pageDimensions.title">Analyze Page Dimensions</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.pageDimensions.description">Upload a PDF to see the precise dimensions, standard size, and orientation of every page.</p>
-=======
-            <button id="process-btn" class="btn-gradient w-full mt-6">PDF teilen</button>
-        </div>
-    `,
-    'page-dimensions': () => `
-        <h2 class="text-2xl font-bold text-white mb-4">Seitenmaße analysieren</h2>
-        <p class="mb-6 text-gray-400">Laden Sie ein PDF hoch, um die genauen Abmessungen, Standardgröße und Ausrichtung jeder Seite zu sehen.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -1966,13 +1435,8 @@ export const toolTemplates = {
 
 
     'n-up': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.nUp.title">N-Up Page Arrangement</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.nUp.description">Combine multiple pages from your PDF onto a single sheet. This is great for creating booklets or proof sheets.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">N-Up Seitenanordnung</h2>
-        <p class="mb-6 text-gray-400">Kombinieren Sie mehrere Seiten Ihres PDFs auf einem einzelnen Blatt. Ideal für Broschüren oder Übersichtsbögen.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -2029,44 +1493,26 @@ export const toolTemplates = {
                 </div>
             </div>
 
-<<<<<<< Updated upstream
             <button id="process-btn" class="btn-gradient mt-6">Create N-Up PDF</button>
-=======
-            <button id="process-btn" class="btn-gradient w-full mt-6">N-Up PDF erstellen</button>
->>>>>>> Stashed changes
         </div>
     `,
 
     'duplicate-organize': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.duplicateOrganize.title">Page Manager</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.duplicateOrganize.description">Drag pages to reorder them. Use the <i data-lucide="copy-plus" class="inline-block w-4 h-4 text-green-400"></i> icon to duplicate a page or the <i data-lucide="x-circle" class="inline-block w-4 h-4 text-red-400"></i> icon to delete it.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Seiten-Manager</h2>
-        <p class="mb-6 text-gray-400">Ziehen Sie Seiten zum Neuordnen. Verwenden Sie das <i data-lucide="copy-plus" class="inline-block w-4 h-4 text-green-400"></i> Symbol zum Duplizieren oder das <i data-lucide="x-circle" class="inline-block w-4 h-4 text-red-400"></i> Symbol zum Löschen einer Seite.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
 
         <div id="page-manager-options" class="hidden mt-6">
              <div id="page-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 my-6">
                 </div>
-<<<<<<< Updated upstream
              <button id="process-btn" class="btn-gradient mt-6">Save New PDF</button>
-=======
-             <button id="process-btn" class="btn-gradient w-full mt-6">Neues PDF speichern</button>
->>>>>>> Stashed changes
         </div>
     `,
 
     'combine-single-page': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.combineSinglePage.title">Combine to a Single Page</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.combineSinglePage.description">Stitch all pages of your PDF together vertically or horizontally to create one continuous page.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Zu einer Seite kombinieren</h2>
-        <p class="mb-6 text-gray-400">Fügen Sie alle Seiten Ihres PDFs vertikal oder horizontal zu einer durchgehenden Seite zusammen.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -2108,22 +1554,13 @@ export const toolTemplates = {
                 </div>
             </div>
             
-<<<<<<< Updated upstream
             <button id="process-btn" class="btn-gradient mt-6">Combine Pages</button>
-=======
-            <button id="process-btn" class="btn-gradient w-full mt-6">Seiten kombinieren</button>
->>>>>>> Stashed changes
         </div>
     `,
 
     'fix-dimensions': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.fixDimensions.title">Standardize Page Dimensions</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.fixDimensions.description">Convert all pages in your PDF to a uniform size. Choose a standard format or define a custom dimension.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Seitenmaße standardisieren</h2>
-        <p class="mb-6 text-gray-400">Konvertieren Sie alle Seiten Ihres PDFs auf eine einheitliche Größe. Wählen Sie ein Standardformat oder definieren Sie eine benutzerdefinierte Abmessung.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -2193,43 +1630,25 @@ export const toolTemplates = {
                 <input type="color" id="background-color" value="#FFFFFF" class="w-full h-[42px] bg-gray-700 border border-gray-600 rounded-lg p-1 cursor-pointer">
             </div>
 
-<<<<<<< Updated upstream
             <button id="process-btn" class="btn-gradient mt-6">Standardize Pages</button>
-=======
-            <button id="process-btn" class="btn-gradient w-full mt-6">Seiten standardisieren</button>
->>>>>>> Stashed changes
         </div>
     `,
 
     'change-background-color': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.backgroundColor.title">Change Background Color</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.backgroundColor.description">Select a new background color for every page of your PDF.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Hintergrundfarbe ändern</h2>
-        <p class="mb-6 text-gray-400">Wählen Sie eine neue Hintergrundfarbe für jede Seite Ihres PDFs.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="change-background-color-options" class="hidden mt-6">
             <label for="background-color" class="block mb-2 text-sm font-medium text-gray-300">Hintergrundfarbe wählen</label>
             <input type="color" id="background-color" value="#FFFFFF" class="w-full h-[42px] bg-gray-700 border border-gray-600 rounded-lg p-1 cursor-pointer">
-<<<<<<< Updated upstream
             <button id="process-btn" class="btn-gradient mt-6">Apply Color & Download</button>
-=======
-            <button id="process-btn" class="btn-gradient w-full mt-6">Farbe anwenden & herunterladen</button>
->>>>>>> Stashed changes
         </div>
     `,
 
     'change-text-color': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.textColor.title">Change Text Color</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.textColor.description">Change the color of dark text in your PDF. This process converts pages to images, so text will not be selectable in the final file.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Textfarbe ändern</h2>
-        <p class="mb-6 text-gray-400">Ändern Sie die Farbe von dunklem Text in Ihrem PDF. Dieser Prozess konvertiert Seiten zu Bildern, sodass Text in der endgültigen Datei nicht auswählbar ist.</p>
->>>>>>> Stashed changes
         ${createFileInputHTML()}
         <div id="file-display-area" class="mt-4 space-y-2"></div>
         <div id="text-color-options" class="hidden mt-6 space-y-4">
@@ -2247,43 +1666,26 @@ export const toolTemplates = {
                     <canvas id="text-color-canvas" class="w-full h-auto rounded-lg border-2 border-gray-600"></canvas>
                 </div>
             </div>
-<<<<<<< Updated upstream
             <button id="process-btn" class="btn-gradient mt-6">Apply Color & Download</button>
-=======
-            <button id="process-btn" class="btn-gradient w-full mt-6">Farbe anwenden & herunterladen</button>
->>>>>>> Stashed changes
         </div>
     `,
 
     'compare-pdfs': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.comparePdfs.title">Compare PDFs</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.comparePdfs.description">Upload two files to visually compare them using either an overlay or a side-by-side view.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">PDFs vergleichen</h2>
-        <p class="mb-6 text-gray-400">Laden Sie zwei Dateien hoch, um sie visuell mit einer Überlagerung oder Seite-an-Seite-Ansicht zu vergleichen.</p>
->>>>>>> Stashed changes
         
         <div id="compare-upload-area" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div id="drop-zone-1" class="relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer bg-gray-900 hover:bg-gray-700">
                 <div id="file-display-1" class="flex flex-col items-center justify-center pt-5 pb-6">
                     <i data-lucide="file-scan" class="w-10 h-10 mb-3 text-gray-400"></i>
-<<<<<<< Updated upstream
                     <p class="mb-2 text-sm text-gray-400"><span class="font-semibold" data-i18n="toolInterface.comparePdfs.uploadOriginalPdf">Upload Original PDF</span></p>
-=======
-                    <p class="mb-2 text-sm text-gray-400"><span class="font-semibold">Original-PDF hochladen</span></p>
->>>>>>> Stashed changes
                 </div>
                 <input id="file-input-1" type="file" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" accept="application/pdf">
             </div>
             <div id="drop-zone-2" class="relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer bg-gray-900 hover:bg-gray-700">
                 <div id="file-display-2" class="flex flex-col items-center justify-center pt-5 pb-6">
                     <i data-lucide="file-diff" class="w-10 h-10 mb-3 text-gray-400"></i>
-<<<<<<< Updated upstream
                     <p class="mb-2 text-sm text-gray-400"><span class="font-semibold" data-i18n="toolInterface.comparePdfs.uploadRevisedPdf">Upload Revised PDF</span></p>
-=======
-                    <p class="mb-2 text-sm text-gray-400"><span class="font-semibold">Überarbeitetes PDF hochladen</span></p>
->>>>>>> Stashed changes
                 </div>
                 <input id="file-input-2" type="file" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" accept="application/pdf">
             </div>
@@ -2320,13 +1722,8 @@ export const toolTemplates = {
     `,
 
     'ocr-pdf': () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.ocr.title">OCR PDF</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.ocr.description">Convert scanned PDFs into searchable documents. Select one or more languages present in your file for the best results.</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">OCR PDF</h2>
-    <p class="mb-6 text-gray-400">Konvertieren Sie gescannte PDFs in durchsuchbare Dokumente. Wählen Sie eine oder mehrere Sprachen in Ihrer Datei für beste Ergebnisse.</p>
->>>>>>> Stashed changes
     
     <div class="p-3 bg-gray-900 rounded-lg border border-gray-700 mb-6">
         <p class="text-sm text-gray-300"><strong class="text-white">So funktioniert es:</strong></p>
@@ -2409,11 +1806,7 @@ export const toolTemplates = {
             </div>
         </details>
         
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient disabled:opacity-50" disabled>Start OCR</button>
-=======
-        <button id="process-btn" class="btn-gradient w-full disabled:opacity-50" disabled>OCR starten</button>
->>>>>>> Stashed changes
     </div>
 
     <div id="ocr-progress" class="hidden mt-6 p-4 bg-gray-900 border border-gray-700 rounded-lg">
@@ -2441,46 +1834,27 @@ export const toolTemplates = {
 `,
 
     'word-to-pdf': () => `
-<<<<<<< Updated upstream
         <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.wordToPdf.title">Word to PDF Converter</h2>
         <p class="mb-6 text-gray-400" data-i18n="toolInterface.wordToPdf.description">Upload a .docx file to convert it into a high-quality PDF with selectable text. Complex layouts may not be perfectly preserved.</p>
-=======
-        <h2 class="text-2xl font-bold text-white mb-4">Word zu PDF Konverter</h2>
-        <p class="mb-6 text-gray-400">Laden Sie eine .docx-Datei hoch, um sie in ein hochwertiges PDF mit auswählbarem Text zu konvertieren. Komplexe Layouts werden möglicherweise nicht perfekt beibehalten.</p>
->>>>>>> Stashed changes
         
         <div id="file-input-wrapper">
              <div class="relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer bg-gray-900 hover:bg-gray-700">
                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
                     <i data-lucide="file-text" class="w-10 h-10 mb-3 text-gray-400"></i>
-<<<<<<< Updated upstream
                     <p class="mb-2 text-sm text-gray-400"><span class="font-semibold" data-i18n="subpages.clickToSelect">Click to select a file</span> <span data-i18n="subpages.orDragDrop">or drag and drop</span></p>
                     <p class="text-xs text-gray-500" data-i18n="subpages.singleDocxFile">A single .docx file</p>
-=======
-                    <p class="mb-2 text-sm text-gray-400"><span class="font-semibold">Klicken zum Auswählen</span> oder per Drag & Drop</p>
-                    <p class="text-xs text-gray-500">Eine einzelne .docx-Datei</p>
->>>>>>> Stashed changes
                 </div>
                 <input id="file-input" type="file" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
             </div>
         </div>
         
         <div id="file-display-area" class="mt-4 space-y-2"></div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" disabled>Preview & Convert</button>
     `,
 
     'sign-pdf': () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.signPdf.title">Sign PDF</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.signPdf.description">Upload a PDF to sign it using the built-in PDF.js viewer. Look for the <strong>signature/pen tool</strong> in the toolbar to add your signature.</p>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6" disabled>Vorschau & Konvertieren</button>
-    `,
-
-    'sign-pdf': () => `
-    <h2 class="text-2xl font-bold text-white mb-4">PDF signieren</h2>
-    <p class="mb-6 text-gray-400">Laden Sie ein PDF hoch, um es mit dem integrierten PDF.js-Viewer zu signieren. Suchen Sie nach dem <strong>Signatur-/Stiftwerkzeug</strong> in der Werkzeugleiste, um Ihre Unterschrift hinzuzufügen.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
     
@@ -2491,32 +1865,18 @@ export const toolTemplates = {
         
         <div class="mt-4 flex items-center gap-2">
             <label class="flex items-center gap-2 text-sm font-medium text-gray-300 cursor-pointer">
-<<<<<<< Updated upstream
                 <input type="checkbox" id="flatten-signature-toggle" class="w-4 h-4 rounded text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500">
                 <span data-i18n="toolInterface.signPdf.flattenPdfHint">Flatten PDF (use the Save button below)</span>
             </label>
         </div>
 
         <button id="process-btn" class="btn-gradient mt-4" style="display:none;">Save & Download Signed PDF</button>
-=======
-                <input type="checkbox" id="flatten-signature-toggle" class="w-4 h-4 rounded text-orange-600 bg-gray-700 border-gray-600 focus:ring-orange-500">
-                PDF glätten (nutzen Sie den Speichern-Button unten)
-            </label>
-        </div>
-
-        <button id="process-btn" class="btn-gradient w-full mt-4" style="display:none;">Signiertes PDF speichern & herunterladen</button>
->>>>>>> Stashed changes
     </div>
 `,
 
     'remove-annotations': () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.removeAnnotations.title">Remove Annotations</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.removeAnnotations.description">Select the types of annotations to remove from all pages or a specific range.</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">Anmerkungen entfernen</h2>
-    <p class="mb-6 text-gray-400">Wählen Sie die Arten von Anmerkungen aus, die von allen Seiten oder einem bestimmten Bereich entfernt werden sollen.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -2570,21 +1930,12 @@ export const toolTemplates = {
             </div>
         </div>
     </div>
-<<<<<<< Updated upstream
     <button id="process-btn" class="hidden btn-gradient mt-6">Remove Selected Annotations</button>
 `,
 
     cropper: () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.cropper.title">PDF Cropper</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.cropper.description">Upload a PDF to visually crop one or more pages. This tool offers a live preview and two distinct cropping modes.</p>
-=======
-    <button id="process-btn" class="hidden btn-gradient w-full mt-6">Ausgewählte Anmerkungen entfernen</button>
-`,
-
-    cropper: () => `
-    <h2 class="text-2xl font-bold text-white mb-4">PDF Zuschneiden</h2>
-    <p class="mb-6 text-gray-400">Laden Sie ein PDF hoch, um eine oder mehrere Seiten visuell zuzuschneiden. Dieses Tool bietet eine Live-Vorschau und zwei verschiedene Zuschneidemodi.</p>
->>>>>>> Stashed changes
     
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
@@ -2627,7 +1978,6 @@ export const toolTemplates = {
 `,
 
     'form-filler': () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.formFiller.title">PDF Form Filler</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.formFiller.description">Upload a PDF with form fields. Fill them directly in the viewer below, then click the button to save and download the filled form. Also supports XFA forms.</p>
     
@@ -2636,16 +1986,6 @@ export const toolTemplates = {
         <strong>Note on XFA Forms:</strong> XFA (XML Forms Architecture) is a legacy format that's only supported by certain PDF viewers like PDF-Tools and Firefox. 
         If you open an XFA PDF in other software and see blank pages or no form fields, it means that viewer doesn't support XFA. 
         To view and fill XFA forms properly, use Firefox or PDF-Tools' Form Filler.
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">PDF-Formular ausfüllen</h2>
-    <p class="mb-6 text-gray-400">Laden Sie ein PDF mit Formularfeldern hoch. Füllen Sie sie direkt im Viewer unten aus, dann klicken Sie auf den Button, um das ausgefüllte Formular zu speichern und herunterzuladen. Unterstützt auch XFA-Formulare.</p>
-    
-    <div class="mb-4 p-3 bg-blue-900/20 border border-blue-700/50 rounded-lg">
-      <p class="text-sm text-blue-300">
-        <strong>Hinweis zu XFA-Formularen:</strong> XFA (XML Forms Architecture) ist ein älteres Format, das nur von bestimmten PDF-Viewern wie PDF Tools und Firefox unterstützt wird. 
-        Wenn Sie ein XFA-PDF in anderer Software öffnen und leere Seiten oder keine Formularfelder sehen, bedeutet das, dass dieser Viewer kein XFA unterstützt. 
-        Um XFA-Formulare korrekt anzuzeigen und auszufüllen, verwenden Sie Firefox oder den PDF Tools Formular-Füller.
->>>>>>> Stashed changes
       </p>
     </div>
     
@@ -2655,22 +1995,13 @@ export const toolTemplates = {
         <div id="pdf-viewer-container" class="relative w-full overflow-auto bg-gray-900 rounded-lg border border-gray-600" style="height: 80vh;">
             <!-- PDF.js viewer iframe will be loaded here -->
         </div>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-4">Save & Download Filled Form</button>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-4">Ausgefülltes Formular speichern & herunterladen</button>
->>>>>>> Stashed changes
     </div>
 `,
 
     posterize: () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.posterize.title">Posterize PDF</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.posterize.description">Split pages into multiple smaller sheets to print as a poster. Navigate the preview and see the grid update based on your settings.</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">PDF posterisieren</h2>
-    <p class="mb-6 text-gray-400">Teilen Sie Seiten in mehrere kleinere Blätter auf, um sie als Poster zu drucken. Navigieren Sie durch die Vorschau und sehen Sie, wie das Raster sich basierend auf Ihren Einstellungen aktualisiert.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -2764,22 +2095,13 @@ export const toolTemplates = {
             </div>
         </div>
 
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" disabled>Posterize PDF</button>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6" disabled>PDF posterisieren</button>
->>>>>>> Stashed changes
     </div>
 `,
 
     'remove-blank-pages': () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.removeBlankPages.title">Remove Blank Pages</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.removeBlankPages.description">Automatically detect and remove blank or nearly blank pages from your PDF. Adjust the sensitivity to control what is considered "blank".</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">Leere Seiten entfernen</h2>
-    <p class="mb-6 text-gray-400">Erkennen und entfernen Sie automatisch leere oder nahezu leere Seiten aus Ihrem PDF. Passen Sie die Empfindlichkeit an, um zu steuern, was als "leer" gilt.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -2798,22 +2120,13 @@ export const toolTemplates = {
              <div id="removed-pages-thumbnails" class="mt-4 grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2"></div>
         </div>
 
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6">Remove Blank Pages & Download</button>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">Leere Seiten entfernen & herunterladen</button>
->>>>>>> Stashed changes
     </div>
 `,
 
     'alternate-merge': () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.alternateMix.title">Alternate & Mix Pages</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.alternateMix.description">Combine pages from 2 or more documents, alternating between them. Drag the files to set the mixing order (e.g., Page 1 from Doc A, Page 1 from Doc B, Page 2 from Doc A, Page 2 from Doc B, etc.).</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">Seiten alternierend mischen</h2>
-    <p class="mb-6 text-gray-400">Kombinieren Sie Seiten aus 2 oder mehr Dokumenten abwechselnd. Ziehen Sie die Dateien, um die Mischreihenfolge festzulegen (z.B. Seite 1 von Dok A, Seite 1 von Dok B, Seite 2 von Dok A, Seite 2 von Dok B, usw.).</p>
->>>>>>> Stashed changes
     ${createFileInputHTML({ multiple: true, accept: 'application/pdf', showControls: true })}
     
     <div id="alternate-merge-options" class="hidden mt-6">
@@ -2825,16 +2138,11 @@ export const toolTemplates = {
             </ul>
         </div>
         <ul id="alternate-file-list" class="space-y-2"></ul>
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6" disabled>Alternate & Mix PDFs</button>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6" disabled>PDFs alternierend mischen</button>
->>>>>>> Stashed changes
     </div>
 `,
 
     linearize: () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.linearize.title">Linearize PDFs (Fast Web View)</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.linearize.description">Optimize multiple PDFs for faster loading over the web. Files will be downloaded in a ZIP archive.</p>
     ${createFileInputHTML({ multiple: true, accept: 'application/pdf', showControls: true })} 
@@ -2844,17 +2152,6 @@ export const toolTemplates = {
     'add-attachments': () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.addAttachments.title">Add Attachments to PDF</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.addAttachments.description">First, upload the PDF document you want to add files to.</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">PDFs linearisieren (Schnelle Webansicht)</h2>
-    <p class="mb-6 text-gray-400">Optimieren Sie mehrere PDFs für schnelleres Laden im Web. Die Dateien werden als ZIP-Archiv heruntergeladen.</p>
-    ${createFileInputHTML({ multiple: true, accept: 'application/pdf', showControls: true })} 
-    <div id="file-display-area" class="mt-4 space-y-2"></div>
-    <button id="process-btn" class="hidden btn-gradient w-full mt-6" disabled>PDFs linearisieren & ZIP herunterladen</button> 
-  `,
-    'add-attachments': () => `
-    <h2 class="text-2xl font-bold text-white mb-4">Anhänge zu PDF hinzufügen</h2>
-    <p class="mb-6 text-gray-400">Laden Sie zuerst das PDF-Dokument hoch, dem Sie Dateien hinzufügen möchten.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML({ accept: 'application/pdf' })}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -2901,7 +2198,6 @@ export const toolTemplates = {
         </div>
       </div>
 
-<<<<<<< Updated upstream
       <button id="process-btn" class="hidden btn-gradient mt-6" disabled>Embed Files & Download</button>
     </div>
   `,
@@ -2915,41 +2211,17 @@ export const toolTemplates = {
     'edit-attachments': () => `
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.editAttachments.title">Edit Attachments</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.editAttachments.description">View, remove, or replace attachments in your PDF.</p>
-=======
-      <button id="process-btn" class="hidden btn-gradient w-full mt-6" disabled>Dateien einbetten & herunterladen</button>
-    </div>
-  `,
-    'extract-attachments': () => `
-    <h2 class="text-2xl font-bold text-white mb-4">Anhänge extrahieren</h2>
-    <p class="mb-6 text-gray-400">Extrahieren Sie alle eingebetteten Dateien aus einem oder mehreren PDFs. Alle Anhänge werden als ZIP-Archiv heruntergeladen.</p>
-    ${createFileInputHTML({ multiple: true, accept: 'application/pdf', showControls: true })}
-    <div id="file-display-area" class="mt-4 space-y-2"></div>
-    <button id="process-btn" class="btn-gradient w-full mt-6">Anhänge extrahieren</button>
-  `,
-    'edit-attachments': () => `
-    <h2 class="text-2xl font-bold text-white mb-4">Anhänge bearbeiten</h2>
-    <p class="mb-6 text-gray-400">Anzeigen, entfernen oder ersetzen Sie Anhänge in Ihrem PDF.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML({ accept: 'application/pdf' })}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
     <div id="edit-attachments-options" class="hidden mt-6">
       <div id="attachments-list" class="space-y-3 mb-4"></div>
-<<<<<<< Updated upstream
       <button id="process-btn" class="btn-gradient mt-6">Save Changes & Download</button>
-=======
-      <button id="process-btn" class="btn-gradient w-full mt-6">Änderungen speichern & herunterladen</button>
->>>>>>> Stashed changes
     </div>
   `,
 
     'sanitize-pdf': () => `
-<<<<<<< Updated upstream
     <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.sanitize.title">Sanitize PDF</h2>
     <p class="mb-6 text-gray-400" data-i18n="toolInterface.sanitize.description">Remove potentially sensitive or unnecessary information from your PDF before sharing. Select the items you want to remove.</p>
-=======
-    <h2 class="text-2xl font-bold text-white mb-4">PDF bereinigen</h2>
-    <p class="mb-6 text-gray-400">Entfernen Sie potenziell sensible oder unnötige Informationen aus Ihrem PDF bevor Sie es teilen. Wählen Sie die Elemente aus, die Sie entfernen möchten.</p>
->>>>>>> Stashed changes
     ${createFileInputHTML()}
     <div id="file-display-area" class="mt-4 space-y-2"></div>
 
@@ -3011,22 +2283,13 @@ export const toolTemplates = {
             </div>
         </div>
 
-<<<<<<< Updated upstream
         <button id="process-btn" class="btn-gradient mt-6">Sanitize PDF & Download</button>
-=======
-        <button id="process-btn" class="btn-gradient w-full mt-6">PDF bereinigen & herunterladen</button>
->>>>>>> Stashed changes
     </div>
 `,
 
     'remove-restrictions': () => `
-<<<<<<< Updated upstream
   <h2 class="text-2xl font-bold text-white mb-4" data-i18n="toolInterface.removeRestrictions.title">Remove PDF Restrictions</h2>
   <p class="mb-6 text-gray-400" data-i18n="toolInterface.removeRestrictions.description">Remove security restrictions and unlock PDF permissions for editing and printing.</p>
-=======
-  <h2 class="text-2xl font-bold text-white mb-4">PDF-Einschränkungen entfernen</h2>
-  <p class="mb-6 text-gray-400">Entfernen Sie Sicherheitseinschränkungen und entsperren Sie PDF-Berechtigungen für Bearbeitung und Druck.</p>
->>>>>>> Stashed changes
   ${createFileInputHTML()}
   <div id="file-display-area" class="mt-4 space-y-2"></div>
   <div id="remove-restrictions-options" class="hidden space-y-4 mt-6">
@@ -3062,11 +2325,7 @@ export const toolTemplates = {
     Die Verwendung dieses Tools zur Umgehung von Urheberrechtsschutz, Verletzung geistiger Eigentumsrechte oder zum Zugriff auf Dokumente ohne Berechtigung kann in Ihrem Land illegal sein. Wir haften nicht für Missbrauch dieses Tools — falls Sie unsicher sind, konsultieren Sie einen Rechtsberater oder den Dokumenteneigentümer bevor Sie fortfahren.
   </p>
 </div>
-<<<<<<< Updated upstream
       <button id="process-btn" class="btn-gradient mt-6">Remove Restrictions & Download</button>
-=======
-      <button id="process-btn" class="btn-gradient w-full mt-6">Einschränkungen entfernen & herunterladen</button>
->>>>>>> Stashed changes
   </div>
 `,
 };

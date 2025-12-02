@@ -4,11 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<<<<<<< Updated upstream
   <title>Add Stamps - PDF-Tools</title>
-=======
-  <title>Stempel hinzufügen - PDF Tools</title>
->>>>>>> Stashed changes
   <link rel="icon" type="image/png" href="../../images/favicon.svg" />
   <link href="../../src/css/styles.css" rel="stylesheet" />
 </head>
@@ -18,7 +14,6 @@
     <div class="container mx-auto px-4">
       <div class="flex justify-between items-center h-16">
         <div class="flex-shrink-0 flex items-center cursor-pointer" id="home-logo">
-<<<<<<< Updated upstream
           <img src="../../public/images/favicon.svg" alt="PDF-Tools Logo" class="h-8 w-8" />
           <span class="text-white font-bold text-xl ml-2">
             <a href="/">PDF-Tools</a>
@@ -29,34 +24,6 @@
             class="w-8 h-8 rounded-lg border border-gray-600 bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-gray-300 hover:text-white transition-colors"
             title="Toggle Theme">
             <i data-lucide="moon" class="w-4 h-4"></i>
-=======
-          <img src="../../public/images/favicon.svg" alt="PDF Tools Logo" class="h-8 w-8" />
-          <span class="text-white font-bold text-xl ml-2">
-            <a href="/">PDF Tools</a>
-          </span>
-        </div>
-
-        <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center space-x-8 text-white">
-          <a href="/" class="nav-link">Startseite</a>
-          <a href="/" class="nav-link">Alle Werkzeuge</a>
-        </div>
-
-        <!-- Mobile Hamburger Button -->
-        <div class="md:hidden flex items-center">
-          <button id="mobile-menu-button" type="button"
-            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500 transition-colors"
-            aria-controls="mobile-menu" aria-expanded="false">
-            <span class="sr-only">Hauptmenü öffnen</span>
-            <svg id="menu-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-            <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
->>>>>>> Stashed changes
           </button>
           <input type="color" id="accent-color-picker" 
             class="w-8 h-8 rounded-lg border border-gray-600 cursor-pointer bg-transparent"
@@ -69,24 +36,12 @@
         </div>
       </div>
     </div>
-<<<<<<< Updated upstream
-=======
-
-    <!-- Mobile Menu Dropdown -->
-    <div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700">
-      <div class="px-2 pt-2 pb-3 space-y-1 text-center">
-        <a href="/" class="mobile-nav-link">Startseite</a>
-        <a href="/" class="mobile-nav-link">Alle Werkzeuge</a>
-      </div>
-    </div>
->>>>>>> Stashed changes
   </nav>
 
   <div class="min-h-screen flex items-center justify-center p-4 bg-gray-900">
     <div id="tool-uploader"
       class="bg-gray-800 rounded-xl shadow-xl p-6 max-w-5xl w-full text-gray-200 border border-gray-700">
       <button id="back-to-tools"
-<<<<<<< Updated upstream
         class="flex items-center gap-2 text-accent hover:opacity-80 mb-6 font-semibold">
         <i data-lucide="arrow-left" class="cursor-pointer"></i>
         <span class="cursor-pointer" data-i18n="backToTools">Back to Tools</span>
@@ -95,16 +50,6 @@
       <h1 class="text-2xl font-bold text-white mb-2" data-i18n="addStamps.title">Add Stamps</h1>
       <p class="text-gray-400 mb-6" data-i18n="addStamps.description">
         Upload a PDF, add image stamps using the toolbar, and then save the stamped PDF.
-=======
-        class="flex items-center gap-2 text-orange-400 hover:text-orange-300 mb-6 font-semibold">
-        <i data-lucide="arrow-left" class="cursor-pointer"></i>
-        <span class="cursor-pointer">Zurück zu Werkzeugen</span>
-      </button>
-
-      <h1 class="text-2xl font-bold text-white mb-2">Stempel hinzufügen</h1>
-      <p class="text-gray-400 mb-6">
-        Laden Sie eine PDF hoch, fügen Sie Bildstempel mit der Werkzeugleiste hinzu und speichern Sie dann die gestempelte PDF.
->>>>>>> Stashed changes
       </p>
 
       <div
@@ -112,17 +57,10 @@
         <div class="flex flex-col items-center justify-center pt-5 pb-6">
           <i data-lucide="upload-cloud" class="w-10 h-10 mb-3 text-gray-400"></i>
           <p class="mb-2 text-sm text-gray-300">
-<<<<<<< Updated upstream
             <span class="font-semibold" data-i18n="subpages.clickToSelect">Click to select a PDF</span> <span data-i18n="subpages.orDragDrop">or drag and drop</span>
           </p>
           <p class="text-xs text-gray-500" data-i18n="subpages.singlePdf">Single PDF file</p>
           <p class="text-xs text-gray-500" data-i18n="subpages.filesNeverLeave">Your files never leave your device.</p>
-=======
-            <span class="font-semibold">Klicken Sie, um eine PDF auszuwählen</span> oder per Drag & Drop
-          </p>
-          <p class="text-xs text-gray-500">Einzelne PDF-Datei</p>
-          <p class="text-xs text-gray-500">Ihre Dateien verlassen niemals Ihr Gerät.</p>
->>>>>>> Stashed changes
         </div>
         <input type="file" id="pdfFile" accept="application/pdf"
           class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
@@ -133,36 +71,24 @@
       <!-- Viewer, shown after a PDF is uploaded -->
       <div id="viewer-card" class="hidden mt-6 border border-gray-700 rounded-lg overflow-hidden">
         <div class="px-4 py-3 border-b border-gray-700 flex items-center justify-between">
-<<<<<<< Updated upstream
           <h2 class="text-lg font-semibold text-white" data-i18n="addStamps.stampEditor">Stamp Editor</h2>
           <p class="text-xs text-gray-400" data-i18n="addStamps.toolbarHint">Use the toolbar's image stamp tool to place stamps.</p>
-=======
-          <h2 class="text-lg font-semibold text-white">Stempel-Editor</h2>
-          <p class="text-xs text-gray-400">Verwenden Sie das Bildstempel-Werkzeug in der Werkzeugleiste, um Stempel zu platzieren.</p>
->>>>>>> Stashed changes
         </div>
         <div id="stamp-viewer-container" class="h-[70vh] bg-black/70 flex items-stretch justify-stretch">
           <!-- iframe injected by add-stamps.ts -->
         </div>
       </div>
 
-<<<<<<< Updated upstream
       <div class="flex justify-center mt-6">
         <button id="save-stamped-btn" class="btn-gradient flex items-center justify-center gap-2">
           <span data-i18n="addStamps.saveStampedPdf">Save Stamped PDF</span>
         </button>
       </div>
-=======
-      <button id="save-stamped-btn" class="btn-gradient w-full mt-6 flex items-center justify-center gap-2">
-        <span>Gestempelte PDF speichern</span>
-      </button>
->>>>>>> Stashed changes
     </div>
   </div>
 
   <footer class="mt-16 border-t-2 border-gray-700 py-8">
     <div class="container mx-auto px-4">
-<<<<<<< Updated upstream
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
         <div class="mb-8 md:mb-0">
           <div class="flex items-center justify-center md:justify-start mb-4">
@@ -222,18 +148,6 @@
           <p class="text-gray-500 text-xs mt-2">Based on BentoPDF (AGPL-3.0)</p>
         </div>
       </div>
-=======
-      <div class="flex items-center gap-3 mb-2">
-        <img src="../../public/images/favicon.svg" alt="PDF Tools Logo" class="h-8 w-8" />
-        <span class="text-white font-bold text-xl">PDF Tools</span>
-      </div>
-      <p class="text-gray-400 text-sm">
-        &copy; 2025 PDF Tools. Alle Rechte vorbehalten.
-      </p>
-      <p class="text-gray-500 text-xs mt-1">
-        Version <span id="app-version"></span>
-      </p>
->>>>>>> Stashed changes
     </div>
   </footer>
   <script type="module" src="../js/utils/lucide-init.ts"></script>

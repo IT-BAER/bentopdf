@@ -12,100 +12,10 @@ import { initI18n, setLanguage, getCategoryName, getToolTranslation, getTranslat
 import { initTheme, accentColors, setAccentColor, getAccentColor, findClosestAccent, createAccentFromHex, applyAccentColorOnly, toggleThemeMode } from './theme/index.js';
 import { applyBrandingConfig, getConfig } from './utils/config.js';
 
-<<<<<<< Updated upstream
 /**
  * Render the tool grid with translated category names and tool names
  */
 const renderToolGrid = () => {
-=======
-// Type definition for config
-declare global {
-  interface Window {
-    PDFTOOLS_CONFIG?: {
-      appName?: string;
-      appTitle?: string;
-      logoUrl?: string;
-      faviconUrl?: string;
-      defaultAccentColor?: string;
-      forceAccentColor?: boolean;
-      showColorPicker?: boolean;
-      showThemeToggle?: boolean;
-      showLanguageSelector?: boolean;
-      copyrightText?: string;
-      showVersion?: boolean;
-      defaultLanguage?: string;
-    };
-  }
-}
-
-function applyConfig() {
-  const config = window.PDFTOOLS_CONFIG || {};
-  
-  // Apply logo URL to all logo elements
-  const logoUrl = config.logoUrl || config.faviconUrl;
-  if (logoUrl) {
-    const logoElements = [
-      document.getElementById('nav-logo'),
-      document.getElementById('footer-logo'),
-    ];
-    
-    logoElements.forEach((el) => {
-      if (el && el.tagName === 'IMG') {
-        (el as HTMLImageElement).src = logoUrl;
-      }
-    });
-  }
-  
-  // Apply favicon
-  const faviconUrl = config.faviconUrl || config.logoUrl;
-  if (faviconUrl) {
-    const faviconElements = [
-      document.getElementById('favicon'),
-      document.getElementById('apple-touch-icon'),
-    ];
-    
-    faviconElements.forEach((el) => {
-      if (el && el.tagName === 'LINK') {
-        (el as HTMLLinkElement).href = faviconUrl;
-      }
-    });
-  }
-  
-  // Apply app title
-  if (config.appTitle) {
-    document.title = config.appTitle;
-  }
-}
-
-const init = () => {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
-
-  // Apply configuration from config.js
-  applyConfig();
-
-  // Set current year in footer
-  const currentYearEl = document.getElementById('currentYear');
-  if (currentYearEl) {
-    currentYearEl.textContent = new Date().getFullYear().toString();
-  }
-
-  // Set app version
-  const appVersionEl = document.getElementById('app-version');
-  if (appVersionEl) {
-    appVersionEl.textContent = `Version ${APP_VERSION}`;
-  }
-
-  // Hide shortcuts button on touch devices
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  if (isTouchDevice) {
-    const shortcutsBtn = document.getElementById('open-shortcuts-btn');
-    if (shortcutsBtn) {
-      shortcutsBtn.style.display = 'none';
-    }
-  }
-
-
->>>>>>> Stashed changes
   dom.toolGrid.textContent = '';
   const currentAccent = getAccentColor();
 
@@ -114,14 +24,9 @@ const init = () => {
     categoryGroup.className = 'category-group col-span-full';
 
     const title = document.createElement('h2');
-<<<<<<< Updated upstream
     title.className = 'text-xl font-bold mb-4 mt-8 first:mt-0 text-white';
     title.style.color = currentAccent.value;
     title.textContent = getCategoryName(category.name);
-=======
-    title.className = 'text-xl font-bold text-orange-400 mb-4 mt-8 first:mt-0 text-white';
-    title.textContent = category.name;
->>>>>>> Stashed changes
 
     const toolsContainer = document.createElement('div');
     toolsContainer.className =
@@ -143,12 +48,8 @@ const init = () => {
       }
 
       const icon = document.createElement('i');
-<<<<<<< Updated upstream
       icon.className = 'w-10 h-10 mb-3';
       icon.style.color = currentAccent.value;
-=======
-      icon.className = 'w-10 h-10 mb-3 text-orange-400';
->>>>>>> Stashed changes
       icon.setAttribute('data-lucide', tool.icon);
 
       // Get translated tool name and subtitle
@@ -313,11 +214,7 @@ const init = () => {
   }
 
   createIcons({ icons });
-<<<<<<< Updated upstream
   console.log('Please share our tool and share the love!');
-=======
-
->>>>>>> Stashed changes
 
   // Initialize Shortcuts System
   ShortcutsManager.init();
@@ -426,13 +323,8 @@ const init = () => {
     dom.resetShortcutsBtn.addEventListener('click', async () => {
       const trans = getTranslations();
       const confirmed = await showWarningModal(
-<<<<<<< Updated upstream
         trans.shortcutsModal.resetShortcuts,
         trans.shortcutsModal.resetConfirm,
-=======
-        'Tastenkürzel zurücksetzen',
-        'Sind Sie sicher, dass Sie alle Tastenkürzel auf Standard zurücksetzen möchten?<br><br>Diese Aktion kann nicht rückgängig gemacht werden.',
->>>>>>> Stashed changes
         true
       );
 
@@ -464,24 +356,14 @@ const init = () => {
             if (ShortcutsManager.importSettings(content)) {
               renderShortcutsList();
               await showWarningModal(
-<<<<<<< Updated upstream
                 trans.shortcutsModal.importSuccessful,
                 trans.shortcutsModal.importSuccessfulMsg,
-=======
-                'Import erfolgreich',
-                'Tastenkürzel wurden erfolgreich importiert!',
->>>>>>> Stashed changes
                 false
               );
             } else {
               await showWarningModal(
-<<<<<<< Updated upstream
                 trans.shortcutsModal.importFailed,
                 trans.shortcutsModal.importFailedMsg,
-=======
-                'Import fehlgeschlagen',
-                'Tastenkürzel konnten nicht importiert werden. Ungültiges Dateiformat.',
->>>>>>> Stashed changes
                 false
               );
             }
@@ -648,11 +530,7 @@ const init = () => {
         left.className = 'flex items-center gap-3';
 
         const icon = document.createElement('i');
-<<<<<<< Updated upstream
         icon.className = 'w-5 h-5 text-accent';
-=======
-        icon.className = 'w-5 h-5 text-orange-400';
->>>>>>> Stashed changes
         icon.setAttribute('data-lucide', tool.icon);
 
         // Use translated tool name
@@ -669,13 +547,8 @@ const init = () => {
         const trans = getTranslations();
         const input = document.createElement('input');
         input.type = 'text';
-<<<<<<< Updated upstream
         input.className = 'shortcut-input w-32 bg-gray-800 border border-gray-600 text-white text-center text-sm rounded px-2 py-1 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all';
         input.placeholder = trans.shortcutsModal.clickToSet;
-=======
-        input.className = 'shortcut-input w-32 bg-gray-800 border border-gray-600 text-white text-center text-sm rounded px-2 py-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all';
-        input.placeholder = 'Click to set';
->>>>>>> Stashed changes
         input.value = formatShortcutDisplay(currentShortcut, isMac);
         input.readOnly = true;
 
@@ -753,26 +626,15 @@ const init = () => {
               const displayCombo = formatShortcutDisplay(combo, isMac);
 
               await showWarningModal(
-<<<<<<< Updated upstream
                 trans.shortcutsModal.shortcutInUse,
                 `<strong>${displayCombo}</strong> ${trans.shortcutsModal.shortcutInUseMsg}<br><br>` +
                 `<em>"${existingToolName}"</em><br><br>` +
                 `${trans.shortcutsModal.chooseDifferent}`,
-=======
-                'Tastenkürzel bereits vergeben',
-                `<strong>${displayCombo}</strong> ist bereits zugewiesen zu:<br><br>` +
-                `<em>"${existingToolName}"</em><br><br>` +
-                `Bitte wählen Sie ein anderes Tastenkürzel.`,
->>>>>>> Stashed changes
                 false
               );
 
               input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-<<<<<<< Updated upstream
               input.classList.remove('border-accent', 'text-accent');
-=======
-              input.classList.remove('border-orange-500', 'text-orange-400');
->>>>>>> Stashed changes
               input.blur();
               return;
             }
@@ -782,29 +644,17 @@ const init = () => {
             if (reservedWarning) {
               const displayCombo = formatShortcutDisplay(combo, isMac);
               const shouldProceed = await showWarningModal(
-<<<<<<< Updated upstream
                 trans.shortcutsModal.reservedWarning,
                 `<strong>${displayCombo}</strong> ${trans.shortcutsModal.reservedWarningMsg}<br><br>` +
                 `"<em>${reservedWarning}</em>"<br><br>` +
                 `${trans.shortcutsModal.reservedWarningNote}<br><br>` +
                 `${trans.shortcutsModal.useAnyway}`
-=======
-                'Warnung: Reserviertes Tastenkürzel',
-                `<strong>${displayCombo}</strong> wird üblicherweise verwendet für:<br><br>` +
-                `"<em>${reservedWarning}</em>"<br><br>` +
-                `Dieses Tastenkürzel funktioniert möglicherweise nicht zuverlässig oder könnte mit Browser-/Systemverhalten in Konflikt geraten.<br><br>` +
-                `Möchten Sie es trotzdem verwenden?`
->>>>>>> Stashed changes
               );
 
               if (!shouldProceed) {
                 // Revert display
                 input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-<<<<<<< Updated upstream
                 input.classList.remove('border-accent', 'text-accent');
-=======
-                input.classList.remove('border-orange-500', 'text-orange-400');
->>>>>>> Stashed changes
                 input.blur();
                 return;
               }
@@ -825,22 +675,13 @@ const init = () => {
         };
 
         input.onfocus = () => {
-<<<<<<< Updated upstream
           input.value = 'Press keys...';
           input.classList.add('border-accent', 'text-accent');
-=======
-          input.value = 'Tasten drücken...';
-          input.classList.add('border-orange-500', 'text-orange-400');
->>>>>>> Stashed changes
         };
 
         input.onblur = () => {
           input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-<<<<<<< Updated upstream
           input.classList.remove('border-accent', 'text-accent');
-=======
-          input.classList.remove('border-orange-500', 'text-orange-400');
->>>>>>> Stashed changes
         };
 
         right.append(input);

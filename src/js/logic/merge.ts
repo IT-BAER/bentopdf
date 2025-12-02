@@ -454,19 +454,9 @@ export async function setupMergeTool() {
     filePanel.classList.remove('hidden');
     pagePanel.classList.add('hidden');
 
-<<<<<<< Updated upstream
     newFileModeBtn.classList.add('bg-accent', 'text-white');
     newFileModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
     newPageModeBtn.classList.remove('bg-accent', 'text-white');
-=======
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newFileModeBtn.classList.add('bg-orange-600', 'text-white');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newFileModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newPageModeBtn.classList.remove('bg-orange-600', 'text-white');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
->>>>>>> Stashed changes
     newPageModeBtn.classList.add('bg-gray-700', 'text-gray-300');
   });
 
@@ -477,19 +467,9 @@ export async function setupMergeTool() {
     filePanel.classList.add('hidden');
     pagePanel.classList.remove('hidden');
 
-<<<<<<< Updated upstream
     newPageModeBtn.classList.add('bg-accent', 'text-white');
     newPageModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
     newFileModeBtn.classList.remove('bg-accent', 'text-white');
-=======
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newPageModeBtn.classList.add('bg-orange-600', 'text-white');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newPageModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newFileModeBtn.classList.remove('bg-orange-600', 'text-white');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
->>>>>>> Stashed changes
     newFileModeBtn.classList.add('bg-gray-700', 'text-gray-300');
 
     await renderPageMergeThumbnails();
@@ -500,30 +480,14 @@ export async function setupMergeTool() {
     filePanel.classList.add('hidden');
     pagePanel.classList.remove('hidden');
 
-<<<<<<< Updated upstream
     newPageModeBtn.classList.add('bg-accent', 'text-white');
     newPageModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
     newFileModeBtn.classList.remove('bg-accent', 'text-white');
-=======
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newPageModeBtn.classList.add('bg-orange-600', 'text-white');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newPageModeBtn.classList.remove('bg-gray-700', 'text-gray-300');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newFileModeBtn.classList.remove('bg-orange-600', 'text-white');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
->>>>>>> Stashed changes
     newFileModeBtn.classList.add('bg-gray-700', 'text-gray-300');
 
     await renderPageMergeThumbnails();
   } else {
-<<<<<<< Updated upstream
     newFileModeBtn.classList.add('bg-accent', 'text-white');
-=======
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
-    newFileModeBtn.classList.add('bg-orange-600', 'text-white');
-    // @ts-expect-error TS(2339) FIXME: Property 'classList' does not exist on type 'Node'... Remove this comment to see the full error message
->>>>>>> Stashed changes
     newPageModeBtn.classList.add('bg-gray-700', 'text-gray-300');
   }
 }
