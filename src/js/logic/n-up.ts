@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, hexToRgb } from '../utils/helpers.js';
+import { downloadFile, hexToRgb, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 
 import { PDFDocument as PDFLibDocument, rgb, PageSizes } from 'pdf-lib';
@@ -117,7 +117,7 @@ export async function nUpTool() {
     const newPdfBytes = await newDoc.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      `n-up_${n}.pdf`
+      generateOutputFilename(state.files[0]?.name, `n-up-${n}.pdf`)
     );
   } catch (e) {
     console.error(e);

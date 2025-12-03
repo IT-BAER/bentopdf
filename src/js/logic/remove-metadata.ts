@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile } from '../utils/helpers.js';
+import { downloadFile, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { PDFName } from 'pdf-lib';
 
@@ -53,7 +53,7 @@ export async function removeMetadata() {
     const newPdfBytes = await state.pdfDoc.save();
     downloadFile(
       new Blob([newPdfBytes], { type: 'application/pdf' }),
-      'metadata-removed.pdf'
+      generateOutputFilename(state.files[0]?.name, 'metadata-removed.pdf')
     );
   } catch (e) {
     console.error(e);

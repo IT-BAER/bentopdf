@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, hexToRgb, getPDFDocument } from '../utils/helpers.js';
+import { downloadFile, hexToRgb, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { PDFDocument as PDFLibDocument, rgb } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -208,7 +208,7 @@ export async function combineToSinglePage() {
     const newPdfBytes = await newDoc.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      'combined-page.pdf'
+      generateOutputFilename(state.files[0]?.name, 'combined.pdf')
     );
   } catch (e) {
     console.error(e);

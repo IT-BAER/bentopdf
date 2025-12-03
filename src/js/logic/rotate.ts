@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, resetAndReloadTool } from '../utils/helpers.js';
+import { downloadFile, resetAndReloadTool, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { getRotationState, resetRotationState } from '../handlers/fileHandler.js';
 
@@ -22,7 +22,7 @@ export async function rotate() {
     const rotatedPdfBytes = await state.pdfDoc.save();
     downloadFile(
       new Blob([rotatedPdfBytes], { type: 'application/pdf' }),
-      'rotated.pdf'
+      generateOutputFilename(state.files[0]?.name, 'rotated.pdf')
     );
 
     resetAndReloadTool(() => {

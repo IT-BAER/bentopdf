@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, hexToRgb } from '../utils/helpers.js';
+import { downloadFile, hexToRgb, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 
 import { PDFDocument as PDFLibDocument, rgb, PageSizes } from 'pdf-lib';
@@ -103,7 +103,7 @@ export async function fixDimensions() {
     const newPdfBytes = await newDoc.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      'standardized.pdf'
+      generateOutputFilename(state.files[0]?.name, 'standardized.pdf')
     );
   } catch (e) {
     console.error(e);

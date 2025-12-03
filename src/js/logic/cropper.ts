@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
+import { downloadFile, readFileAsArrayBuffer, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import Cropper from 'cropperjs';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -327,12 +327,10 @@ export async function setupCropperTool() {
           finalPdfBytes = await pdfToModify.save();
         }
 
-        const fileName = isDestructive
-          ? 'flattened_crop.pdf'
-          : 'standard_crop.pdf';
+        const fallbackName = isDestructive ? 'cropped-flattened.pdf' : 'cropped.pdf';
         downloadFile(
           new Blob([finalPdfBytes], { type: 'application/pdf' }),
-          fileName
+          generateOutputFilename(state.files[0]?.name, fallbackName)
         );
         showAlert('Success', 'Crop complete! Your download has started.');
       } catch (e) {

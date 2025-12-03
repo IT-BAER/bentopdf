@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
+import { downloadFile, readFileAsArrayBuffer, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import Sortable from 'sortablejs';
 
@@ -121,7 +121,7 @@ export async function alternateMerge() {
       hideLoader();
       if (e.data.status === 'success') {
         const blob = new Blob([e.data.pdfBytes], { type: 'application/pdf' });
-        downloadFile(blob, 'alternated-mixed.pdf');
+        downloadFile(blob, generateOutputFilename(state.files[0]?.name, 'alternated-mixed.pdf'));
         showAlert('Success', 'PDFs have been mixed successfully!');
       } else {
         console.error('Worker interleave error:', e.data.message);

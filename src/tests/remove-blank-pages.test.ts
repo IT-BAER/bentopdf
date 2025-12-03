@@ -126,7 +126,7 @@ describe('Remove Blank Pages Tool', () => {
     vi.mocked(PDFDocument.create).mockResolvedValue(mockNewDoc);
 
     // Mock helpers and UI
-    vi.mocked(helpers.downloadFile).mockImplementation(() => {});
+    vi.mocked(helpers.downloadFile).mockImplementation(async () => {});
     vi.mocked(ui.showLoader).mockImplementation(() => {});
     vi.mocked(ui.hideLoader).mockImplementation(() => {});
     vi.mocked(ui.showAlert).mockImplementation(() => {});

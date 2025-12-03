@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, getPDFDocument } from '../utils/helpers.js';
+import { downloadFile, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -165,7 +165,7 @@ export async function removeBlankPages() {
     const newPdfBytes = await newPdf.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      'non-blank.pdf'
+      generateOutputFilename(state.files[0]?.name, 'blanks-removed.pdf')
     );
   } catch (e) {
     console.error(e);

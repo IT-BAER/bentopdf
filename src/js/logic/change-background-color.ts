@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, hexToRgb } from '../utils/helpers.js';
+import { downloadFile, hexToRgb, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 
 import { PDFDocument as PDFLibDocument, rgb } from 'pdf-lib';
@@ -44,7 +44,7 @@ export async function changeBackgroundColor() {
     const newPdfBytes = await newPdfDoc.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      'background-changed.pdf'
+      generateOutputFilename(state.files[0]?.name, 'background-changed.pdf')
     );
   } catch (e) {
     console.error(e);

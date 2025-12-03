@@ -145,7 +145,7 @@ const init = () => {
 
   const searchBar = document.getElementById('search-bar');
 
-  searchBar.addEventListener('input', () => {
+  searchBar?.addEventListener('input', () => {
     const categoryGroups = dom.toolGrid.querySelectorAll('.category-group');
     // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
     const searchTerm = searchBar.value.toLowerCase().trim();
@@ -179,22 +179,22 @@ const init = () => {
 
     if (isCtrlK || isCmdK) {
       e.preventDefault();
-      searchBar.focus();
+      searchBar?.focus();
     }
   });
 
   const shortcutK = document.getElementById('shortcut');
   const isIosOrAndroid = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  if (isIosOrAndroid) {
+  if (isIosOrAndroid && shortcutK) {
     shortcutK.style.display = 'none';
-  } else {
+  } else if (shortcutK) {
     shortcutK.textContent = navigator.userAgent.toUpperCase().includes('MAC')
       ? '⌘ + K'
       : 'Ctrl + K';
   }
 
-  dom.toolGrid.addEventListener('click', (e) => {
+  dom.toolGrid?.addEventListener('click', (e) => {
     // @ts-expect-error TS(2339) FIXME: Property 'closest' does not exist on type 'EventTa... Remove this comment to see the full error message
     const card = e.target.closest('.tool-card');
     if (card) {
@@ -202,8 +202,8 @@ const init = () => {
       setupToolInterface(toolId);
     }
   });
-  dom.backToGridBtn.addEventListener('click', () => switchView('grid'));
-  dom.alertOkBtn.addEventListener('click', hideAlert);
+  dom.backToGridBtn?.addEventListener('click', () => switchView('grid'));
+  dom.alertOkBtn?.addEventListener('click', hideAlert);
 
   if (window.location.hash.startsWith('#tool-')) {
     const toolId = window.location.hash.substring(6);
@@ -300,13 +300,13 @@ const init = () => {
   if (dom.openShortcutsBtn) {
     dom.openShortcutsBtn.addEventListener('click', () => {
       renderShortcutsList();
-      dom.shortcutsModal.classList.remove('hidden');
+      dom.shortcutsModal?.classList.remove('hidden');
     });
   }
 
   if (dom.closeShortcutsModalBtn) {
     dom.closeShortcutsModalBtn.addEventListener('click', () => {
-      dom.shortcutsModal.classList.add('hidden');
+      dom.shortcutsModal?.classList.add('hidden');
     });
   }
 

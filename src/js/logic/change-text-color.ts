@@ -4,6 +4,7 @@ import {
   hexToRgb,
   readFileAsArrayBuffer,
   getPDFDocument,
+  generateOutputFilename,
 } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
@@ -161,7 +162,7 @@ export async function changeTextColor() {
     const newPdfBytes = await newPdfDoc.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      'text-color-changed.pdf'
+      generateOutputFilename(state.files[0]?.name, 'text-color-changed.pdf')
     );
   } catch (e) {
     console.error(e);

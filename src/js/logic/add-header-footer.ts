@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, hexToRgb, parsePageRanges } from '../utils/helpers.js';
+import { downloadFile, hexToRgb, parsePageRanges, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 
 import { PDFDocument as PDFLibDocument, rgb, StandardFonts } from 'pdf-lib';
@@ -146,7 +146,7 @@ export async function addHeaderFooter() {
     const newPdfBytes = await state.pdfDoc.save();
     downloadFile(
       new Blob([newPdfBytes], { type: 'application/pdf' }),
-      'header-footer-added.pdf'
+      generateOutputFilename(state.files[0]?.name, 'header-footer.pdf')
     );
   } catch (e) {
     console.error(e);

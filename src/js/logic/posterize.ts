@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, parsePageRanges, getPDFDocument } from '../utils/helpers.js';
+import { downloadFile, parsePageRanges, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { PDFDocument, PageSizes } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -277,7 +277,7 @@ export async function posterize() {
     const newPdfBytes = await newDoc.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      'posterized.pdf'
+      generateOutputFilename(state.files[0]?.name, 'posterized.pdf')
     );
     showAlert('Success', 'Your PDF has been posterized.');
   } catch (e) {

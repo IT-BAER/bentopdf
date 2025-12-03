@@ -4,6 +4,7 @@ import {
   readFileAsArrayBuffer,
   hexToRgb,
   resetAndReloadTool,
+  generateOutputFilename,
 } from '../utils/helpers.js';
 import { state, resetState } from '../state.js';
 
@@ -173,7 +174,7 @@ export async function addWatermark() {
     const newPdfBytes = await state.pdfDoc.save();
     downloadFile(
       new Blob([newPdfBytes], { type: 'application/pdf' }),
-      'watermarked.pdf'
+      generateOutputFilename(state.files[0]?.name, 'watermarked.pdf')
     );
 
     resetAndReloadTool();

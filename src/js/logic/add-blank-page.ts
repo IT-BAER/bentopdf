@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile } from '../utils/helpers.js';
+import { downloadFile, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 
@@ -65,7 +65,7 @@ export async function addBlankPage() {
     const newPdfBytes = await newPdf.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      `blank-page${pageCount > 1 ? 's' : ''}-added.pdf`
+      generateOutputFilename(state.files[0]?.name, 'blank-pages-added.pdf')
     );
   } catch (e) {
     console.error(e);

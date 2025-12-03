@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, getPDFDocument } from '../utils/helpers.js';
+import { downloadFile, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { renderPagesProgressively, cleanupLazyRendering } from '../utils/render-utils.js';
 import Sortable from 'sortablejs';
@@ -208,7 +208,7 @@ export async function processAndSave() {
     const newPdfBytes = await newPdfDoc.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      'organized.pdf'
+      generateOutputFilename(state.files[0]?.name, 'organized.pdf')
     );
   } catch (e) {
     console.error('Save error:', e);

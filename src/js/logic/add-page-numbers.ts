@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, hexToRgb } from '../utils/helpers.js';
+import { downloadFile, hexToRgb, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
 
 import { rgb, StandardFonts } from 'pdf-lib';
@@ -125,7 +125,7 @@ export async function addPageNumbers() {
     const newPdfBytes = await state.pdfDoc.save();
     downloadFile(
       new Blob([newPdfBytes], { type: 'application/pdf' }),
-      'paginated.pdf'
+      generateOutputFilename(state.files[0]?.name, 'paginated.pdf')
     );
     showAlert('Success', 'Page numbers added successfully!');
   } catch (e) {

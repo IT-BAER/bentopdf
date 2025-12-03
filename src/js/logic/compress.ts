@@ -4,6 +4,7 @@ import {
   readFileAsArrayBuffer,
   formatBytes,
   getPDFDocument,
+  generateOutputFilename,
 } from '../utils/helpers.js';
 import { state } from '../state.js';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -335,7 +336,7 @@ export async function compress() {
 
       downloadFile(
         new Blob([resultBytes], { type: 'application/pdf' }),
-        'compressed-final.pdf'
+        generateOutputFilename(state.files[0]?.name, 'compressed.pdf')
       );
     } else {
       showLoader('Compressing multiple PDFs...');

@@ -10,62 +10,81 @@ import * as pdfjsLib from 'pdfjs-dist';
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
 
-// Centralizing DOM element selection
+// Centralizing DOM element selection - using getters to defer access until DOM is ready
+// Cache for DOM elements to avoid repeated lookups
+let domCache: { [key: string]: HTMLElement | null } = {};
+
+const getElement = (id: string): HTMLElement | null => {
+    if (!(id in domCache)) {
+        domCache[id] = document.getElementById(id);
+    }
+    return domCache[id];
+};
+
+// Clear cache (useful if DOM is rebuilt)
+export const clearDomCache = () => {
+    domCache = {};
+};
+
 export const dom = {
-    gridView: document.getElementById('all-tools'),
-    toolGrid: document.getElementById('tool-grid'),
-    toolInterface: document.getElementById('tool-interface'),
-    toolContent: document.getElementById('tool-content'),
-    backToGridBtn: document.getElementById('back-to-grid'),
-    loaderModal: document.getElementById('loader'),
-    loaderText: document.getElementById('loader-text'),
-    alertModal: document.getElementById('alert-modal'),
-    alertTitle: document.getElementById('alert-title'),
-    alertMessage: document.getElementById('alert-message'),
-    alertOkBtn: document.getElementById('alert-ok-btn'),
-    toolsHeader: document.getElementById('tools-header'),
-    shortcutsModal: document.getElementById('shortcuts-modal'),
-    closeShortcutsModalBtn: document.getElementById('close-shortcuts-modal'),
-    shortcutsList: document.getElementById('shortcuts-list'),
-    shortcutSearch: document.getElementById('shortcut-search'),
-    resetShortcutsBtn: document.getElementById('reset-shortcuts-btn'),
-    importShortcutsBtn: document.getElementById('import-shortcuts-btn'),
-    exportShortcutsBtn: document.getElementById('export-shortcuts-btn'),
-    openShortcutsBtn: document.getElementById('open-shortcuts-btn'),
-    warningModal: document.getElementById('warning-modal'),
-    warningTitle: document.getElementById('warning-title'),
-    warningMessage: document.getElementById('warning-message'),
-    warningCancelBtn: document.getElementById('warning-cancel-btn'),
-    warningConfirmBtn: document.getElementById('warning-confirm-btn'),
+    get gridView() { return getElement('grid-view'); },
+    get toolGrid() { return getElement('tool-grid'); },
+    get toolInterface() { return getElement('tool-interface'); },
+    get toolContent() { return getElement('tool-content'); },
+    get backToGridBtn() { return getElement('back-to-grid'); },
+    get loaderModal() { return getElement('loader'); },
+    get loaderText() { return getElement('loader-text'); },
+    get alertModal() { return getElement('alert-modal'); },
+    get alertTitle() { return getElement('alert-title'); },
+    get alertMessage() { return getElement('alert-message'); },
+    get alertOkBtn() { return getElement('alert-ok-btn'); },
+    get toolsHeader() { return getElement('tools-header'); },
+    get shortcutsModal() { return getElement('shortcuts-modal'); },
+    get closeShortcutsModalBtn() { return getElement('close-shortcuts-modal'); },
+    get shortcutsList() { return getElement('shortcuts-list'); },
+    get shortcutSearch() { return getElement('shortcut-search'); },
+    get resetShortcutsBtn() { return getElement('reset-shortcuts-btn'); },
+    get importShortcutsBtn() { return getElement('import-shortcuts-btn'); },
+    get exportShortcutsBtn() { return getElement('export-shortcuts-btn'); },
+    get openShortcutsBtn() { return getElement('open-shortcuts-btn'); },
+    get warningModal() { return getElement('warning-modal'); },
+    get warningTitle() { return getElement('warning-title'); },
+    get warningMessage() { return getElement('warning-message'); },
+    get warningCancelBtn() { return getElement('warning-cancel-btn'); },
+    get warningConfirmBtn() { return getElement('warning-confirm-btn'); },
 };
 
 export const showLoader = (text = 'Wird verarbeitet...') => {
-    dom.loaderText.textContent = text;
-    dom.loaderModal.classList.remove('hidden');
+    if (dom.loaderText) dom.loaderText.textContent = text;
+    if (dom.loaderModal) dom.loaderModal.classList.remove('hidden');
 };
 
-export const hideLoader = () => dom.loaderModal.classList.add('hidden');
+export const hideLoader = () => {
+    if (dom.loaderModal) dom.loaderModal.classList.add('hidden');
+};
 
 export const showAlert = (title: any, message: any) => {
-    dom.alertTitle.textContent = title;
-    dom.alertMessage.textContent = message;
-    dom.alertModal.classList.remove('hidden');
+    if (dom.alertTitle) dom.alertTitle.textContent = title;
+    if (dom.alertMessage) dom.alertMessage.textContent = message;
+    if (dom.alertModal) dom.alertModal.classList.remove('hidden');
 };
 
-export const hideAlert = () => dom.alertModal.classList.add('hidden');
+export const hideAlert = () => {
+    if (dom.alertModal) dom.alertModal.classList.add('hidden');
+};
 
 export const switchView = (view: any) => {
     if (view === 'grid') {
-        dom.gridView.classList.remove('hidden');
-        dom.toolInterface.classList.add('hidden');
+        if (dom.gridView) dom.gridView.classList.remove('hidden');
+        if (dom.toolInterface) dom.toolInterface.classList.add('hidden');
         // show header
         if (dom.toolsHeader) {
             dom.toolsHeader.classList.remove('hidden');
         }
         resetState();
     } else {
-        dom.gridView.classList.add('hidden');
-        dom.toolInterface.classList.remove('hidden');
+        if (dom.gridView) dom.gridView.classList.add('hidden');
+        if (dom.toolInterface) dom.toolInterface.classList.remove('hidden');
         if (dom.toolsHeader) {
             dom.toolsHeader.classList.add('hidden');
         }

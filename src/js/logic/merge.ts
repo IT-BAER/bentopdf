@@ -1,5 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.ts';
-import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.ts';
+import { downloadFile, readFileAsArrayBuffer, getPDFDocument, generateOutputFilename } from '../utils/helpers.ts';
 import { state } from '../state.ts';
 import { renderPagesProgressively, cleanupLazyRendering, createPlaceholder } from '../utils/render-utils.ts';
 
@@ -334,7 +334,7 @@ export async function merge() {
       hideLoader();
       if (e.data.status === 'success') {
         const blob = new Blob([e.data.pdfBytes], { type: 'application/pdf' });
-        downloadFile(blob, 'merged.pdf');
+        downloadFile(blob, generateOutputFilename(state.files[0]?.name, 'merged.pdf'));
         showAlert('Success', 'PDFs merged successfully!');
       } else {
         console.error('Worker merge error:', e.data.message);
