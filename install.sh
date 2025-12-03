@@ -3,8 +3,9 @@
 # PDF-Tools Installation Script for Debian/Ubuntu
 # This script installs PDF-Tools and sets it up as a systemd service
 # Usage:
-#   ./install.sh          - Fresh install or reinstall
-#   ./install.sh --update - Update existing installation
+#   ./install.sh              - Fresh install or reinstall
+#   ./install.sh --update     - Update existing installation
+#   ./install.sh --force      - Skip RAM check and force install/update
 #
 # Remote usage:
 #   curl -fsSL https://raw.githubusercontent.com/IT-BAER/bentopdf/main/install.sh | sudo bash
@@ -27,35 +28,45 @@ APP_PORT="${PDF_TOOLS_PORT:-3000}"
 NODE_VERSION="20"
 REPO_URL="https://github.com/IT-BAER/bentopdf.git"
 RAW_URL="https://raw.githubusercontent.com/IT-BAER/bentopdf/main"
+MIN_RAM_MB=768  # Minimum RAM required for build process
 
 # Parse arguments
 UPDATE_MODE=false
+FORCE_MODE=false
 for arg in "$@"; do
     case $arg in
         --update|-u)
             UPDATE_MODE=true
             shift
             ;;
+        --force|-f)
+            FORCE_MODE=true
+            shift
+            ;;
         --help|-h)
             echo "PDF-Tools Installation Script"
             echo ""
             echo "Usage (local):"
-            echo "  sudo ./install.sh           Fresh install or reinstall"
-            echo "  sudo ./install.sh --update  Update existing installation"
-            echo "  sudo ./install.sh --help    Show this help message"
+            echo "  sudo ./install.sh             Fresh install or reinstall"
+            echo "  sudo ./install.sh --update    Update existing installation"
+            echo "  sudo ./install.sh --force     Skip RAM check and force operation"
+            echo "  sudo ./install.sh --help      Show this help message"
             echo ""
             echo "Usage (remote):"
             echo "  curl -fsSL $RAW_URL/install.sh | sudo bash"
             echo "  curl -fsSL $RAW_URL/install.sh | sudo bash -s -- --update"
+            echo "  curl -fsSL $RAW_URL/install.sh | sudo bash -s -- --update --force"
             echo ""
             echo "Environment variables:"
-            echo "  PDF_TOOLS_PORT=3000         Port to run the service on (default: 3000)"
+            echo "  PDF_TOOLS_PORT=3000           Port to run the service on (default: 3000)"
             echo ""
             echo "Examples:"
             echo "  sudo ./install.sh"
+            echo "  sudo ./install.sh --force"
             echo "  PDF_TOOLS_PORT=8080 sudo ./install.sh"
             echo "  sudo ./install.sh --update"
-            echo "  curl -fsSL $RAW_URL/install.sh | sudo bash -s -- --update"
+            echo "  sudo ./install.sh --update --force"
+            echo "  curl -fsSL $RAW_URL/install.sh | sudo bash -s -- --update --force"
             exit 0
             ;;
     esac
@@ -128,11 +139,44 @@ get_current_version() {
     fi
 }
 
+# Function to check available RAM
+check_ram() {
+    # Get available RAM in MB (MemAvailable or MemFree + Cached)
+    if [ -f /proc/meminfo ]; then
+        AVAILABLE_RAM=$(awk '/MemAvailable/ {print int($2/1024)}' /proc/meminfo)
+        if [ -z "$AVAILABLE_RAM" ] || [ "$AVAILABLE_RAM" -eq 0 ]; then
+            # Fallback for older kernels without MemAvailable
+            AVAILABLE_RAM=$(awk '/MemFree|Cached/ {sum+=$2} END {print int(sum/1024)}' /proc/meminfo)
+        fi
+        TOTAL_RAM=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
+        echo -e "System RAM: ${YELLOW}${TOTAL_RAM}MB total, ${AVAILABLE_RAM}MB available${NC}"
+        
+        if [ "$AVAILABLE_RAM" -lt "$MIN_RAM_MB" ]; then
+            echo -e "${RED}⚠ Warning: Low available RAM (${AVAILABLE_RAM}MB < ${MIN_RAM_MB}MB required)${NC}"
+            echo -e "${YELLOW}The build process may fail with 'JavaScript heap out of memory' error.${NC}"
+            if [ "$FORCE_MODE" = true ]; then
+                echo -e "${YELLOW}Continuing anyway due to --force flag...${NC}"
+            else
+                echo -e "${RED}Aborting. Use --force to continue anyway.${NC}"
+                echo -e "${YELLOW}Tip: Free up RAM or increase swap space before retrying.${NC}"
+                exit 1
+            fi
+        else
+            echo -e "${GREEN}✓ Sufficient RAM available for build process${NC}"
+        fi
+    else
+        echo -e "${YELLOW}⚠ Cannot check RAM (no /proc/meminfo). Proceeding anyway...${NC}"
+    fi
+}
+
 # ============================================================================
 # UPDATE MODE
 # ============================================================================
 if [ "$UPDATE_MODE" = true ]; then
     echo -e "${BLUE}Checking for updates...${NC}"
+    
+    # Check RAM before starting update
+    check_ram
     
     cd "$APP_DIR"
     CURRENT_VERSION=$(get_current_version)
@@ -142,13 +186,17 @@ if [ "$UPDATE_MODE" = true ]; then
     echo -e "\n${BLUE}[1/4] Fetching latest changes...${NC}"
     sudo -u "$APP_USER" git fetch origin main 2>/dev/null || git fetch origin main
     
-    # Check if there are updates
+    # Check if there are updates (skip check if --force is used)
     LOCAL=$(git rev-parse HEAD)
     REMOTE=$(git rev-parse origin/main)
     
-    if [ "$LOCAL" = "$REMOTE" ]; then
+    if [ "$LOCAL" = "$REMOTE" ] && [ "$FORCE_MODE" = false ]; then
         echo -e "${GREEN}✓ PDF-Tools is already up to date (v$CURRENT_VERSION)${NC}"
         exit 0
+    fi
+    
+    if [ "$LOCAL" = "$REMOTE" ] && [ "$FORCE_MODE" = true ]; then
+        echo -e "${YELLOW}Already up to date but --force flag used, rebuilding anyway...${NC}"
     fi
     
     # Stop service before updating
@@ -184,8 +232,12 @@ if [ "$UPDATE_MODE" = true ]; then
     
     # Rebuild
     echo -e "\n${BLUE}[4/4] Rebuilding application...${NC}"
+    
+    # Increase Node.js memory limit for build process (prevents heap out of memory errors)
+    export NODE_OPTIONS="--max-old-space-size=1024"
+    
     sudo -u "$APP_USER" npm install --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps
-    sudo -u "$APP_USER" npm run build 2>/dev/null || npm run build
+    sudo -u "$APP_USER" NODE_OPTIONS="--max-old-space-size=1024" npm run build 2>/dev/null || NODE_OPTIONS="--max-old-space-size=1024" npm run build
     
     # Merge user config with new config options
     if [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
@@ -302,6 +354,9 @@ fi
 # FRESH INSTALLATION
 # ============================================================================
 
+# Check RAM before starting installation
+check_ram
+
 # Step 1: Update system packages
 echo -e "\n${BLUE}[1/7] Updating system packages...${NC}"
 apt-get update -qq
@@ -362,7 +417,8 @@ echo -e "${BLUE}Installing npm dependencies...${NC}"
 sudo -u "$APP_USER" npm install --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps
 
 echo -e "${BLUE}Building application...${NC}"
-sudo -u "$APP_USER" npm run build 2>/dev/null || npm run build
+# Increase Node.js memory limit for build process (prevents heap out of memory errors)
+sudo -u "$APP_USER" NODE_OPTIONS="--max-old-space-size=1024" npm run build 2>/dev/null || NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
 # Fix permissions
 chown -R "$APP_USER:$APP_USER" "$APP_DIR"
