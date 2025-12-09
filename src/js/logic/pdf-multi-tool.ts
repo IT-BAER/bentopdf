@@ -6,6 +6,7 @@ import Sortable from 'sortablejs';
 import { downloadFile, getPDFDocument } from '../utils/helpers';
 import { renderPagesProgressively, cleanupLazyRendering, renderPageToCanvas, createPlaceholder } from '../utils/render-utils';
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js';
+import { getTranslations } from '../i18n/index.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -194,7 +195,7 @@ function initializeTool() {
   document.getElementById('bulk-download-btn')?.addEventListener('click', () => {
     if (isRendering) return;
     if (selectedPages.size === 0) {
-      showModal('No Pages Selected', 'Please select at least one page to download.', 'info');
+      showModal(getTranslations().noPagesSelected, getTranslations().selectPageToDownload, 'info');
       return;
     }
     withButtonLoading('bulk-download-btn', async () => {
@@ -217,7 +218,7 @@ function initializeTool() {
   document.getElementById('export-pdf-btn')?.addEventListener('click', () => {
     if (isRendering) return;
     if (allPages.length === 0) {
-      showModal('No Pages', 'There are no pages to export.', 'info');
+      showModal(getTranslations().noPagesTitle, getTranslations().noPagesToExport, 'info');
       return;
     }
     withButtonLoading('export-pdf-btn', async () => {
@@ -930,7 +931,7 @@ function bulkSplit() {
 
 async function downloadAll() {
   if (allPages.length === 0) {
-    showModal('No Pages', 'Please upload PDFs first.', 'info');
+    showModal(getTranslations().noPagesTitle, getTranslations().uploadPdfFirst, 'info');
     return;
   }
 
@@ -1038,10 +1039,10 @@ async function downloadPagesAsPdf(indices: number[], filename: string) {
     const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
 
     downloadFile(blob, filename);
-    showModal('Success', 'PDF downloaded successfully.', 'success');
+    showModal(getTranslations().success, getTranslations().pdfDownloaded, 'success');
   } catch (e) {
     console.error('Failed to create PDF:', e);
-    showModal('Error', 'Failed to create PDF.', 'error');
+    showModal(getTranslations().error, 'Failed to create PDF.', 'error');
   }
 }
 

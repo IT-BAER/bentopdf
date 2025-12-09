@@ -153,8 +153,8 @@ export async function removeBlankPages() {
     if (indicesToKeep.length === state.pdfDoc.getPageCount()) {
       hideLoader();
       showAlert(
-        'No Pages Removed',
-        'No pages were identified as blank at the current sensitivity level.'
+        getTranslations().noPagesRemoved,
+        getTranslations().noBlankPagesFound
       );
       return;
     }

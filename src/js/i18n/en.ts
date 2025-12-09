@@ -33,6 +33,14 @@ export const en = {
   export: 'Export',
   resetToDefaults: 'Reset to Defaults',
   settingsAutoSaved: 'Settings are automatically saved',
+  noPagesTitle: 'No Pages',
+  noPagesToExport: 'There are no pages to export.',
+  pdfDownloaded: 'PDF downloaded successfully.',
+  noPagesSelected: 'No Pages Selected',
+  selectPageToDownload: 'Please select at least one page to download.',
+  uploadPdfFirst: 'Please upload PDFs first.',
+  noPagesRemoved: 'No Pages Removed',
+  noBlankPagesFound: 'No pages were identified as blank at the current sensitivity level.',
   
   // Shortcuts modal dialogs
   shortcutsModal: {

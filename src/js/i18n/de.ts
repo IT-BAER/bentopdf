@@ -33,6 +33,14 @@ export const de = {
   export: 'Exportieren',
   resetToDefaults: 'Auf Standard zurücksetzen',
   settingsAutoSaved: 'Einstellungen werden automatisch gespeichert',
+  noPagesTitle: 'Keine Seiten',
+  noPagesToExport: 'Es gibt keine Seiten zum Exportieren.',
+  pdfDownloaded: 'PDF erfolgreich heruntergeladen.',
+  noPagesSelected: 'Keine Seiten ausgewählt',
+  selectPageToDownload: 'Bitte wähle mindestens eine Seite zum Herunterladen aus.',
+  uploadPdfFirst: 'Bitte lade zuerst PDFs hoch.',
+  noPagesRemoved: 'Keine Seiten entfernt',
+  noBlankPagesFound: 'Bei der aktuellen Empfindlichkeit wurden keine leeren Seiten gefunden.',
   
   // Shortcuts modal dialogs
   shortcutsModal: {
