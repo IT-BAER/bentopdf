@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { renderPagesProgressively, cleanupLazyRendering } from '../utils/render-utils.js';
 import Sortable from 'sortablejs';
 import { icons, createIcons } from 'lucide';
@@ -168,7 +169,7 @@ export async function renderDuplicateOrganizeThumbnails() {
     initializePageGridSortable();
   } catch (error) {
     console.error('Error rendering thumbnails:', error);
-    showAlert('Error', 'Failed to render page previews');
+    showAlert(getTranslations().error, 'Failed to render page previews');
   } finally {
     hideLoader();
   }
@@ -188,7 +189,7 @@ export async function processAndSave() {
     console.log('Original PDF Page Count:', state.pdfDoc?.getPageCount());
 
     if (finalIndices.length === 0) {
-      showAlert('Error', 'No valid pages to save.');
+      showAlert(getTranslations().error, 'No valid pages to save.');
       return;
     }
 
@@ -198,7 +199,7 @@ export async function processAndSave() {
     const invalidIndices = finalIndices.filter(i => i >= totalPages);
     if (invalidIndices.length > 0) {
       console.error('Found invalid indices:', invalidIndices);
-      showAlert('Error', 'Some pages could not be processed. Please try again.');
+      showAlert(getTranslations().error, 'Some pages could not be processed. Please try again.');
       return;
     }
 
@@ -212,7 +213,7 @@ export async function processAndSave() {
     );
   } catch (e) {
     console.error('Save error:', e);
-    showAlert('Error', 'Failed to save the new PDF. Check console for details.');
+    showAlert(getTranslations().error, 'Failed to save the new PDF. Check console for details.');
   } finally {
     hideLoader();
   }

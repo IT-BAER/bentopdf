@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFPageProxy } from 'pdfjs-dist/types/src/display/api.js';
@@ -169,7 +170,7 @@ export async function removeBlankPages() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not remove blank pages.');
+    showAlert(getTranslations().error, 'Could not remove blank pages.');
   } finally {
     hideLoader();
   }

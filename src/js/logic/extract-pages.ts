@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import JSZip from 'jszip';
 
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
@@ -63,7 +64,7 @@ export async function extractPages() {
     downloadFile(zipBlob, 'extracted-pages.zip');
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not extract pages.');
+    showAlert(getTranslations().error, 'Could not extract pages.');
   } finally {
     hideLoader();
   }

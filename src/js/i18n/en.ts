@@ -11,6 +11,8 @@ export const en = {
   // Common UI
   processing: 'Processing...',
   alert: 'Alert',
+  success: 'Success',
+  error: 'Error',
   ok: 'OK',
   cancel: 'Cancel',
   proceed: 'Proceed',

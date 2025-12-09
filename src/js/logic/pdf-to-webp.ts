@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import JSZip from 'jszip';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -34,7 +35,7 @@ export async function pdfToWebp() {
     downloadFile(zipBlob, 'converted_webp.zip');
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Failed to convert PDF to WebP.');
+    showAlert(getTranslations().error, 'Failed to convert PDF to WebP.');
   } finally {
     hideLoader();
   }

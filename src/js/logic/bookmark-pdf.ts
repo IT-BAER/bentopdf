@@ -8,6 +8,7 @@ import { createIcons, icons } from 'lucide';
 import '../../css/bookmark.css';
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js';
 import { truncateFilename, getPDFDocument } from '../utils/helpers.js';
+import { getTranslations } from '../i18n/index.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
@@ -1713,7 +1714,7 @@ csvImportHidden.addEventListener('change', async (e) => {
     bookmarkTree = imported;
     saveState();
     renderBookmarkTree();
-    await showAlertModal('Success', `Imported ${imported.length} bookmarks!`);
+    await showAlertModal(getTranslations().success, `Imported ${imported.length} bookmarks!`);
   }
 
   csvImportHidden.value = '';
@@ -1790,7 +1791,7 @@ jsonImportHidden.addEventListener('change', async (e) => {
     bookmarkTree = imported;
     saveState();
     renderBookmarkTree();
-    await showAlertModal('Success', 'Bookmarks imported from JSON!');
+    await showAlertModal(getTranslations().success, 'Bookmarks imported from JSON!');
   } catch (err) {
     await showAlertModal('Error', 'Invalid JSON format');
   }
@@ -2285,7 +2286,7 @@ downloadBtn.addEventListener('click', async () => {
     a.click();
     URL.revokeObjectURL(url);
 
-    await showAlertModal('Success', 'PDF saved successfully!');
+    await showAlertModal(getTranslations().success, 'PDF saved successfully!');
 
     // Reset to uploader after successful save
     setTimeout(() => {

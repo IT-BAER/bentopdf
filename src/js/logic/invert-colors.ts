@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -9,7 +10,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mi
 
 export async function invertColors() {
   if (!state.pdfDoc) {
-    showAlert('Error', 'PDF not loaded.');
+    showAlert(getTranslations().error, 'PDF not loaded.');
     return;
   }
   showLoader('Inverting PDF colors...');
@@ -61,7 +62,7 @@ export async function invertColors() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not invert PDF colors.');
+    showAlert(getTranslations().error, 'Could not invert PDF colors.');
   } finally {
     hideLoader();
   }

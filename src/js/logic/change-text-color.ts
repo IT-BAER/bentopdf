@@ -7,6 +7,7 @@ import {
   generateOutputFilename,
 } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -98,7 +99,7 @@ export async function setupTextColorTool() {
 
 export async function changeTextColor() {
   if (!state.pdfDoc) {
-    showAlert('Error', 'PDF not loaded.');
+    showAlert(getTranslations().error, 'PDF not loaded.');
     return;
   }
 
@@ -166,7 +167,7 @@ export async function changeTextColor() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not change text color.');
+    showAlert(getTranslations().error, 'Could not change text color.');
   } finally {
     hideLoader();
   }

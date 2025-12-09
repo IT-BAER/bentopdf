@@ -1,6 +1,7 @@
 import { downloadFile, formatBytes } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { showAlert } from '../ui.js';
+import { getTranslations } from '../i18n/index.js';
 import JSZip from 'jszip';
 
 const worker = new Worker('/workers/extract-attachments.worker.js');
@@ -102,7 +103,7 @@ worker.onmessage = (e: MessageEvent<ExtractAttachmentResponse>) => {
     zip.generateAsync({ type: 'blob' }).then((zipBlob) => {
       downloadFile(zipBlob, 'extracted-attachments.zip');
 
-      showAlert('Success', `${attachments.length} attachment(s) extracted successfully!`);
+      showAlert(getTranslations().success, `${attachments.length} attachment(s) extracted successfully!`);
 
       showStatus(
         `Extraction completed! ${attachments.length} attachment(s) in zip file (${formatBytes(totalSize)}). Download started.`,

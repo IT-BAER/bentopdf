@@ -5,6 +5,7 @@ import {
   readFileAsArrayBuffer,
 } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 export async function changePermissions() {
   const file = state.files[0];
@@ -131,7 +132,7 @@ export async function changePermissions() {
         'PDF decrypted successfully! All encryption and restrictions removed.';
     }
 
-    showAlert('Success', successMessage);
+    showAlert(getTranslations().success, successMessage);
   } catch (error: any) {
     console.error('Error during PDF permission change:', error);
     hideLoader();

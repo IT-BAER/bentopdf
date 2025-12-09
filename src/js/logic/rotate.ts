@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, resetAndReloadTool, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { getRotationState, resetRotationState } from '../handlers/fileHandler.js';
 
 import { degrees } from 'pdf-lib';
@@ -30,7 +31,7 @@ export async function rotate() {
     });
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not apply rotations.');
+    showAlert(getTranslations().error, 'Could not apply rotations.');
   } finally {
     hideLoader();
   }

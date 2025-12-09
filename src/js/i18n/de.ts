@@ -11,6 +11,8 @@ export const de = {
   // Common UI
   processing: 'Wird verarbeitet...',
   alert: 'Hinweis',
+  success: 'Erfolg',
+  error: 'Fehler',
   ok: 'OK',
   cancel: 'Abbrechen',
   proceed: 'Fortfahren',

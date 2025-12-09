@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, hexToRgb, parsePageRanges, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import { PDFDocument as PDFLibDocument, rgb, StandardFonts } from 'pdf-lib';
 
@@ -150,7 +151,7 @@ export async function addHeaderFooter() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', e.message || 'Could not add header or footer.');
+    showAlert(getTranslations().error, e.message || 'Could not add header or footer.');
   } finally {
     hideLoader();
   }

@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui';
 import { readFileAsArrayBuffer, downloadFile } from '../utils/helpers';
 import { state } from '../state';
+import { getTranslations } from '../i18n/index.js';
 
 const worker = new Worker('/workers/add-attachments.worker.js');
 
@@ -17,11 +18,11 @@ worker.onmessage = (e) => {
       `attached-${state.files[0].name}`
     );
 
-    showAlert('Success', `${attachments.length} file(s) attached successfully.`);
+    showAlert(getTranslations().success, `${attachments.length} file(s) attached successfully.`);
     clearAttachments();
   } else if (data.status === 'error') {
     hideLoader();
-    showAlert('Error', data.message || 'Unknown error occurred.');
+    showAlert(getTranslations().error, data.message || 'Unknown error occurred.');
     clearAttachments();
   }
 };
@@ -29,13 +30,13 @@ worker.onmessage = (e) => {
 worker.onerror = (error) => {
   hideLoader();
   console.error('Worker error:', error);
-  showAlert('Error', 'Worker error occurred. Check console for details.');
+  showAlert(getTranslations().error, 'Worker error occurred. Check console for details.');
   clearAttachments();
 };
 
 export async function addAttachments() {
   if (!state.files || state.files.length === 0) {
-    showAlert('Error', 'Main PDF is not loaded.');
+    showAlert(getTranslations().error, 'Main PDF is not loaded.');
     return;
   }
   if (attachments.length === 0) {
@@ -54,7 +55,7 @@ export async function addAttachments() {
     pageRange = pageRangeInput?.value?.trim() || '';
 
     if (!pageRange) {
-      showAlert('Error', 'Please specify a page range for page-level attachments.');
+      showAlert(getTranslations().error, 'Please specify a page range for page-level attachments.');
       return;
     }
   }
@@ -93,7 +94,7 @@ export async function addAttachments() {
   } catch (error: any) {
     console.error('Error attaching files:', error);
     hideLoader();
-    showAlert('Error', `Failed to attach files: ${error.message}`);
+    showAlert(getTranslations().error, `Failed to attach files: ${error.message}`);
     clearAttachments();
   }
 }

@@ -1,12 +1,13 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, hexToRgb, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import { PDFDocument as PDFLibDocument, rgb } from 'pdf-lib';
 
 export async function changeBackgroundColor() {
   if (!state.pdfDoc) {
-    showAlert('Error', 'PDF not loaded.');
+    showAlert(getTranslations().error, 'PDF not loaded.');
     return;
   }
 
@@ -48,7 +49,7 @@ export async function changeBackgroundColor() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not change the background color.');
+    showAlert(getTranslations().error, 'Could not change the background color.');
   } finally {
     hideLoader();
   }

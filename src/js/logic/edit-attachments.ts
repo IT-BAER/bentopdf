@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 const worker = new Worker('/workers/edit-attachments.worker.js');
 
@@ -39,7 +40,7 @@ async function loadAttachmentsList() {
   } catch (error) {
     console.error('Error loading attachments:', error);
     hideLoader();
-    showAlert('Error', 'Failed to load attachments from PDF.');
+    showAlert(getTranslations().error, 'Failed to load attachments from PDF.');
   }
 }
 
@@ -64,17 +65,17 @@ worker.onmessage = (e) => {
       `edited-attachments-${data.fileName}`
     );
 
-    showAlert('Success', 'Attachments updated successfully!');
+    showAlert(getTranslations().success, 'Attachments updated successfully!');
   } else if (data.status === 'error') {
     hideLoader();
-    showAlert('Error', data.message || 'Unknown error occurred.');
+    showAlert(getTranslations().error, data.message || 'Unknown error occurred.');
   }
 };
 
 worker.onerror = (error) => {
   hideLoader();
   console.error('Worker error:', error);
-  showAlert('Error', 'Worker error occurred. Check console for details.');
+  showAlert(getTranslations().error, 'Worker error occurred. Check console for details.');
 };
 
 function displayAttachments(attachments) {
@@ -192,7 +193,7 @@ function displayAttachments(attachments) {
 
 export async function editAttachments() {
   if (!state.files || state.files.length === 0) {
-    showAlert('Error', 'No PDF file loaded.');
+    showAlert(getTranslations().error, 'No PDF file loaded.');
     return;
   }
 
@@ -213,6 +214,6 @@ export async function editAttachments() {
   } catch (error) {
     console.error('Error editing attachments:', error);
     hideLoader();
-    showAlert('Error', 'Failed to edit attachments.');
+    showAlert(getTranslations().error, 'Failed to edit attachments.');
   }
 }

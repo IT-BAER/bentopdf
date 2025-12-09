@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.ts';
 import { downloadFile, readFileAsArrayBuffer, getPDFDocument, generateOutputFilename } from '../utils/helpers.ts';
 import { state } from '../state.ts';
+import { getTranslations } from '../i18n/index.js';
 import { renderPagesProgressively, cleanupLazyRendering, createPlaceholder } from '../utils/render-utils.ts';
 
 import { createIcons, icons } from 'lucide';
@@ -214,7 +215,7 @@ async function renderPageMergeThumbnails() {
     initializePageThumbnailsSortable();
   } catch (error) {
     console.error('Error rendering page thumbnails:', error);
-    showAlert('Error', 'Failed to render page thumbnails');
+    showAlert(getTranslations().error, 'Failed to render page thumbnails');
   } finally {
     hideLoader();
     mergeState.isRendering = false;
@@ -312,7 +313,7 @@ export async function merge() {
     }
 
     if (jobs.length === 0) {
-      showAlert('Error', 'No files or pages selected to merge.');
+      showAlert(getTranslations().error, 'No files or pages selected to merge.');
       hideLoader();
       return;
     }
@@ -335,17 +336,17 @@ export async function merge() {
       if (e.data.status === 'success') {
         const blob = new Blob([e.data.pdfBytes], { type: 'application/pdf' });
         downloadFile(blob, generateOutputFilename(state.files[0]?.name, 'merged.pdf'));
-        showAlert('Success', 'PDFs merged successfully!');
+        showAlert(getTranslations().success, 'PDFs merged successfully!');
       } else {
         console.error('Worker merge error:', e.data.message);
-        showAlert('Error', e.data.message || 'Failed to merge PDFs.');
+        showAlert(getTranslations().error, e.data.message || 'Failed to merge PDFs.');
       }
     };
 
     mergeWorker.onerror = (e) => {
       hideLoader();
       console.error('Worker error:', e);
-      showAlert('Error', 'An unexpected error occurred in the merge worker.');
+      showAlert(getTranslations().error, 'An unexpected error occurred in the merge worker.');
     };
 
   } catch (e) {
@@ -380,7 +381,7 @@ export async function setupMergeTool() {
     }
   } catch (error) {
     console.error('Error loading PDFs:', error);
-    showAlert('Error', 'Failed to load one or more PDF files');
+    showAlert(getTranslations().error, 'Failed to load one or more PDF files');
     return;
   } finally {
     hideLoader();

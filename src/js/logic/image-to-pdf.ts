@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { jpgToPdf } from './jpg-to-pdf.js';
 import { pngToPdf } from './png-to-pdf.js';
 import { webpToPdf } from './webp-to-pdf.js';
@@ -91,7 +92,7 @@ export async function imageToPdf() {
           );
         } catch (e) {
           console.error(e);
-          showAlert('Error', 'Failed to convert images to PDF.');
+          showAlert(getTranslations().error, 'Failed to convert images to PDF.');
         } finally {
           hideLoader();
         }
@@ -161,7 +162,7 @@ export async function imageToPdf() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', e.message || 'Failed to create PDF from images.');
+    showAlert(getTranslations().error, e.message || 'Failed to create PDF from images.');
   } finally {
     hideLoader();
   }

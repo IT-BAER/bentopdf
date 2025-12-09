@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, hexToRgb, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import { rgb, StandardFonts } from 'pdf-lib';
 
@@ -127,10 +128,10 @@ export async function addPageNumbers() {
       new Blob([newPdfBytes], { type: 'application/pdf' }),
       generateOutputFilename(state.files[0]?.name, 'paginated.pdf')
     );
-    showAlert('Success', 'Page numbers added successfully!');
+    showAlert(getTranslations().success, 'Page numbers added successfully!');
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not add page numbers.');
+    showAlert(getTranslations().error, 'Could not add page numbers.');
   } finally {
     hideLoader();
   }

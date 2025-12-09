@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, getPDFDocument } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 
@@ -8,7 +9,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mi
 
 export async function pdfToGreyscale() {
   if (!state.pdfDoc) {
-    showAlert('Error', 'PDF not loaded.');
+    showAlert(getTranslations().error, 'PDF not loaded.');
     return;
   }
   showLoader('Converting to greyscale...');
@@ -62,7 +63,7 @@ export async function pdfToGreyscale() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not convert to greyscale.');
+    showAlert(getTranslations().error, 'Could not convert to greyscale.');
   } finally {
     hideLoader();
   }

@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, hexToRgb, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFDocument as PDFLibDocument, rgb } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -212,7 +213,7 @@ export async function combineToSinglePage() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'An error occurred while combining pages.');
+    showAlert(getTranslations().error, 'An error occurred while combining pages.');
   } finally {
     hideLoader();
   }

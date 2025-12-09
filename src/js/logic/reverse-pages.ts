@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 import JSZip from 'jszip';
@@ -10,7 +11,7 @@ export async function reversePages() {
     (file: File) => file.type === 'application/pdf'
   );
   if (!pdfDocs.length) {
-    showAlert('Error', 'PDF not loaded.');
+    showAlert(getTranslations().error, 'PDF not loaded.');
     return;
   }
   showLoader('Reversing page order...');
@@ -39,7 +40,7 @@ export async function reversePages() {
     downloadFile(zipBlob, 'reversed_pdfs.zip');
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'Could not reverse the PDF pages.');
+    showAlert(getTranslations().error, 'Could not reverse the PDF pages.');
   } finally {
     hideLoader();
   }

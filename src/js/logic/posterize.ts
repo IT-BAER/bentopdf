@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, parsePageRanges, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFDocument, PageSizes } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 import { createIcons, icons } from 'lucide';
@@ -279,10 +280,10 @@ export async function posterize() {
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
       generateOutputFilename(state.files[0]?.name, 'posterized.pdf')
     );
-    showAlert('Success', 'Your PDF has been posterized.');
+    showAlert(getTranslations().success, 'Your PDF has been posterized.');
   } catch (e) {
     console.error(e);
-    showAlert('Error', e.message || 'Could not posterize the PDF.');
+    showAlert(getTranslations().error, e.message || 'Could not posterize the PDF.');
   } finally {
     hideLoader();
   }

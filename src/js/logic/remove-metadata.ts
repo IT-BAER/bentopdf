@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFName } from 'pdf-lib';
 
 export function removeMetadataFromDoc(pdfDoc) {
@@ -57,7 +58,7 @@ export async function removeMetadata() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'An error occurred while trying to remove metadata.');
+    showAlert(getTranslations().error, 'An error occurred while trying to remove metadata.');
   } finally {
     hideLoader();
   }

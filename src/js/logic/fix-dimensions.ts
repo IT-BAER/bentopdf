@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, hexToRgb, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import { PDFDocument as PDFLibDocument, rgb, PageSizes } from 'pdf-lib';
 
@@ -107,7 +108,7 @@ export async function fixDimensions() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'An error occurred while standardizing pages.');
+    showAlert(getTranslations().error, 'An error occurred while standardizing pages.');
   } finally {
     hideLoader();
   }

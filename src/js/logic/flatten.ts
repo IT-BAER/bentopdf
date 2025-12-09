@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFDocument } from 'pdf-lib';
 
 export function flattenFormsInDoc(pdfDoc) {
@@ -72,15 +73,15 @@ export async function flatten() {
       if (processedCount > 0) {
         const zipBlob = await zip.generateAsync({ type: 'blob' });
         downloadFile(zipBlob, 'flattened_pdfs.zip');
-        showAlert('Success', `Processed ${processedCount} PDFs.`);
+        showAlert(getTranslations().success, `Processed ${processedCount} PDFs.`);
       } else {
-        showAlert('Error', 'No PDFs could be processed.');
+        showAlert(getTranslations().error, 'No PDFs could be processed.');
       }
       hideLoader();
     }
   } catch (e) {
     console.error(e);
     hideLoader();
-    showAlert('Error', e.message || 'An unexpected error occurred.');
+    showAlert(getTranslations().error, e.message || 'An unexpected error occurred.');
   }
 }

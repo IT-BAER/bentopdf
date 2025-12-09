@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import { PDFDocument as PDFLibDocument, rgb } from 'pdf-lib';
 
@@ -8,7 +9,7 @@ export async function splitInHalf() {
   // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
   const splitType = document.getElementById('split-type').value;
   if (!state.pdfDoc) {
-    showAlert('Error', 'No PDF document is loaded.');
+    showAlert(getTranslations().error, 'No PDF document is loaded.');
     return;
   }
   showLoader('Splitting PDF pages...');
@@ -48,7 +49,7 @@ export async function splitInHalf() {
     );
   } catch (e) {
     console.error(e);
-    showAlert('Error', 'An error occurred while splitting the PDF.');
+    showAlert(getTranslations().error, 'An error occurred while splitting the PDF.');
   } finally {
     hideLoader();
   }

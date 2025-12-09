@@ -2,6 +2,7 @@ import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { createIcons, icons } from 'lucide';
 import * as pdfjsLib from 'pdfjs-dist';
 import { downloadFile, getPDFDocument } from '../utils/helpers.js';
+import { getTranslations } from '../i18n/index.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 import { state } from '../state.js';
@@ -91,7 +92,7 @@ async function renderVisualSelector() {
     );
   } catch (error) {
     console.error('Error rendering visual selector:', error);
-    showAlert('Error', 'Failed to render page previews.');
+    showAlert(getTranslations().error, 'Failed to render page previews.');
     // Reset the flag on error so the user can try again.
     visualSelectorRendered = false;
   } finally {
@@ -352,7 +353,7 @@ export async function split() {
   } catch (e) {
     console.error(e);
     showAlert(
-      'Error',
+      getTranslations().error,
       e.message || 'Failed to split PDF. Please check your selection.'
     );
   } finally {

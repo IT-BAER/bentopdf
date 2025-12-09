@@ -5,6 +5,7 @@ import {
   readFileAsArrayBuffer,
 } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 export async function decrypt() {
   const file = state.files[0];
@@ -61,7 +62,7 @@ export async function decrypt() {
 
     hideLoader();
     showAlert(
-      'Success',
+      getTranslations().success,
       'PDF decrypted successfully! Your download has started.'
     );
   } catch (error: any) {

@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import Sortable from 'sortablejs';
 
 const alternateMergeState = {
@@ -107,7 +108,7 @@ export async function alternateMerge() {
     }
 
     if (filesToMerge.length < 2) {
-      showAlert('Error', 'At least two valid PDFs are required.');
+      showAlert(getTranslations().error, 'At least two valid PDFs are required.');
       hideLoader();
       return;
     }
@@ -122,22 +123,22 @@ export async function alternateMerge() {
       if (e.data.status === 'success') {
         const blob = new Blob([e.data.pdfBytes], { type: 'application/pdf' });
         downloadFile(blob, generateOutputFilename(state.files[0]?.name, 'alternated-mixed.pdf'));
-        showAlert('Success', 'PDFs have been mixed successfully!');
+        showAlert(getTranslations().success, 'PDFs have been mixed successfully!');
       } else {
         console.error('Worker interleave error:', e.data.message);
-        showAlert('Error', e.data.message || 'Failed to interleave PDFs.');
+        showAlert(getTranslations().error, e.data.message || 'Failed to interleave PDFs.');
       }
     };
 
     alternateMergeWorker.onerror = (e) => {
       hideLoader();
       console.error('Worker error:', e);
-      showAlert('Error', 'An unexpected error occurred in the merge worker.');
+      showAlert(getTranslations().error, 'An unexpected error occurred in the merge worker.');
     };
 
   } catch (e) {
     console.error('Alternate Merge error:', e);
-    showAlert('Error', 'An error occurred while mixing the PDFs.');
+    showAlert(getTranslations().error, 'An error occurred while mixing the PDFs.');
     hideLoader();
   }
 }

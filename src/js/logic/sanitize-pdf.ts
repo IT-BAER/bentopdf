@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { removeMetadataFromDoc } from './remove-metadata.js';
 import { removeAnnotationsFromDoc } from './remove-annotations.js';
 import { flattenFormsInDoc } from './flatten.js';
@@ -8,7 +9,7 @@ import { PDFName } from 'pdf-lib';
 
 export async function sanitizePdf() {
   if (!state.pdfDoc) {
-    showAlert('Error', 'No PDF document loaded.');
+    showAlert(getTranslations().error, 'No PDF document loaded.');
     return;
   }
 
@@ -577,10 +578,10 @@ export async function sanitizePdf() {
       new Blob([sanitizedPdfBytes], { type: 'application/pdf' }),
       'sanitized.pdf'
     );
-    showAlert('Success', 'PDF has been sanitized and downloaded.');
+    showAlert(getTranslations().success, 'PDF has been sanitized and downloaded.');
   } catch (e) {
     console.error('Sanitization Error:', e);
-    showAlert('Error', `An error occurred during sanitization: ${e.message}`);
+    showAlert(getTranslations().error, `An error occurred during sanitization: ${e.message}`);
   } finally {
     hideLoader();
   }

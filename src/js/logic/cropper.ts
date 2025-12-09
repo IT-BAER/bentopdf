@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import Cropper from 'cropperjs';
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
@@ -90,7 +91,7 @@ async function displayPageAsImage(num: any) {
     };
   } catch (error) {
     console.error('Error rendering page:', error);
-    showAlert('Error', 'Failed to render page.');
+    showAlert(getTranslations().error, 'Failed to render page.');
     hideLoader();
   }
 }
@@ -258,7 +259,7 @@ export async function setupCropperTool() {
     await displayPageAsImage(cropperState.currentPageNum);
   } catch (error) {
     console.error('Error setting up cropper tool:', error);
-    showAlert('Error', 'Failed to load PDF for cropping.');
+    showAlert(getTranslations().error, 'Failed to load PDF for cropping.');
   }
 
   document
@@ -332,10 +333,10 @@ export async function setupCropperTool() {
           new Blob([finalPdfBytes], { type: 'application/pdf' }),
           generateOutputFilename(state.files[0]?.name, fallbackName)
         );
-        showAlert('Success', 'Crop complete! Your download has started.');
+        showAlert(getTranslations().success, 'Crop complete! Your download has started.');
       } catch (e) {
         console.error(e);
-        showAlert('Error', 'An error occurred during cropping.');
+        showAlert(getTranslations().error, 'An error occurred during cropping.');
       } finally {
         hideLoader();
       }

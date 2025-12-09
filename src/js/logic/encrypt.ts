@@ -5,6 +5,7 @@ import {
   readFileAsArrayBuffer,
 } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 export async function encrypt() {
   const file = state.files[0];
@@ -84,7 +85,7 @@ export async function encrypt() {
         ' Note: Without a separate owner password, the PDF has no usage restrictions.';
     }
 
-    showAlert('Success', successMessage);
+    showAlert(getTranslations().success, successMessage);
   } catch (error: any) {
     console.error('Error during PDF encryption:', error);
     hideLoader();
