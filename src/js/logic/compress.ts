@@ -322,7 +322,7 @@ export async function compress() {
       if (savings > 0) {
         showAlert(
           getTranslations().compress.completeTitle,
-          getTranslations().compress.completeMessageSingle.replace('{method}', usedMethod).replace('{original}', originalSize).replace('{compressed}', compressedSize).replace('{percent}', savingsPercent)
+          getTranslations().compress.completeMessageSingle.replace('{method}', usedMethod).replace('{original}', originalSize).replace('{compressed}', compressedSize).replace('{percent}', savingsPercent.toString())
         );
       } else {
         showAlert(
@@ -380,7 +380,7 @@ export async function compress() {
       if (totalSavings > 0) {
         showAlert(
           getTranslations().compress.completeTitle,
-          getTranslations().compress.completeMessageMultiple.replace('{count}', state.files.length.toString()).replace('{original}', formatBytes(totalOriginalSize)).replace('{compressed}', formatBytes(totalCompressedSize)).replace('{percent}', totalSavingsPercent)
+          getTranslations().compress.completeMessageMultiple.replace('{count}', state.files.length.toString()).replace('{original}', formatBytes(totalOriginalSize)).replace('{compressed}', formatBytes(totalCompressedSize)).replace('{percent}', totalSavingsPercent.toString())
         );
       } else {
         showAlert(

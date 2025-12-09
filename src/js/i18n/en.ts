@@ -16,7 +16,6 @@ export const en = {
   ok: 'OK',
   cancel: 'Cancel',
   proceed: 'Proceed',
-  ok: 'OK',
   warning: 'Warning',
   documentPreview: 'Document Preview',
   downloadAsPdf: 'Download as PDF',
@@ -793,6 +792,7 @@ export const en = {
   
   // Form Creator
   formCreator: {
+    continue: 'Continue',
     title: 'Create PDF Form',
     description: 'Upload an existing PDF or create a blank PDF to start adding form fields.',
     toolDescription: 'Drag and drop fields onto the canvas to create a fillable PDF form. Customize field properties and download your form.',
@@ -892,6 +892,9 @@ export const en = {
     stampEditor: 'Stamp Editor',
     toolbarHint: "Use the toolbar's image stamp tool to place stamps.",
     saveStampedPdf: 'Save Stamped PDF',
+    viewerNotReady: 'Viewer not ready. Please upload a PDF and wait for it to finish loading.',
+    exporterAccessError: 'Could not access the stamped-PDF exporter. Please use the Export → PDF button in the viewer toolbar as a fallback.',
+    exportError: 'Could not export the stamped PDF. Please use the Export → PDF button in the viewer toolbar as a fallback.',
   },
   
   // Table of Contents Page
@@ -904,6 +907,10 @@ export const en = {
     fontFamily: 'Font Family',
     addBookmark: 'Add bookmark for TOC page',
     generateBtn: 'Generate Table of Contents',
+    selectPdf: 'Please select a PDF file.',
+    generating: 'Generating Table of Contents...',
+    success: 'Table of Contents generated successfully!',
+    error: 'Error generating Table of Contents: {error}',
   },
   
   // PDF to JSON Page
@@ -911,6 +918,12 @@ export const en = {
     title: 'PDF to JSON Converter',
     description: 'Upload multiple PDF files to convert them all to JSON format. Files will be downloaded as a ZIP archive.',
     convertBtn: 'Convert to JSON',
+    selectFile: 'Please select at least 1 PDF file',
+    filesSelected: '{count} file(s) selected. Ready to convert!',
+    readingFiles: 'Reading files...',
+    converting: 'Converting PDFs to JSON...',
+    errorReading: 'Error reading files: {error}',
+    success: 'Conversion successful!',
   },
   
   // JSON to PDF Page
@@ -920,6 +933,12 @@ export const en = {
     noteTitle: 'Note:',
     noteText: 'Only JSON files created by the PDF-to-JSON converter tool are supported. Standard JSON files from other tools will not work.',
     convertBtn: 'Convert to PDF',
+    selectFile: 'Please select at least 1 JSON file',
+    readyToConvert: '{count} file(s) selected. Ready to convert!',
+    readingFiles: 'Reading files (Main Thread)...',
+    converting: 'Converting JSONs to PDFs...',
+    errorReading: '❌ Error reading files: {error}',
+    unknownError: 'Unknown error',
   },
   
   // Bookmark Page
@@ -1203,11 +1222,7 @@ export const en = {
     success: 'Page numbers added successfully!',
     error: 'Could not add page numbers.',
   },
-  addStamps: {
-    viewerNotReady: 'Viewer not ready. Please upload a PDF and wait for it to finish loading.',
-    exporterAccessError: 'Could not access the stamped-PDF exporter. Please use the Export → PDF button in the viewer toolbar as a fallback.',
-    exportError: 'Could not export the stamped PDF. Please use the Export → PDF button in the viewer toolbar as a fallback.',
-  },
+
   alternateMerge: {
     loadingDocuments: 'Loading PDF documents...',
     loadError: 'Failed to load one or more PDF files. They may be corrupted or password-protected.',
@@ -1280,10 +1295,18 @@ export const en = {
     defaultError: 'The PDF might be corrupted or password protected.',
   },
   cropper: {
-    renderingPage: 'Rendering Page {num}...',
+    renderingPage: 'Rendering page {num}...',
     readyTitle: 'Ready',
-    readyMessage: 'Please select an area to crop.',
-    renderError: 'Failed to render page.',
+    readyMessage: 'You can now crop pages.',
+    renderError: 'Failed to render page for cropping.',
+    noCropAreaTitle: 'No Crop Area',
+    noCropAreaMessage: 'Please select an area to crop first.',
+    noCropAreaMessageAll: 'Please select an area on at least one page to crop.',
+    applyingCrop: 'Applying crop...',
+    cropComplete: 'Crop complete! Your download has started.',
+    cropError: 'An error occurred during cropping.',
+    loadError: 'Failed to load PDF for cropping.',
+    processingPage: 'Processing page {pageNum} of {totalPages}...',
   },
   bookmarkPdf: {
     setCustomDestination: 'Set custom destination',
@@ -1341,15 +1364,7 @@ export const en = {
     canvasError: 'Canvas toBlob conversion failed.',
     loadError: 'The provided file could not be loaded as an image. It may be corrupted.',
   },
-  // JSON to PDF
-  jsonToPdf: {
-    selectFile: 'Please select at least 1 JSON file',
-    readyToConvert: '{count} file(s) selected. Ready to convert!',
-    readingFiles: 'Reading files (Main Thread)...',
-    converting: 'Converting JSONs to PDFs...',
-    errorReading: '❌ Error reading files: {error}',
-    unknownError: 'Unknown error',
-  },
+
   // Linearize
   linearize: {
     initializing: 'Initializing optimization engine...',
@@ -1396,15 +1411,7 @@ export const en = {
     saving: 'Saving changes...',
     error: 'Could not save the changes.',
   },
-  // PDF to JSON
-  pdfToJson: {
-    selectFile: 'Please select at least 1 PDF file',
-    filesSelected: '{count} file(s) selected. Ready to convert!',
-    readingFiles: 'Reading files...',
-    converting: 'Converting PDFs to JSON...',
-    errorReading: 'Error reading files: {error}',
-    success: 'Conversion successful!',
-  },
+
   // Remove Blank Pages
   removeBlankPages: {
     analyzing: 'Analyzing for blank pages...',
@@ -1515,13 +1522,7 @@ export const en = {
     errorTitle: 'Error',
     errorMessage: 'Failed to convert SVG to PDF. One of the files may be invalid.',
   },
-  // Table of Contents
-  tableOfContents: {
-    selectPdf: 'Please select a PDF file.',
-    generating: 'Generating Table of Contents...',
-    success: 'Table of Contents generated successfully!',
-    error: 'Error generating Table of Contents: {error}',
-  },
+
   // Text to PDF
   txtToPdf: {
     creatingPdf: 'Creating PDF...',
@@ -1545,21 +1546,7 @@ export const en = {
     preparingPreview: 'Preparing preview...',
     generatingPdf: 'Generating High-Quality PDF...',
   },
-  // Cropper
-  cropper: {
-    renderingPage: 'Rendering page {num}...',
-    readyTitle: 'Ready',
-    readyMessage: 'You can now crop pages.',
-    renderError: 'Failed to render page for cropping.',
-    noCropAreaTitle: 'No Crop Area',
-    noCropAreaMessage: 'Please select an area to crop first.',
-    noCropAreaMessageAll: 'Please select an area on at least one page to crop.',
-    applyingCrop: 'Applying crop...',
-    cropComplete: 'Crop complete! Your download has started.',
-    cropError: 'An error occurred during cropping.',
-    loadError: 'Failed to load PDF for cropping.',
-    processingPage: 'Processing page {pageNum} of {totalPages}...',
-  },
+
   // PNG to PDF
   pngToPdf: {
     noFilesTitle: 'No Files',

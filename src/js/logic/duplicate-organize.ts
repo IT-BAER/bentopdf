@@ -158,7 +158,7 @@ export async function renderDuplicateOrganizeThumbnails() {
         useLazyLoading: true,
         lazyLoadMargin: '400px',
         onProgress: (current, total) => {
-          showLoader(getTranslations().duplicateOrganize.renderingPreviewsProgress.replace('{current}', current).replace('{total}', total));
+          showLoader(getTranslations().duplicateOrganize.renderingPreviewsProgress.replace('{current}', current.toString()).replace('{total}', total.toString()));
         },
         onBatchComplete: () => {
           createIcons({ icons });

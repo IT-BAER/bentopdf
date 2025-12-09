@@ -2,6 +2,7 @@ import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
 import { icons, createIcons } from 'lucide';
 import * as pdfjsLib from 'pdfjs-dist';
+import { getTranslations } from '../i18n/index.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
@@ -47,7 +48,7 @@ async function renderPage(
 async function renderBothPages() {
   if (!state.pdfDoc1 || !state.pdfDoc2) return;
 
-  showLoader(getTranslations().comparePDFs.loadingPage.replace('{page}', state.currentPage));
+  showLoader(getTranslations().comparePDFs.loadingPage.replace('{page}', state.currentPage.toString()));
 
   const canvas1 = document.getElementById('canvas-compare-1');
   const canvas2 = document.getElementById('canvas-compare-2');

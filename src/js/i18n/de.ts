@@ -16,7 +16,6 @@ export const de = {
   ok: 'OK',
   cancel: 'Abbrechen',
   proceed: 'Fortfahren',
-  ok: 'OK',
   warning: 'Warnung',
   documentPreview: 'Dokumentvorschau',
   downloadAsPdf: 'Als PDF herunterladen',
@@ -363,6 +362,7 @@ export const de = {
   
   // Form Creator
   formCreator: {
+    continue: 'Weiter',
     title: 'PDF-Formular erstellen',
     description: 'Laden Sie eine vorhandene PDF hoch oder erstellen Sie eine leere PDF, um Formularfelder hinzuzufügen.',
     toolDescription: 'Ziehen Sie Felder per Drag & Drop auf die Arbeitsfläche, um ein ausfüllbares PDF-Formular zu erstellen. Passen Sie die Feldeigenschaften an und laden Sie Ihr Formular herunter.',
@@ -462,6 +462,9 @@ export const de = {
     stampEditor: 'Stempel-Editor',
     toolbarHint: 'Verwenden Sie das Bildstempel-Werkzeug in der Werkzeugleiste.',
     saveStampedPdf: 'Gestempelte PDF speichern',
+    viewerNotReady: 'Viewer nicht bereit. Bitte laden Sie eine PDF hoch und warten Sie, bis sie geladen ist.',
+    exporterAccessError: 'Zugriff auf den PDF-Export fehlgeschlagen. Bitte verwenden Sie als Fallback den Export → PDF Button in der Viewer-Toolbar.',
+    exportError: 'Die gestempelte PDF konnte nicht exportiert werden. Bitte verwenden Sie als Fallback den Export → PDF Button in der Viewer-Toolbar.',
   },
   
   // Table of Contents Page
@@ -474,6 +477,10 @@ export const de = {
     fontFamily: 'Schriftart',
     addBookmark: 'Lesezeichen für Verzeichnisseite hinzufügen',
     generateBtn: 'Inhaltsverzeichnis generieren',
+    selectPdf: 'Bitte wählen Sie eine PDF-Datei aus.',
+    generating: 'Inhaltsverzeichnis wird generiert...',
+    success: 'Inhaltsverzeichnis erfolgreich generiert!',
+    error: 'Fehler beim Generieren des Inhaltsverzeichnisses: {error}',
   },
   
   // PDF to JSON Page
@@ -481,6 +488,12 @@ export const de = {
     title: 'PDF zu JSON Konverter',
     description: 'Laden Sie mehrere PDF-Dateien hoch, um sie alle ins JSON-Format zu konvertieren. Die Dateien werden als ZIP-Archiv heruntergeladen.',
     convertBtn: 'In JSON konvertieren',
+    selectFile: 'Bitte wählen Sie mindestens 1 PDF-Datei aus',
+    filesSelected: '{count} Datei(en) ausgewählt. Bereit zum Konvertieren!',
+    readingFiles: 'Dateien werden gelesen...',
+    converting: 'PDFs werden in JSON konvertiert...',
+    errorReading: 'Fehler beim Lesen der Dateien: {error}',
+    success: 'Konvertierung erfolgreich!',
   },
   
   // JSON to PDF Page
@@ -490,6 +503,12 @@ export const de = {
     noteTitle: 'Hinweis:',
     noteText: 'Nur JSON-Dateien, die mit dem PDF-zu-JSON-Konverter erstellt wurden, werden unterstützt. Standard-JSON-Dateien aus anderen Tools funktionieren nicht.',
     convertBtn: 'In PDF konvertieren',
+    selectFile: 'Bitte wählen Sie mindestens 1 JSON-Datei aus',
+    readyToConvert: '{count} Datei(en) ausgewählt. Bereit zum Konvertieren!',
+    readingFiles: 'Lese Dateien (Haupt-Thread)...',
+    converting: 'Konvertiere JSONs in PDFs...',
+    errorReading: '❌ Fehler beim Lesen der Dateien: {error}',
+    unknownError: 'Unbekannter Fehler',
   },
   
   // Bookmark Page
@@ -1320,11 +1339,7 @@ export const de = {
     success: 'Seitenzahlen erfolgreich hinzugefügt!',
     error: 'Seitenzahlen konnten nicht hinzugefügt werden.',
   },
-  addStamps: {
-    viewerNotReady: 'Viewer nicht bereit. Bitte laden Sie eine PDF hoch und warten Sie, bis sie geladen ist.',
-    exporterAccessError: 'Zugriff auf den PDF-Export fehlgeschlagen. Bitte verwenden Sie als Fallback den Export → PDF Button in der Viewer-Toolbar.',
-    exportError: 'Die gestempelte PDF konnte nicht exportiert werden. Bitte verwenden Sie als Fallback den Export → PDF Button in der Viewer-Toolbar.',
-  },
+
   alternateMerge: {
     loadingDocuments: 'Lade PDF-Dokumente...',
     loadError: 'Fehler beim Laden einer oder mehrerer PDF-Dateien. Sie sind möglicherweise beschädigt oder passwortgeschützt.',
@@ -1466,15 +1481,7 @@ export const de = {
     canvasError: 'Canvas toBlob Konvertierung fehlgeschlagen.',
     loadError: 'Die bereitgestellte Datei konnte nicht als Bild geladen werden. Sie ist möglicherweise beschädigt.',
   },
-  // JSON to PDF
-  jsonToPdf: {
-    selectFile: 'Bitte wählen Sie mindestens 1 JSON-Datei aus',
-    readyToConvert: '{count} Datei(en) ausgewählt. Bereit zum Konvertieren!',
-    readingFiles: 'Lese Dateien (Haupt-Thread)...',
-    converting: 'Konvertiere JSONs in PDFs...',
-    errorReading: '❌ Fehler beim Lesen der Dateien: {error}',
-    unknownError: 'Unbekannter Fehler',
-  },
+
   // Linearize
   linearize: {
     initializing: 'Initialisiere Optimierungs-Engine...',
@@ -1521,15 +1528,7 @@ export const de = {
     saving: 'Speichere Änderungen...',
     error: 'Konnte Änderungen nicht speichern.',
   },
-  // PDF to JSON
-  pdfToJson: {
-    selectFile: 'Bitte wählen Sie mindestens 1 PDF-Datei aus',
-    filesSelected: '{count} Datei(en) ausgewählt. Bereit zum Konvertieren!',
-    readingFiles: 'Dateien werden gelesen...',
-    converting: 'PDFs werden in JSON konvertiert...',
-    errorReading: 'Fehler beim Lesen der Dateien: {error}',
-    success: 'Konvertierung erfolgreich!',
-  },
+
   // Remove Blank Pages
   removeBlankPages: {
     analyzing: 'Analysiere auf leere Seiten...',
@@ -1640,13 +1639,7 @@ export const de = {
     errorTitle: 'Fehler',
     errorMessage: 'Fehler beim Konvertieren von SVG in PDF. Eine der Dateien ist möglicherweise ungültig.',
   },
-  // Table of Contents
-  tableOfContents: {
-    selectPdf: 'Bitte wählen Sie eine PDF-Datei aus.',
-    generating: 'Inhaltsverzeichnis wird generiert...',
-    success: 'Inhaltsverzeichnis erfolgreich generiert!',
-    error: 'Fehler beim Generieren des Inhaltsverzeichnisses: {error}',
-  },
+
   // Text to PDF
   txtToPdf: {
     creatingPdf: 'PDF wird erstellt...',

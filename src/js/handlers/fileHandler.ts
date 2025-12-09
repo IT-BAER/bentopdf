@@ -1,4 +1,5 @@
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import {
   showLoader,
   hideLoader,
