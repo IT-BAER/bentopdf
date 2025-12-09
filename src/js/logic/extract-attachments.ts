@@ -20,14 +20,14 @@ type ExtractAttachmentResponse = ExtractAttachmentSuccessResponse | ExtractAttac
 
 export async function extractAttachments() {
   if (state.files.length === 0) {
-    showStatus('No Files', 'error');
+    showStatus(getTranslations().extractAttachments.noFiles, 'error');
     return;
   }
 
   document.getElementById('process-btn')?.classList.add('opacity-50', 'cursor-not-allowed');
   document.getElementById('process-btn')?.setAttribute('disabled', 'true');
 
-  showStatus('Reading files (Main Thread)...', 'info');
+  showStatus(getTranslations().extractAttachments.readingFiles, 'info');
 
   try {
     const fileBuffers: ArrayBuffer[] = [];
@@ -39,7 +39,7 @@ export async function extractAttachments() {
       fileNames.push(file.name);
     }
 
-    showStatus(`Extracting attachments from ${state.files.length} file(s)...`, 'info');
+    showStatus(getTranslations().extractAttachments.extracting.replace('{count}', state.files.length.toString()), 'info');
 
     const message: ExtractAttachmentsMessage = {
       command: 'extract-attachments',
@@ -53,7 +53,7 @@ export async function extractAttachments() {
   } catch (error) {
     console.error('Error reading files:', error);
     showStatus(
-      `Error reading files: ${error instanceof Error ? error.message : 'Unknown error occurred'}`,
+      getTranslations().extractAttachments.errorReading.replace('{error}', error instanceof Error ? error.message : getTranslations().addAttachments.unknownError),
       'error'
     );
     document.getElementById('process-btn')?.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -69,7 +69,7 @@ worker.onmessage = (e: MessageEvent<ExtractAttachmentResponse>) => {
     const attachments = e.data.attachments;
 
     if (attachments.length === 0) {
-      showAlert('No Attachments', 'The PDF file(s) do not contain any attachments to extract.');
+      showAlert(getTranslations().extractAttachments.noAttachmentsTitle, getTranslations().extractAttachments.noAttachments);
 
       state.files = [];
       state.pdfDoc = null;
@@ -160,7 +160,7 @@ worker.onmessage = (e: MessageEvent<ExtractAttachmentResponse>) => {
 
 worker.onerror = (error) => {
   console.error('Worker error:', error);
-  showStatus('Worker error occurred. Check console for details.', 'error');
+  showStatus(getTranslations().extractAttachments.workerError, 'error');
   document.getElementById('process-btn')?.classList.remove('opacity-50', 'cursor-not-allowed');
   document.getElementById('process-btn')?.removeAttribute('disabled');
 };

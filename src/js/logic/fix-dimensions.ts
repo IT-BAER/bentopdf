@@ -35,7 +35,7 @@ export async function fixDimensions() {
     (document.getElementById('background-color') as HTMLInputElement).value
   );
 
-  showLoader('Standardizing pages...');
+  showLoader(getTranslations().fixDimensions.standardizing);
   try {
     let targetWidth, targetHeight;
 

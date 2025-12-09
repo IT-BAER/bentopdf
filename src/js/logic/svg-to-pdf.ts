@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 
@@ -34,10 +35,10 @@ async function convertImageToPngBytes(file: any) {
 
 export async function svgToPdf() {
   if (state.files.length === 0) {
-    showAlert('No Files', 'Please select at least one SVG file.');
+    showAlert(getTranslations().svgToPdf.noFilesTitle, getTranslations().svgToPdf.noFilesMessage);
     return;
   }
-  showLoader('Converting SVG to PDF...');
+  showLoader(getTranslations().svgToPdf.converting);
   try {
     const pdfDoc = await PDFLibDocument.create();
     for (const file of state.files) {
@@ -59,8 +60,8 @@ export async function svgToPdf() {
   } catch (e) {
     console.error(e);
     showAlert(
-      'Error',
-      'Failed to convert SVG to PDF. One of the files may be invalid.'
+      getTranslations().svgToPdf.errorTitle,
+      getTranslations().svgToPdf.errorMessage
     );
   } finally {
     hideLoader();

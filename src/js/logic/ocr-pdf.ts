@@ -2,6 +2,7 @@ import { tesseractLanguages } from '../config/tesseract-languages.js';
 import { showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import Tesseract from 'tesseract.js';
 import { PDFDocument as PDFLibDocument, StandardFonts, rgb } from 'pdf-lib';
 import { icons, createIcons } from 'lucide';
@@ -75,11 +76,16 @@ function updateProgress(status: any, progress: any) {
 
   if (!progressBar || !progressStatus || !progressLog) return;
 
-  progressStatus.textContent = status;
+  let localizedStatus = status;
+  if (status === 'initializing') localizedStatus = getTranslations().ocr.statusInitializing;
+  else if (status === 'recognizing text') localizedStatus = getTranslations().ocr.statusRecognizing;
+  else if (status === 'done') localizedStatus = getTranslations().ocr.statusDone;
+
+  progressStatus.textContent = localizedStatus;
   // Tesseract's progress can sometimes exceed 1, so we cap it at 100%.
   progressBar.style.width = `${Math.min(100, progress * 100)}%`;
 
-  const logMessage = `Status: ${status}`;
+  const logMessage = `Status: ${localizedStatus}`;
   progressLog.textContent += logMessage + '\n';
   progressLog.scrollTop = progressLog.scrollHeight;
 }
@@ -97,8 +103,8 @@ async function runOCR() {
 
   if (selectedLangs.length === 0) {
     showAlert(
-      'No Languages Selected',
-      'Please select at least one language for OCR.'
+      getTranslations().ocr.noLanguagesTitle,
+      getTranslations().ocr.noLanguagesMessage
     );
     return;
   }

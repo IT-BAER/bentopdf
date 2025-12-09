@@ -7,7 +7,7 @@ import { getTranslations } from '../i18n/index.js';
 const { rgb } = window.PDFLib;
 
 export async function redact(redactions: any, canvasScale: any) {
-  showLoader('Applying redactions...');
+  showLoader(getTranslations().redact.applying);
   try {
     const pdfPages = state.pdfDoc.getPages();
     const conversionScale = 1 / canvasScale;

@@ -9,10 +9,10 @@ export async function deletePages() {
   // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
   const pageInput = document.getElementById('pages-to-delete').value;
   if (!pageInput) {
-    showAlert('Invalid Input', 'Please enter page numbers to delete.');
+    showAlert(getTranslations().deletePages.invalidInput, getTranslations().deletePages.enterPageNumbers);
     return;
   }
-  showLoader('Deleting pages...');
+  showLoader(getTranslations().deletePages.deletingPages);
   try {
     const totalPages = state.pdfDoc.getPageCount();
     const indicesToDelete = new Set();
@@ -39,12 +39,12 @@ export async function deletePages() {
     }
 
     if (indicesToDelete.size === 0) {
-      showAlert('Invalid Input', 'No valid pages selected for deletion.');
+      showAlert(getTranslations().deletePages.invalidInput, getTranslations().deletePages.noValidPages);
       hideLoader();
       return;
     }
     if (indicesToDelete.size >= totalPages) {
-      showAlert('Invalid Input', 'You cannot delete all pages.');
+      showAlert(getTranslations().deletePages.invalidInput, getTranslations().deletePages.cannotDeleteAll);
       hideLoader();
       return;
     }
@@ -64,7 +64,7 @@ export async function deletePages() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Could not delete pages.');
+    showAlert(getTranslations().error, getTranslations().deletePages.error);
   } finally {
     hideLoader();
   }

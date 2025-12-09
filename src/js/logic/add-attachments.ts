@@ -18,11 +18,11 @@ worker.onmessage = (e) => {
       `attached-${state.files[0].name}`
     );
 
-    showAlert(getTranslations().success, `${attachments.length} file(s) attached successfully.`);
+    showAlert(getTranslations().success, getTranslations().addAttachments.attachedSuccess.replace('{count}', attachments.length.toString()));
     clearAttachments();
   } else if (data.status === 'error') {
     hideLoader();
-    showAlert(getTranslations().error, data.message || 'Unknown error occurred.');
+    showAlert(getTranslations().error, data.message || getTranslations().addAttachments.unknownError);
     clearAttachments();
   }
 };
@@ -30,17 +30,17 @@ worker.onmessage = (e) => {
 worker.onerror = (error) => {
   hideLoader();
   console.error('Worker error:', error);
-  showAlert(getTranslations().error, 'Worker error occurred. Check console for details.');
+  showAlert(getTranslations().error, getTranslations().addAttachments.workerError);
   clearAttachments();
 };
 
 export async function addAttachments() {
   if (!state.files || state.files.length === 0) {
-    showAlert(getTranslations().error, 'Main PDF is not loaded.');
+    showAlert(getTranslations().error, getTranslations().addAttachments.mainPdfNotLoaded);
     return;
   }
   if (attachments.length === 0) {
-    showAlert('No Files', 'Please select at least one file to attach.');
+    showAlert(getTranslations().addAttachments.noFilesTitle, getTranslations().addAttachments.noFilesSelected);
     return;
   }
 
@@ -55,12 +55,12 @@ export async function addAttachments() {
     pageRange = pageRangeInput?.value?.trim() || '';
 
     if (!pageRange) {
-      showAlert(getTranslations().error, 'Please specify a page range for page-level attachments.');
+      showAlert(getTranslations().error, getTranslations().addAttachments.specifyPageRange);
       return;
     }
   }
 
-  showLoader('Embedding files into PDF...');
+  showLoader(getTranslations().addAttachments.embeddingFiles);
   try {
     const pdfFile = state.files[0];
     const pdfBuffer = (await readFileAsArrayBuffer(pdfFile)) as ArrayBuffer;
@@ -70,14 +70,14 @@ export async function addAttachments() {
 
     for (let i = 0; i < attachments.length; i++) {
       const file = attachments[i];
-      showLoader(`Reading ${file.name} (${i + 1}/${attachments.length})...`);
+      showLoader(getTranslations().addAttachments.readingFile.replace('{fileName}', file.name).replace('{current}', (i + 1).toString()).replace('{total}', attachments.length.toString()));
 
       const fileBuffer = (await readFileAsArrayBuffer(file)) as ArrayBuffer;
       attachmentBuffers.push(fileBuffer);
       attachmentNames.push(file.name);
     }
 
-    showLoader('Attaching files to PDF...');
+    showLoader(getTranslations().addAttachments.attachingFiles);
 
     const message = {
       command: 'add-attachments',
@@ -94,7 +94,7 @@ export async function addAttachments() {
   } catch (error: any) {
     console.error('Error attaching files:', error);
     hideLoader();
-    showAlert(getTranslations().error, `Failed to attach files: ${error.message}`);
+    showAlert(getTranslations().error, getTranslations().addAttachments.failedToAttach.replace('{error}', error.message));
     clearAttachments();
   }
 }

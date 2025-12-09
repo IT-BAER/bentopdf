@@ -1,6 +1,7 @@
 import { PDFDocument, StandardFonts, rgb, TextAlignment, PDFName, PDFString, PageSizes, PDFBool, PDFDict, PDFArray, PDFRadioGroup } from 'pdf-lib'
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js'
 import { downloadFile, hexToRgb, getPDFDocument } from '../utils/helpers.js'
+import { getTranslations } from '../i18n/index.js'
 import { createIcons, icons } from 'lucide'
 import * as pdfjsLib from 'pdfjs-dist'
 import 'pdfjs-dist/web/pdf_viewer.css'
@@ -263,11 +264,11 @@ function createField(type: FormField['type'], x: number, y: number): void {
         tooltip: '',
         combCells: 0,
         maxLength: 0,
-        options: type === 'dropdown' || type === 'optionlist' ? ['Option 1', 'Option 2', 'Option 3'] : undefined,
+        options: type === 'dropdown' || type === 'optionlist' ? [getTranslations().formCreator.option1, getTranslations().formCreator.option2, getTranslations().formCreator.option3] : undefined,
         checked: type === 'radio' || type === 'checkbox' ? false : undefined,
         exportValue: type === 'radio' || type === 'checkbox' ? 'Yes' : undefined,
         groupName: type === 'radio' ? 'RadioGroup1' : undefined,
-        label: type === 'button' ? 'Button' : (type === 'image' ? 'Click to Upload Image' : undefined),
+        label: type === 'button' ? getTranslations().formCreator.fieldButton : (type === 'image' ? getTranslations().formCreator.clickToUploadImage : undefined),
         action: type === 'button' ? 'none' : undefined,
         jsScript: type === 'button' ? 'app.alert("Hello World!");' : undefined,
         visibilityAction: type === 'button' ? 'toggle' : undefined,
@@ -345,7 +346,7 @@ function renderField(field: FormField): void {
         contentEl.style.backgroundColor = '#e6f0ff' // Light blue background like Firefox
 
         // Show selected option or first option or placeholder
-        let displayText = 'Select...'
+        let displayText = getTranslations().formCreator.selectPlaceholder
         if (field.defaultValue && field.options && field.options.includes(field.defaultValue)) {
             displayText = field.defaultValue
         } else if (field.options && field.options.length > 0) {
@@ -381,17 +382,17 @@ function renderField(field: FormField): void {
             // Empty state
             const optEl = document.createElement('div')
             optEl.className = 'px-1 w-full text-black italic'
-            optEl.textContent = 'Item 1'
+            optEl.textContent = getTranslations().formCreator.item1
             contentEl.appendChild(optEl)
         }
 
     } else if (field.type === 'button') {
         contentEl.className = 'field-content w-full h-full flex items-center justify-center bg-gray-200 text-sm font-semibold'
         contentEl.style.color = field.textColor || '#000000'
-        contentEl.textContent = field.label || 'Button'
+        contentEl.textContent = field.label || getTranslations().formCreator.fieldButton
     } else if (field.type === 'signature') {
         contentEl.className = 'w-full h-full flex items-center justify-center bg-gray-50 text-gray-400'
-        contentEl.innerHTML = '<div class="flex flex-col items-center"><i data-lucide="pen-tool" class="w-6 h-6 mb-1"></i><span class="text-[10px]">Sign Here</span></div>'
+        contentEl.innerHTML = `<div class="flex flex-col items-center"><i data-lucide="pen-tool" class="w-6 h-6 mb-1"></i><span class="text-[10px]">${getTranslations().formCreator.signHere}</span></div>`
         setTimeout(() => (window as any).lucide?.createIcons(), 0)
     } else if (field.type === 'date') {
         contentEl.className = 'w-full h-full flex items-center justify-center bg-white text-gray-600 border border-gray-300'
@@ -399,7 +400,7 @@ function renderField(field: FormField): void {
         setTimeout(() => (window as any).lucide?.createIcons(), 0)
     } else if (field.type === 'image') {
         contentEl.className = 'w-full h-full flex items-center justify-center bg-gray-100 text-gray-500 border border-gray-300'
-        contentEl.innerHTML = `<div class="flex flex-col items-center text-center p-1"><i data-lucide="image" class="w-6 h-6 mb-1"></i><span class="text-[10px] leading-tight">${field.label || 'Click to Upload Image'}</span></div>`
+        contentEl.innerHTML = `<div class="flex flex-col items-center text-center p-1"><i data-lucide="image" class="w-6 h-6 mb-1"></i><span class="text-[10px] leading-tight">${field.label || getTranslations().formCreator.clickToUploadImage}</span></div>`
         setTimeout(() => (window as any).lucide?.createIcons(), 0)
     }
 
@@ -894,7 +895,7 @@ function showProperties(field: FormField): void {
 
     const validateName = (newName: string): boolean => {
         if (!newName) {
-            nameError.textContent = 'Field name cannot be empty'
+            nameError.textContent = getTranslations().formCreator.fieldNameEmpty
             nameError.classList.remove('hidden')
             propName.classList.add('border-red-500')
             return false
@@ -910,7 +911,10 @@ function showProperties(field: FormField): void {
         const isDuplicateInPdf = existingFieldNames.has(newName)
 
         if (isDuplicateInFields || isDuplicateInPdf) {
-            nameError.textContent = `Field name "${newName}" already exists in this ${isDuplicateInPdf ? 'PDF' : 'form'}. Please try using a unique name.`
+            const msg = isDuplicateInPdf 
+                ? getTranslations().formCreator.fieldNameDuplicatePdf.replace('{name}', newName)
+                : getTranslations().formCreator.fieldNameDuplicate.replace('{name}', newName)
+            nameError.textContent = msg
             nameError.classList.remove('hidden')
             propName.classList.add('border-red-500')
             return false
@@ -1335,8 +1339,8 @@ downloadBtn.addEventListener('click', async () => {
     if (conflictsWithPdf.length > 0) {
         const conflictList = [...new Set(conflictsWithPdf)].map(name => `"${name}"`).join(', ')
         showModal(
-            'Field Name Conflict',
-            `The following field names already exist in the uploaded PDF: ${conflictList}. Please rename these fields before downloading.`,
+            getTranslations().formCreator.fieldConflictTitle,
+            getTranslations().formCreator.fieldConflictMsg.replace('{names}', conflictList),
             'error'
         )
         return
@@ -1345,20 +1349,20 @@ downloadBtn.addEventListener('click', async () => {
     if (duplicates.length > 0) {
         const duplicateList = duplicates.map(name => `"${name}"`).join(', ')
         showModal(
-            'Duplicate Field Names',
-            `The following field names are used more than once: ${duplicateList}. Please rename these fields to use unique names before downloading.`,
+            getTranslations().formCreator.duplicateFieldNamesTitle,
+            getTranslations().formCreator.duplicateFieldNamesMsg.replace('{names}', duplicateList),
             'error'
         )
         return
     }
 
     if (fields.length === 0) {
-        alert('Please add at least one field before downloading.')
+        alert(getTranslations().formCreator.noFieldsDownload)
         return
     }
 
     if (pages.length === 0) {
-        alert('No pages found. Please create a blank PDF or upload one.')
+        alert(getTranslations().formCreator.noPages)
         return
     }
 
@@ -1805,9 +1809,9 @@ downloadBtn.addEventListener('click', async () => {
         saveFormState(pdfBytes)
         
         downloadFile(blob, 'fillable-form.pdf')
-        showModal('Success', 'Your PDF has been downloaded successfully.', 'info', () => {
+        showModal(getTranslations().formCreator.success, getTranslations().formCreator.downloadSuccess, 'info', () => {
             resetToInitial()
-        }, 'Okay')
+        }, getTranslations().formCreator.close)
     } catch (error) {
         console.error('Error generating PDF:', error)
         const errorMessage = (error as Error).message
@@ -1821,10 +1825,10 @@ downloadBtn.addEventListener('click', async () => {
             if (existingRadioGroups.has(fieldName)) {
                 console.log(`Adding to existing radio group: ${fieldName}`)
             } else {
-                showModal('Duplicate Field Name', `A field named "${fieldName}" already exists. Please rename this field to use a unique name before downloading.`, 'error')
+                showModal(getTranslations().formCreator.duplicateFieldName, getTranslations().formCreator.duplicateFieldMsg.replace('{fieldName}', fieldName), 'error')
             }
         } else {
-            showModal('Error', 'Error generating PDF: ' + errorMessage, 'error')
+            showModal(getTranslations().formCreator.errorTitle, getTranslations().formCreator.errorGeneratingPdf + errorMessage, 'error')
         }
     }
 })
@@ -1833,13 +1837,13 @@ downloadBtn.addEventListener('click', async () => {
 saveBtn.addEventListener('click', () => {
     // Check if there are any fields to save
     if (fields.length === 0) {
-        showModal('No Fields', 'Please add at least one field to save the form.', 'warning')
+        showModal(getTranslations().formCreator.noFieldsTitle, getTranslations().formCreator.noFieldsMessage, 'warning')
         return
     }
 
     // Save the current form state
     saveFormState(originalPdfBytes ?? undefined)
-    showModal('Form Saved', 'Your form has been saved to browser storage. You can resume editing from the Recent Forms list.', 'info')
+    showModal(getTranslations().formCreator.formSaved, getTranslations().formCreator.formSavedMessage, 'info')
 })
 
 // Back to tools button
@@ -2208,7 +2212,7 @@ async function handlePdfUpload(file: File) {
         setTimeout(() => createIcons({ icons }), 100)
     } catch (error) {
         console.error('Error loading PDF:', error)
-        showModal('Error', 'Error loading PDF file. Please try again with a valid PDF.', 'error')
+        showModal(getTranslations().formCreator.errorTitle, getTranslations().formCreator.errorLoadingPdf, 'error')
     }
 }
 
@@ -2232,7 +2236,7 @@ addPageBtn.addEventListener('click', () => {
 
 resetBtn.addEventListener('click', () => {
     if (fields.length > 0 || pages.length > 0) {
-        if (confirm('Are you sure you want to reset? All your work will be lost.')) {
+        if (confirm(getTranslations().formCreator.resetConfirm)) {
             resetToInitial()
         }
     } else {
@@ -2248,12 +2252,12 @@ const errorModalClose = document.getElementById('errorModalClose')
 
 let modalCloseCallback: (() => void) | null = null
 
-function showModal(title: string, message: string, type: 'error' | 'warning' | 'info' = 'error', onClose?: () => void, buttonText: string = 'Close') {
+function showModal(title: string, message: string, type: 'error' | 'warning' | 'info' = 'error', onClose?: () => void, buttonText?: string) {
     if (!errorModal || !errorModalTitle || !errorModalMessage || !errorModalClose) return
 
     errorModalTitle.textContent = title
     errorModalMessage.textContent = message
-    errorModalClose.textContent = buttonText
+    errorModalClose.textContent = buttonText || getTranslations().formCreator.close
 
     modalCloseCallback = onClose || null
     errorModal.classList.remove('hidden')
@@ -2503,7 +2507,7 @@ async function loadRecentForm(formId: string): Promise<void> {
             const parsed = JSON.parse(legacy)
             await restoreFormState(parsed)
         } else {
-            showModal('Error', 'Form not found.', 'error')
+            showModal(getTranslations().formCreator.errorTitle, getTranslations().formCreator.formNotFound, 'error')
         }
     }
 }
@@ -2561,10 +2565,10 @@ async function restoreFormState(savedData: SavedFormState): Promise<void> {
         updatePageNavigation()
         updateFieldCount()
         
-        showModal('Form Restored', 'Your previous form has been restored successfully.', 'info', undefined, 'Continue')
+        showModal(getTranslations().formCreator.formRestored, getTranslations().formCreator.formRestoredMsg, 'info', undefined, getTranslations().formCreator.continue)
     } catch (error) {
         console.error('Failed to restore form state:', error)
-        showModal('Restore Failed', 'Failed to restore previous form. Starting fresh.', 'error')
+        showModal(getTranslations().formCreator.restoreFailed, getTranslations().formCreator.restoreFailedMsg, 'error')
     }
 }
 

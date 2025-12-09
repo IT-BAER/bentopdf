@@ -47,7 +47,7 @@ async function renderPage(
 async function renderBothPages() {
   if (!state.pdfDoc1 || !state.pdfDoc2) return;
 
-  showLoader(`Loading page ${state.currentPage}...`);
+  showLoader(getTranslations().comparePDFs.loadingPage.replace('{page}', state.currentPage));
 
   const canvas1 = document.getElementById('canvas-compare-1');
   const canvas2 = document.getElementById('canvas-compare-2');
@@ -102,7 +102,7 @@ async function setupFileInput(inputId: any, docKey: any, displayId: any) {
 
   const handleFile = async (file: any) => {
     if (!file || file.type !== 'application/pdf')
-      return showAlert('Invalid File', 'Please select a valid PDF file.');
+      return showAlert(getTranslations().comparePDFs.invalidFile, getTranslations().comparePDFs.selectValidFile);
 
     const displayDiv = document.getElementById(displayId);
     displayDiv.textContent = '';
@@ -124,7 +124,7 @@ async function setupFileInput(inputId: any, docKey: any, displayId: any) {
     createIcons({ icons });
 
     try {
-      showLoader(`Loading ${file.name}...`);
+      showLoader(getTranslations().comparePDFs.loadingFile.replace('{file}', file.name));
       const pdfBytes = await readFileAsArrayBuffer(file);
       state[docKey] = await getPDFDocument(pdfBytes).promise;
 
@@ -135,8 +135,8 @@ async function setupFileInput(inputId: any, docKey: any, displayId: any) {
       }
     } catch (e) {
       showAlert(
-        'Error',
-        'Could not load PDF. It may be corrupt or password-protected.'
+        getTranslations().error,
+        getTranslations().comparePDFs.couldNotLoad
       );
       console.error(e);
     } finally {

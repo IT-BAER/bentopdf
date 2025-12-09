@@ -7,7 +7,7 @@ import { getRotationState, resetRotationState } from '../handlers/fileHandler.js
 import { degrees } from 'pdf-lib';
 
 export async function rotate() {
-  showLoader('Applying rotations...');
+  showLoader(getTranslations().rotate.applying);
   try {
     const pages = state.pdfDoc.getPages();
     const rotationStateArray = getRotationState();
@@ -31,7 +31,7 @@ export async function rotate() {
     });
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Could not apply rotations.');
+    showAlert(getTranslations().error, getTranslations().rotate.error);
   } finally {
     hideLoader();
   }

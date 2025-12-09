@@ -447,10 +447,10 @@ const init = () => {
 
       if (confirmMode) {
         dom.warningCancelBtn.style.display = '';
-        dom.warningConfirmBtn.textContent = 'Proceed';
+        dom.warningConfirmBtn.textContent = getTranslations().proceed;
       } else {
         dom.warningCancelBtn.style.display = 'none';
-        dom.warningConfirmBtn.textContent = 'OK';
+        dom.warningConfirmBtn.textContent = getTranslations().ok;
       }
 
       const handleConfirm = () => {

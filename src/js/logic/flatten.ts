@@ -11,13 +11,13 @@ export function flattenFormsInDoc(pdfDoc) {
 
 export async function flatten() {
   if (state.files.length === 0) {
-    showAlert('No Files', 'Please select at least one PDF file.');
+    showAlert(getTranslations().flatten.noFilesTitle, getTranslations().flatten.noFilesMessage);
     return;
   }
 
   try {
     if (state.files.length === 1) {
-      showLoader('Flattening PDF...');
+      showLoader(getTranslations().flatten.flatteningSingle);
       const file = state.files[0];
       const arrayBuffer = await readFileAsArrayBuffer(file);
       const pdfDoc = await PDFDocument.load(arrayBuffer as ArrayBuffer, { ignoreEncryption: true });
@@ -39,14 +39,14 @@ export async function flatten() {
       );
       hideLoader();
     } else {
-      showLoader('Flattening multiple PDFs...');
+      showLoader(getTranslations().flatten.flatteningMultiple);
       const JSZip = (await import('jszip')).default;
       const zip = new JSZip();
       let processedCount = 0;
 
       for (let i = 0; i < state.files.length; i++) {
         const file = state.files[i];
-        showLoader(`Flattening ${i + 1}/${state.files.length}: ${file.name}...`);
+        showLoader(getTranslations().flatten.flatteningProgress.replace('{current}', (i + 1).toString()).replace('{total}', state.files.length.toString()).replace('{filename}', file.name));
 
         try {
           const arrayBuffer = await readFileAsArrayBuffer(file);
@@ -73,15 +73,15 @@ export async function flatten() {
       if (processedCount > 0) {
         const zipBlob = await zip.generateAsync({ type: 'blob' });
         downloadFile(zipBlob, 'flattened_pdfs.zip');
-        showAlert(getTranslations().success, `Processed ${processedCount} PDFs.`);
+        showAlert(getTranslations().success, getTranslations().flatten.successMessage.replace('{count}', processedCount.toString()));
       } else {
-        showAlert(getTranslations().error, 'No PDFs could be processed.');
+        showAlert(getTranslations().error, getTranslations().flatten.noProcessed);
       }
       hideLoader();
     }
   } catch (e) {
     console.error(e);
     hideLoader();
-    showAlert(getTranslations().error, e.message || 'An unexpected error occurred.');
+    showAlert(getTranslations().error, e.message || getTranslations().flatten.error);
   }
 }

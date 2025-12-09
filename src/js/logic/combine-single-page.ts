@@ -39,7 +39,7 @@ export async function combineToSinglePage() {
   const backgroundColor = hexToRgb(backgroundColorHex);
   const separatorColor = hexToRgb(separatorColorHex);
 
-  showLoader('Combining pages...');
+  showLoader(getTranslations().combineSinglePage.combiningPages);
   try {
     const sourceDoc = state.pdfDoc;
     const newDoc = await PDFLibDocument.create();
@@ -213,7 +213,7 @@ export async function combineToSinglePage() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'An error occurred while combining pages.');
+    showAlert(getTranslations().error, getTranslations().combineSinglePage.error);
   } finally {
     hideLoader();
   }

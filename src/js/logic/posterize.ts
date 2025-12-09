@@ -18,7 +18,7 @@ async function renderPosterizePreview(pageNum: number) {
   if (!posterizeState.pdfJsDoc) return;
 
   posterizeState.currentPage = pageNum;
-  showLoader(`Rendering preview for page ${pageNum}...`);
+  showLoader(getTranslations().posterize.renderingPreview.replace('{pageNum}', pageNum.toString()));
 
   const canvas = document.getElementById(
     'posterize-preview-canvas'
@@ -146,7 +146,7 @@ export async function setupPosterizeTool() {
 }
 
 export async function posterize() {
-  showLoader('Posterizing PDF...');
+  showLoader(getTranslations().posterize.posterizing);
   try {
     const rows =
       parseInt(

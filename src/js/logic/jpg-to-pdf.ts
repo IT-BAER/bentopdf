@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 
@@ -26,7 +27,7 @@ function sanitizeImageAsJpeg(imageBytes: any) {
       canvas.toBlob(
         async (jpegBlob) => {
           if (!jpegBlob) {
-            return reject(new Error('Canvas toBlob conversion failed.'));
+            return reject(new Error(getTranslations().jpgToPdf.canvasError));
           }
           const arrayBuffer = await jpegBlob.arrayBuffer();
           resolve(new Uint8Array(arrayBuffer));
@@ -41,7 +42,7 @@ function sanitizeImageAsJpeg(imageBytes: any) {
       URL.revokeObjectURL(imageUrl);
       reject(
         new Error(
-          'The provided file could not be loaded as an image. It may be corrupted.'
+          getTranslations().jpgToPdf.loadError
         )
       );
     };
@@ -52,10 +53,10 @@ function sanitizeImageAsJpeg(imageBytes: any) {
 
 export async function jpgToPdf() {
   if (state.files.length === 0) {
-    showAlert('No Files', 'Please select at least one JPG file.');
+    showAlert(getTranslations().jpgToPdf.noFilesTitle, getTranslations().jpgToPdf.noFilesMessage);
     return;
   }
-  showLoader('Creating PDF from JPGs...');
+  showLoader(getTranslations().jpgToPdf.creating);
   try {
     const pdfDoc = await PDFLibDocument.create();
 
@@ -68,7 +69,7 @@ export async function jpgToPdf() {
       } catch (e) {
         // @ts-expect-error TS(2554) FIXME: Expected 2 arguments, but got 1.
         showAlert(
-          `Direct JPG embedding failed for ${file.name}, attempting to sanitize...`
+          getTranslations().jpgToPdf.embeddingFailed.replace('{filename}', file.name)
         );
         try {
           const sanitizedBytes = await sanitizeImageAsJpeg(originalBytes);
@@ -79,7 +80,7 @@ export async function jpgToPdf() {
             fallbackError
           );
           throw new Error(
-            `Could not process "${file.name}". The file may be corrupted.`
+            getTranslations().jpgToPdf.corruptedError.replace('{filename}', file.name)
           );
         }
       }

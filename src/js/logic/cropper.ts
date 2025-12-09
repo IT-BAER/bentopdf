@@ -40,7 +40,7 @@ function saveCurrentCrop() {
  * @param {number} num The page number to render.
  */
 async function displayPageAsImage(num: any) {
-  showLoader(`Rendering Page ${num}...`);
+  showLoader(getTranslations().cropper.renderingPage.replace('{num}', num));
 
   try {
     const page = await cropperState.pdfDoc.getPage(num);
@@ -87,11 +87,11 @@ async function displayPageAsImage(num: any) {
       updatePageInfo();
       enableControls();
       hideLoader();
-      showAlert('Ready', 'Please select an area to crop.');
+      showAlert(getTranslations().cropper.readyTitle, getTranslations().cropper.readyMessage);
     };
   } catch (error) {
     console.error('Error rendering page:', error);
-    showAlert(getTranslations().error, 'Failed to render page.');
+    showAlert(getTranslations().error, getTranslations().cropper.renderError);
     hideLoader();
   }
 }
@@ -187,7 +187,7 @@ async function performFlatteningCrop(cropData: any) {
 
   for (let i = 0; i < totalPages; i++) {
     const pageNum = i + 1;
-    showLoader(`Processing page ${pageNum} of ${totalPages}...`);
+    showLoader(getTranslations().cropper.processingPage.replace('{pageNum}', pageNum.toString()).replace('{totalPages}', totalPages.toString()));
 
     if (cropData[pageNum]) {
       const page = await cropperState.pdfDoc.getPage(pageNum);
@@ -259,7 +259,7 @@ export async function setupCropperTool() {
     await displayPageAsImage(cropperState.currentPageNum);
   } catch (error) {
     console.error('Error setting up cropper tool:', error);
-    showAlert(getTranslations().error, 'Failed to load PDF for cropping.');
+    showAlert(getTranslations().error, getTranslations().cropper.loadError);
   }
 
   document
@@ -287,7 +287,7 @@ export async function setupCropperTool() {
         const currentCrop =
           cropperState.pageCrops[cropperState.currentPageNum];
         if (!currentCrop) {
-          showAlert('No Crop Area', 'Please select an area to crop first.');
+          showAlert(getTranslations().cropper.noCropAreaTitle, getTranslations().cropper.noCropAreaMessage);
           return;
         }
         // Apply the active page's crop to all pages
@@ -307,13 +307,13 @@ export async function setupCropperTool() {
 
       if (Object.keys(finalCropData).length === 0) {
         showAlert(
-          'No Crop Area',
-          'Please select an area on at least one page to crop.'
+          getTranslations().cropper.noCropAreaTitle,
+          getTranslations().cropper.noCropAreaMessageAll
         );
         return;
       }
 
-      showLoader('Applying crop...');
+      showLoader(getTranslations().cropper.applyingCrop);
 
       try {
         let finalPdfBytes;
@@ -333,10 +333,10 @@ export async function setupCropperTool() {
           new Blob([finalPdfBytes], { type: 'application/pdf' }),
           generateOutputFilename(state.files[0]?.name, fallbackName)
         );
-        showAlert(getTranslations().success, 'Crop complete! Your download has started.');
+        showAlert(getTranslations().success, getTranslations().cropper.cropComplete);
       } catch (e) {
         console.error(e);
-        showAlert(getTranslations().error, 'An error occurred during cropping.');
+        showAlert(getTranslations().error, getTranslations().cropper.cropError);
       } finally {
         hideLoader();
       }

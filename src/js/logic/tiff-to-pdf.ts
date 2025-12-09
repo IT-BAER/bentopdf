@@ -1,15 +1,16 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 import { decode } from 'tiff';
 
 export async function tiffToPdf() {
   if (state.files.length === 0) {
-    showAlert('No Files', 'Please select at least one TIFF file.');
+    showAlert(getTranslations().tiffToPdf.noFilesTitle, getTranslations().tiffToPdf.noFilesMessage);
     return;
   }
-  showLoader('Converting TIFF to PDF...');
+  showLoader(getTranslations().tiffToPdf.converting);
   try {
     const pdfDoc = await PDFLibDocument.create();
     for (const file of state.files) {

@@ -47,7 +47,7 @@ export function removeMetadataFromDoc(pdfDoc) {
 }
 
 export async function removeMetadata() {
-  showLoader('Removing all metadata...');
+  showLoader(getTranslations().removeMetadata.removing);
   try {
     removeMetadataFromDoc(state.pdfDoc);
 

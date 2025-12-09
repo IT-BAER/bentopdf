@@ -7,7 +7,7 @@ import { PDFDocument as PDFLibDocument, rgb } from 'pdf-lib';
 
 export async function changeBackgroundColor() {
   if (!state.pdfDoc) {
-    showAlert(getTranslations().error, 'PDF not loaded.');
+    showAlert(getTranslations().error, getTranslations().changeBackgroundColor.pdfNotLoaded);
     return;
   }
 
@@ -15,7 +15,7 @@ export async function changeBackgroundColor() {
   const colorHex = document.getElementById('background-color').value;
   const color = hexToRgb(colorHex);
 
-  showLoader('Changing background color...');
+  showLoader(getTranslations().changeBackgroundColor.changingBackgroundColor);
   try {
     const newPdfDoc = await PDFLibDocument.create();
 
@@ -49,7 +49,7 @@ export async function changeBackgroundColor() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Could not change the background color.');
+    showAlert(getTranslations().error, getTranslations().changeBackgroundColor.error);
   } finally {
     hideLoader();
   }

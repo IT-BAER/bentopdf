@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import JSZip from 'jszip';
 import UTIF from 'utif';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -8,7 +9,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
 export async function pdfToTiff() {
-  showLoader('Converting PDF to TIFF...');
+  showLoader(getTranslations().pdfToTiff.converting);
   try {
     const pdf = await getPDFDocument(
       await readFileAsArrayBuffer(state.files[0])

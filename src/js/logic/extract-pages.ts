@@ -10,10 +10,10 @@ export async function extractPages() {
   // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
   const pageInput = document.getElementById('pages-to-extract').value;
   if (!pageInput.trim()) {
-    showAlert('Invalid Input', 'Please enter page numbers to extract.');
+    showAlert(getTranslations().extractPages.invalidInput, getTranslations().extractPages.enterPageNumbers);
     return;
   }
-  showLoader('Extracting pages...');
+  showLoader(getTranslations().extractPages.extracting);
   try {
     const totalPages = state.pdfDoc.getPageCount();
     const indicesToExtract = new Set();
@@ -40,7 +40,7 @@ export async function extractPages() {
     }
 
     if (indicesToExtract.size === 0) {
-      showAlert('Invalid Input', 'No valid pages selected for extraction.');
+      showAlert(getTranslations().extractPages.invalidInput, getTranslations().extractPages.noValidPages);
       hideLoader();
       return;
     }
@@ -64,7 +64,7 @@ export async function extractPages() {
     downloadFile(zipBlob, 'extracted-pages.zip');
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Could not extract pages.');
+    showAlert(getTranslations().error, getTranslations().extractPages.error);
   } finally {
     hideLoader();
   }

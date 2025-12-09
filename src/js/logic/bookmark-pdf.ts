@@ -73,21 +73,21 @@ function showInputModal(title, fields = [], defaultValues = {}) {
                                     <div class="flex items-center gap-2">
                                         <label class="flex items-center gap-1 text-xs">
                                             <input type="checkbox" id="modal-use-destination" class="w-4 h-4" ${hasDestination ? 'checked' : ''}>
-                                            <span>Set custom destination</span>
+                                            <span>${getTranslations().bookmarkPdf.setCustomDestination}</span>
                                         </label>
                                     </div>
                                     <div id="destination-controls" class="${hasDestination ? '' : 'hidden'} space-y-2">
                                         <div class="grid grid-cols-2 gap-2">
                                             <div>
-                                                <label class="text-xs text-gray-600">Page</label>
+                                                <label class="text-xs text-gray-600">${getTranslations().bookmarkPdf.page}</label>
                                                 <input type="number" id="modal-dest-page" min="1" max="${field.maxPages || 1}" value="${defaultValues.destPage || field.page || 1}" 
                                                     class="w-full px-2 py-1 border border-gray-300 rounded text-sm" step="1" />
                                             </div>
                                             <div>
-                                                <label class="text-xs text-gray-600">Zoom (%)</label>
+                                                <label class="text-xs text-gray-600">${getTranslations().bookmarkPdf.zoom}</label>
                                                 <select id="modal-dest-zoom" class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
-                                                    <option value="">Inherit</option>
-                                                    <option value="0">Fit Page</option>
+                                                    <option value="">${getTranslations().bookmarkPdf.inherit}</option>
+                                                    <option value="0">${getTranslations().bookmarkPdf.fitPage}</option>
                                                     <option value="50">50%</option>
                                                     <option value="75">75%</option>
                                                     <option value="100">100%</option>
@@ -99,20 +99,20 @@ function showInputModal(title, fields = [], defaultValues = {}) {
                                         </div>
                                         <div class="grid grid-cols-2 gap-2">
                                             <div>
-                                                <label class="text-xs text-gray-600">X Position</label>
+                                                <label class="text-xs text-gray-600">${getTranslations().bookmarkPdf.xPosition}</label>
                                                 <input type="number" id="modal-dest-x" value="0" step="10"
                                                     class="w-full px-2 py-1 border border-gray-300 rounded text-sm" />
                                             </div>
                                             <div>
-                                                <label class="text-xs text-gray-600">Y Position</label>
+                                                <label class="text-xs text-gray-600">${getTranslations().bookmarkPdf.yPosition}</label>
                                                 <input type="number" id="modal-dest-y" value="0" step="10"
                                                     class="w-full px-2 py-1 border border-gray-300 rounded text-sm" />
                                             </div>
                                         </div>
                                         <button id="modal-pick-destination" class="w-full px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs flex items-center justify-center gap-1">
-                                            <i data-lucide="crosshair" class="w-3 h-3"></i> Click on PDF to Pick Location
+                                            <i data-lucide="crosshair" class="w-3 h-3"></i> ${getTranslations().bookmarkPdf.pickLocation}
                                         </button>
-                                        <p class="text-xs text-gray-500 italic">Click the button above, then click on the PDF where you want the bookmark to jump to</p>
+                                        <p class="text-xs text-gray-500 italic">${getTranslations().bookmarkPdf.pickLocationHint}</p>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@ function showInputModal(title, fields = [], defaultValues = {}) {
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">${field.label}</label>
                                 <div id="modal-preview" class="style-preview bg-gray-50">
-                                    <span id="preview-text" style="font-size: 16px;">Preview Text</span>
+                                    <span id="preview-text" style="font-size: 16px;">${getTranslations().bookmarkPdf.previewText}</span>
                                 </div>
                             </div>
                         `;
@@ -138,8 +138,8 @@ function showInputModal(title, fields = [], defaultValues = {}) {
                             ${fieldsHTML}
                         </div>
                         <div class="flex gap-2 justify-end">
-                            <button id="modal-cancel" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
-                            <button id="modal-confirm" class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">Confirm</button>
+                            <button id="modal-cancel" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">${getTranslations().bookmarkPdf.cancel}</button>
+                            <button id="modal-confirm" class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">${getTranslations().bookmarkPdf.confirm}</button>
                         </div>
                     </div>
                 `;
@@ -579,11 +579,11 @@ function showConfirmModal(message) {
 
     modal.innerHTML = `
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">Confirm Action</h3>
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">${getTranslations().bookmark.confirmAction}</h3>
                         <p class="text-gray-600 mb-6">${message}</p>
                         <div class="flex gap-2 justify-end">
-                            <button id="modal-cancel" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
-                            <button id="modal-confirm" class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">Confirm</button>
+                            <button id="modal-cancel" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">${getTranslations().bookmarkPdf.cancel}</button>
+                            <button id="modal-confirm" class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">${getTranslations().bookmarkPdf.confirm}</button>
                         </div>
                     </div>
                 `;
@@ -623,7 +623,7 @@ function showAlertModal(title, message) {
                         <h3 class="text-xl font-bold text-gray-800 mb-4">${title}</h3>
                         <p class="text-gray-600 mb-6">${message}</p>
                         <div class="flex justify-end">
-                            <button id="modal-ok" class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">OK</button>
+                            <button id="modal-ok" class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">${getTranslations().ok}</button>
                         </div>
                     </div>
                 `;
@@ -828,7 +828,7 @@ resetBtn.addEventListener('click', async () => {
 // Delete all bookmarks button
 deleteAllBtn.addEventListener('click', async () => {
   if (bookmarkTree.length === 0) {
-    await showAlertModal('Info', 'No bookmarks to delete.');
+    await showAlertModal(getTranslations().bookmark.info, getTranslations().bookmark.noBookmarksToDelete);
     return;
   }
 
@@ -1093,8 +1093,8 @@ csvInput.addEventListener('change', async (e) => {
   csvBookmarks = parseCSV(text);
 
   await showAlertModal(
-    'CSV Loaded',
-    `Loaded ${csvBookmarks.length} bookmarks from CSV. Now upload your PDF.`
+    getTranslations().bookmark.csvLoaded,
+    getTranslations().bookmark.csvLoadedMessage.replace('{count}', csvBookmarks.length)
   );
 });
 
@@ -1106,11 +1106,11 @@ jsonInput.addEventListener('change', async (e) => {
   try {
     jsonBookmarks = JSON.parse(text);
     await showAlertModal(
-      'JSON Loaded',
-      'Loaded bookmarks from JSON. Now upload your PDF.'
+      getTranslations().bookmark.jsonLoaded,
+      getTranslations().bookmark.jsonLoadedMessage
     );
   } catch (err) {
-    await showAlertModal('Error', 'Invalid JSON format');
+    await showAlertModal(getTranslations().bookmark.error, getTranslations().bookmark.invalidJson);
   }
 });
 
@@ -1522,12 +1522,12 @@ function createNodeElement(node, level = 0) {
   addChildBtn.innerHTML = '<i data-lucide="plus" class="w-4 h-4"></i>';
   addChildBtn.addEventListener('click', async (e) => {
     e.stopPropagation();
-    const result = await showInputModal('Add Child Bookmark', [
+    const result = await showInputModal(getTranslations().bookmark.addChildBookmark, [
       {
         type: 'text',
         name: 'title',
-        label: 'Title',
-        placeholder: 'Enter bookmark title',
+        label: getTranslations().bookmark.titleLabel,
+        placeholder: getTranslations().bookmark.bookmarkTitlePlaceholder,
       },
     ]);
     if (result && result.title) {
@@ -1556,46 +1556,46 @@ function createNodeElement(node, level = 0) {
   editBtn.addEventListener('click', async (e) => {
     e.stopPropagation();
     const result = await showInputModal(
-      'Edit Bookmark',
+      getTranslations().bookmark.editBookmark,
       [
         {
           type: 'text',
           name: 'title',
-          label: 'Title',
-          placeholder: 'Enter bookmark title',
+          label: getTranslations().bookmark.titleLabel,
+          placeholder: getTranslations().bookmark.bookmarkTitlePlaceholder,
         },
         {
           type: 'select',
           name: 'color',
-          label: 'Color',
+          label: getTranslations().bookmark.colorLabel,
           options: [
-            { value: '', label: 'None' },
-            { value: 'red', label: 'Red' },
-            { value: 'blue', label: 'Blue' },
-            { value: 'green', label: 'Green' },
-            { value: 'yellow', label: 'Yellow' },
-            { value: 'purple', label: 'Purple' },
-            { value: 'custom', label: 'Custom...' },
+            { value: '', label: getTranslations().bookmark.none },
+            { value: 'red', label: getTranslations().bookmark.red },
+            { value: 'blue', label: getTranslations().bookmark.blue },
+            { value: 'green', label: getTranslations().bookmark.green },
+            { value: 'yellow', label: getTranslations().bookmark.yellow },
+            { value: 'purple', label: getTranslations().bookmark.purple },
+            { value: 'custom', label: getTranslations().bookmark.customColor },
           ],
         },
         {
           type: 'select',
           name: 'style',
-          label: 'Style',
+          label: getTranslations().bookmark.styleLabel,
           options: [
-            { value: '', label: 'Normal' },
-            { value: 'bold', label: 'Bold' },
-            { value: 'italic', label: 'Italic' },
-            { value: 'bold-italic', label: 'Bold & Italic' },
+            { value: '', label: getTranslations().bookmark.normal },
+            { value: 'bold', label: getTranslations().bookmark.bold },
+            { value: 'italic', label: getTranslations().bookmark.italic },
+            { value: 'bold-italic', label: getTranslations().bookmark.boldItalic },
           ],
         },
         {
           type: 'destination',
-          label: 'Destination',
+          label: getTranslations().bookmark.destinationLabel,
           page: node.page,
           maxPages: pdfJsDoc ? pdfJsDoc.numPages : 1,
         },
-        { type: 'preview', label: 'Preview' },
+        { type: 'preview', label: getTranslations().bookmark.previewLabel },
       ],
       {
         title: node.title,
@@ -1667,7 +1667,7 @@ function createNodeElement(node, level = 0) {
 addTopLevelBtn.addEventListener('click', async () => {
   const title = titleInput.value.trim();
   if (!title) {
-    await showAlertModal('Error', 'Please enter a title.');
+    await showAlertModal(getTranslations().bookmark.error, getTranslations().bookmark.enterTitle);
     return;
   }
 
@@ -1714,7 +1714,7 @@ csvImportHidden.addEventListener('change', async (e) => {
     bookmarkTree = imported;
     saveState();
     renderBookmarkTree();
-    await showAlertModal(getTranslations().success, `Imported ${imported.length} bookmarks!`);
+    await showAlertModal(getTranslations().success, getTranslations().bookmark.importedBookmarks.replace('{count}', imported.length));
   }
 
   csvImportHidden.value = '';
@@ -1724,7 +1724,7 @@ exportCsvBtn.addEventListener('click', () => {
   exportDropdown.classList.add('hidden');
 
   if (bookmarkTree.length === 0) {
-    showAlertModal('Error', 'No bookmarks to export!');
+    showAlertModal(getTranslations().bookmark.error, getTranslations().bookmark.noBookmarksToExport);
     return;
   }
 
@@ -1791,9 +1791,9 @@ jsonImportHidden.addEventListener('change', async (e) => {
     bookmarkTree = imported;
     saveState();
     renderBookmarkTree();
-    await showAlertModal(getTranslations().success, 'Bookmarks imported from JSON!');
+    await showAlertModal(getTranslations().success, getTranslations().bookmark.bookmarksImportedJson);
   } catch (err) {
-    await showAlertModal('Error', 'Invalid JSON format');
+    await showAlertModal(getTranslations().bookmark.error, getTranslations().bookmark.invalidJson);
   }
 
   jsonImportHidden.value = '';
@@ -1803,7 +1803,7 @@ exportJsonBtn.addEventListener('click', () => {
   exportDropdown.classList.add('hidden');
 
   if (bookmarkTree.length === 0) {
-    showAlertModal('Error', 'No bookmarks to export!');
+    showAlertModal(getTranslations().bookmark.error, getTranslations().bookmark.noBookmarksToExport);
     return;
   }
 
@@ -1831,7 +1831,7 @@ extractExistingBtn.addEventListener('click', async () => {
       renderBookmarkTree();
     }
   } else {
-    await showAlertModal('Info', 'No existing bookmarks found in this PDF.');
+    await showAlertModal(getTranslations().bookmark.info, getTranslations().bookmark.noExistingBookmarks);
   }
 });
 
@@ -2286,7 +2286,7 @@ downloadBtn.addEventListener('click', async () => {
     a.click();
     URL.revokeObjectURL(url);
 
-    await showAlertModal(getTranslations().success, 'PDF saved successfully!');
+    await showAlertModal(getTranslations().success, getTranslations().bookmark.pdfSaved);
 
     // Reset to uploader after successful save
     setTimeout(() => {
@@ -2295,8 +2295,8 @@ downloadBtn.addEventListener('click', async () => {
   } catch (err) {
     console.error(err);
     await showAlertModal(
-      'Error',
-      'Error saving PDF. Check console for details.'
+      getTranslations().bookmark.error,
+      getTranslations().bookmark.errorSaving
     );
   }
 });

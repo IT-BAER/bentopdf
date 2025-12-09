@@ -2,15 +2,16 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { readFileAsArrayBuffer } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 export async function wordToPdf() {
   const file = state.files[0];
   if (!file) {
-    showAlert('No File', 'Please upload a .docx file first.');
+    showAlert(getTranslations().wordToPdf.noFileTitle, getTranslations().wordToPdf.noFileMessage);
     return;
   }
 
-  showLoader('Preparing preview...');
+  showLoader(getTranslations().wordToPdf.preparingPreview);
 
   try {
     const mammothOptions = {
@@ -66,7 +67,7 @@ export async function wordToPdf() {
     hideLoader();
 
     const downloadHandler = async () => {
-      showLoader('Generating High-Quality PDF...');
+      showLoader(getTranslations().wordToPdf.generatingPdf);
 
       // @ts-expect-error TS(2339) FIXME: Property 'jspdf' does not exist on type 'Window & ... Remove this comment to see the full error message
       const { jsPDF } = window.jspdf;

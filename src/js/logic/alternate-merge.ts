@@ -28,7 +28,7 @@ export async function setupAlternateMergeTool() {
   alternateMergeState.pdfDocs = {};
   alternateMergeState.pdfBytes = {};
 
-  showLoader('Loading PDF documents...');
+  showLoader(getTranslations().alternateMerge.loadingDocuments);
   try {
     for (const file of state.files) {
       const pdfBytes = await readFileAsArrayBuffer(file);
@@ -72,8 +72,8 @@ export async function setupAlternateMergeTool() {
     });
   } catch (error) {
     showAlert(
-      'Error',
-      'Failed to load one or more PDF files. They may be corrupted or password-protected.'
+      getTranslations().error,
+      getTranslations().alternateMerge.loadError
     );
     console.error(error);
   } finally {
@@ -84,13 +84,13 @@ export async function setupAlternateMergeTool() {
 export async function alternateMerge() {
   if (Object.keys(alternateMergeState.pdfBytes).length < 2) {
     showAlert(
-      'Not Enough Files',
-      'Please upload at least two PDF files to alternate and mix.'
+      getTranslations().alternateMerge.notEnoughFilesTitle,
+      getTranslations().alternateMerge.notEnoughFilesMessage
     );
     return;
   }
 
-  showLoader('Alternating and mixing pages...');
+  showLoader(getTranslations().alternateMerge.mixingPages);
   try {
     const fileList = document.getElementById('alternate-file-list');
     if (!fileList) throw new Error('File list not found');
@@ -108,7 +108,7 @@ export async function alternateMerge() {
     }
 
     if (filesToMerge.length < 2) {
-      showAlert(getTranslations().error, 'At least two valid PDFs are required.');
+      showAlert(getTranslations().error, getTranslations().alternateMerge.twoValidPdfsRequired);
       hideLoader();
       return;
     }
@@ -123,22 +123,22 @@ export async function alternateMerge() {
       if (e.data.status === 'success') {
         const blob = new Blob([e.data.pdfBytes], { type: 'application/pdf' });
         downloadFile(blob, generateOutputFilename(state.files[0]?.name, 'alternated-mixed.pdf'));
-        showAlert(getTranslations().success, 'PDFs have been mixed successfully!');
+        showAlert(getTranslations().success, getTranslations().alternateMerge.success);
       } else {
         console.error('Worker interleave error:', e.data.message);
-        showAlert(getTranslations().error, e.data.message || 'Failed to interleave PDFs.');
+        showAlert(getTranslations().error, e.data.message || getTranslations().alternateMerge.interleaveError);
       }
     };
 
     alternateMergeWorker.onerror = (e) => {
       hideLoader();
       console.error('Worker error:', e);
-      showAlert(getTranslations().error, 'An unexpected error occurred in the merge worker.');
+      showAlert(getTranslations().error, getTranslations().alternateMerge.workerError);
     };
 
   } catch (e) {
     console.error('Alternate Merge error:', e);
-    showAlert(getTranslations().error, 'An error occurred while mixing the PDFs.');
+    showAlert(getTranslations().error, getTranslations().alternateMerge.mixingError);
     hideLoader();
   }
 }

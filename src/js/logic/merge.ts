@@ -215,7 +215,7 @@ async function renderPageMergeThumbnails() {
     initializePageThumbnailsSortable();
   } catch (error) {
     console.error('Error rendering page thumbnails:', error);
-    showAlert(getTranslations().error, 'Failed to render page thumbnails');
+    showAlert(getTranslations().error, getTranslations().merge.renderError);
   } finally {
     hideLoader();
     mergeState.isRendering = false;
@@ -223,7 +223,7 @@ async function renderPageMergeThumbnails() {
 }
 
 export async function merge() {
-  showLoader('Merging PDFs...');
+  showLoader(getTranslations().merge.merging);
   try {
     const jobs: any[] = [];
     const filesToMerge: any[] = [];
@@ -313,7 +313,7 @@ export async function merge() {
     }
 
     if (jobs.length === 0) {
-      showAlert(getTranslations().error, 'No files or pages selected to merge.');
+      showAlert(getTranslations().error, getTranslations().merge.selectFiles);
       hideLoader();
       return;
     }
@@ -336,24 +336,24 @@ export async function merge() {
       if (e.data.status === 'success') {
         const blob = new Blob([e.data.pdfBytes], { type: 'application/pdf' });
         downloadFile(blob, generateOutputFilename(state.files[0]?.name, 'merged.pdf'));
-        showAlert(getTranslations().success, 'PDFs merged successfully!');
+        showAlert(getTranslations().success, getTranslations().merge.success);
       } else {
         console.error('Worker merge error:', e.data.message);
-        showAlert(getTranslations().error, e.data.message || 'Failed to merge PDFs.');
+        showAlert(getTranslations().error, e.data.message || getTranslations().merge.error);
       }
     };
 
     mergeWorker.onerror = (e) => {
       hideLoader();
       console.error('Worker error:', e);
-      showAlert(getTranslations().error, 'An unexpected error occurred in the merge worker.');
+      showAlert(getTranslations().error, getTranslations().merge.error);
     };
 
   } catch (e) {
     console.error('Merge error:', e);
     showAlert(
-      'Error',
-      'Failed to merge PDFs. Please check that all files are valid and not password-protected.'
+      getTranslations().error,
+      getTranslations().merge.error
     );
     hideLoader();
   }
@@ -366,7 +366,7 @@ export async function setupMergeTool() {
 
   const wasInPageMode = mergeState.activeMode === 'page';
 
-  showLoader('Loading PDF documents...');
+  showLoader(getTranslations().merge.loadingPdfs);
   try {
     mergeState.pdfDocs = {};
     mergeState.pdfBytes = {};
@@ -381,7 +381,7 @@ export async function setupMergeTool() {
     }
   } catch (error) {
     console.error('Error loading PDFs:', error);
-    showAlert(getTranslations().error, 'Failed to load one or more PDF files');
+    showAlert(getTranslations().error, getTranslations().merge.error);
     return;
   } finally {
     hideLoader();

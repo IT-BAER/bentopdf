@@ -158,7 +158,7 @@ function initializeTool() {
   document.getElementById('upload-pdfs-btn')?.addEventListener('click', () => {
     console.log('Upload button clicked, isRendering:', isRendering);
     if (isRendering) {
-      showModal('Please Wait', 'Pages are still being rendered. Please wait...', 'info');
+      showModal(getTranslations().pdfMultiTool.pleaseWait, getTranslations().pdfMultiTool.renderingPagesWait, 'info');
       return;
     }
     document.getElementById('pdf-file-input')?.click();
@@ -329,7 +329,7 @@ async function handlePdfUpload(e: Event) {
 
 async function loadPdfs(files: File[]) {
   if (isRendering) {
-    showModal('Please Wait', 'Pages are still being rendered. Please wait...', 'info');
+    showModal(getTranslations().pdfMultiTool.pleaseWait, getTranslations().pdfMultiTool.renderingPagesWait, 'info');
     return;
   }
 
@@ -405,7 +405,7 @@ async function loadPdfs(files: File[]) {
 
       } catch (e) {
         console.error(`Failed to load PDF ${file.name}:`, e);
-        showModal('Error', `Failed to load ${file.name}. The file may be corrupted.`, 'error');
+        showModal(getTranslations().error, getTranslations().pdfMultiTool.loadError.replace('{fileName}', file.name), 'error');
       }
     }
 
@@ -799,7 +799,7 @@ async function handleInsertPdf(e: Event) {
 
   } catch (e) {
     console.error('Failed to insert PDF:', e);
-    showModal('Error', 'Failed to insert PDF. The file may be corrupted.', 'error');
+    showModal(getTranslations().error, getTranslations().pdfMultiTool.insertError, 'error');
   }
 
   input.value = '';
@@ -854,7 +854,7 @@ function addBlankPage() {
 
 function bulkRotate(delta: number) {
   if (selectedPages.size === 0) {
-    showModal('No Selection', 'Please select pages to rotate.', 'info');
+    showModal(getTranslations().pdfMultiTool.noSelection, getTranslations().pdfMultiTool.noSelectionRotate, 'info');
     return;
   }
 
@@ -884,7 +884,7 @@ function bulkRotate(delta: number) {
 
 function bulkDelete() {
   if (selectedPages.size === 0) {
-    showModal('No Selection', 'Please select pages to delete.', 'info');
+    showModal(getTranslations().pdfMultiTool.noSelection, getTranslations().pdfMultiTool.noSelectionDelete, 'info');
     return;
   }
   const indices = Array.from(selectedPages).sort((a, b) => b - a);
@@ -901,7 +901,7 @@ function bulkDelete() {
 
 function bulkDuplicate() {
   if (selectedPages.size === 0) {
-    showModal('No Selection', 'Please select pages to duplicate.', 'info');
+    showModal(getTranslations().pdfMultiTool.noSelection, getTranslations().pdfMultiTool.noSelectionDuplicate, 'info');
     return;
   }
   const indices = Array.from(selectedPages).sort((a, b) => b - a);
@@ -914,7 +914,7 @@ function bulkDuplicate() {
 
 function bulkSplit() {
   if (selectedPages.size === 0) {
-    showModal('No Selection', 'Please select pages to mark for splitting.', 'info');
+    showModal(getTranslations().pdfMultiTool.noSelection, getTranslations().pdfMultiTool.noSelectionSplit, 'info');
     return;
   }
   const indices = Array.from(selectedPages);
@@ -1002,10 +1002,10 @@ async function downloadSplitPdfs() {
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     downloadFile(zipBlob, 'split-documents.zip');
 
-    showModal('Success', `Downloaded ${segments.length} PDF files in a ZIP archive.`, 'success');
+    showModal(getTranslations().success, getTranslations().pdfMultiTool.splitSuccess.replace('{count}', segments.length.toString()), 'success');
   } catch (e) {
     console.error('Failed to create split PDFs:', e);
-    showModal('Error', 'Failed to create split PDFs.', 'error');
+    showModal(getTranslations().error, getTranslations().pdfMultiTool.splitError, 'error');
   } finally {
     hideLoading(); // Ensure loader is hidden if we used it (though showModal replaces it)
   }

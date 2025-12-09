@@ -26,7 +26,7 @@ async function renderVisualSelector() {
   // Cleanup any previous lazy loading observers
   cleanupLazyRendering();
 
-  showLoader('Rendering page previews...');
+  showLoader(getTranslations().split.renderingPreviews);
 
   try {
     const pdfData = await state.pdfDoc.save();
@@ -83,7 +83,7 @@ async function renderVisualSelector() {
         useLazyLoading: true,
         lazyLoadMargin: '400px',
         onProgress: (current, total) => {
-          showLoader(`Rendering page previews: ${current}/${total}`);
+          showLoader(getTranslations().split.renderingPreviewsProgress.replace('{current}', current.toString()).replace('{total}', total.toString()));
         },
         onBatchComplete: () => {
           createIcons({ icons });
@@ -92,7 +92,7 @@ async function renderVisualSelector() {
     );
   } catch (error) {
     console.error('Error rendering visual selector:', error);
-    showAlert(getTranslations().error, 'Failed to render page previews.');
+    showAlert(getTranslations().error, getTranslations().split.failedToRenderPreviews);
     // Reset the flag on error so the user can try again.
     visualSelectorRendered = false;
   } finally {
@@ -182,7 +182,7 @@ export async function split() {
     (document.getElementById('download-as-zip') as HTMLInputElement)?.checked ||
     false;
 
-  showLoader('Splitting PDF...');
+  showLoader(getTranslations().split.splittingPdf);
 
   try {
     const totalPages = state.pdfDoc.getPageCount();
@@ -192,7 +192,7 @@ export async function split() {
       case 'range':
         // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
         const pageRangeInput = document.getElementById('page-range').value;
-        if (!pageRangeInput) throw new Error('Please enter a page range.');
+        if (!pageRangeInput) throw new Error(getTranslations().split.enterPageRange);
         const ranges = pageRangeInput.split(',');
         for (const range of ranges) {
           const trimmedRange = range.trim();
@@ -219,7 +219,7 @@ export async function split() {
         const choiceElement = document.querySelector(
           'input[name="even-odd-choice"]:checked'
         );
-        if (!choiceElement) throw new Error('Please select even or odd pages.');
+        if (!choiceElement) throw new Error(getTranslations().split.selectEvenOdd);
         // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'Element'.
         const choice = choiceElement.value;
         for (let i = 0; i < totalPages; i++) {
@@ -262,7 +262,7 @@ export async function split() {
         cpdf.deletePdf(pdf);
 
         if (splitPages.length === 0) {
-          throw new Error('No bookmarks found at the selected level.');
+          throw new Error(getTranslations().split.noBookmarksFound);
         }
 
         splitPages.sort((a, b) => a - b);
@@ -287,7 +287,7 @@ export async function split() {
 
       case 'n-times':
         const nValue = parseInt((document.getElementById('split-n-value') as HTMLInputElement)?.value || '5');
-        if (nValue < 1) throw new Error('N must be at least 1.');
+        if (nValue < 1) throw new Error(getTranslations().split.nMustBeAtLeastOne);
 
         const zip2 = new JSZip();
         const numSplits = Math.ceil(totalPages / nValue);
@@ -312,14 +312,14 @@ export async function split() {
 
     const uniqueIndices = [...new Set(indicesToExtract)];
     if (uniqueIndices.length === 0 && splitMode !== 'bookmarks' && splitMode !== 'n-times') {
-      throw new Error('No pages were selected for splitting.');
+      throw new Error(getTranslations().split.noPagesSelected);
     }
 
     if (
       splitMode === 'all' ||
       (['range', 'visual'].includes(splitMode) && downloadAsZip)
     ) {
-      showLoader('Creating ZIP file...');
+      showLoader(getTranslations().split.creatingZip);
       const zip = new JSZip();
       for (const index of uniqueIndices) {
         const newPdf = await PDFLibDocument.create();
@@ -354,7 +354,7 @@ export async function split() {
     console.error(e);
     showAlert(
       getTranslations().error,
-      e.message || 'Failed to split PDF. Please check your selection.'
+      e.message || getTranslations().split.failedToSplit
     );
   } finally {
     hideLoader();

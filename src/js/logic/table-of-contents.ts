@@ -1,5 +1,6 @@
 import { downloadFile, formatBytes } from "../utils/helpers";
 import { initializeGlobalShortcuts } from "../utils/shortcuts-init.js";
+import { getTranslations } from '../i18n/index.js';
 
 
 const worker = new Worker('/workers/table-of-contents.worker.js');
@@ -90,7 +91,7 @@ function renderFileDisplay(file: File) {
 
 function handleFileSelect(file: File) {
   if (file.type !== 'application/pdf') {
-    showStatus('Please select a PDF file.', 'error');
+    showStatus(getTranslations().tableOfContents.selectPdf, 'error');
     return;
   }
 
@@ -126,7 +127,7 @@ fileInput.addEventListener('change', (e) => {
 
 async function generateTableOfContents() {
   if (!pdfFile) {
-    showStatus('Please select a PDF file first.', 'error');
+    showStatus(getTranslations().tableOfContents.selectPdf, 'error');
     return;
   }
 
@@ -136,7 +137,7 @@ async function generateTableOfContents() {
 
     const arrayBuffer = await pdfFile.arrayBuffer();
 
-    showStatus('Generating table of contents...', 'info');
+    showStatus(getTranslations().tableOfContents.generating, 'info');
 
     const title = tocTitleInput.value || 'Table of Contents';
     const fontSize = parseInt(fontSizeSelect.value, 10);
@@ -174,7 +175,7 @@ worker.onmessage = (e: MessageEvent<TOCWorkerResponse>) => {
     downloadFile(blob, pdfFile?.name.replace('.pdf', '_with_toc.pdf') || 'output_with_toc.pdf');
 
     showStatus(
-      'Table of contents generated successfully! Download started.',
+      getTranslations().tableOfContents.success,
       'success'
     );
 
@@ -187,7 +188,7 @@ worker.onmessage = (e: MessageEvent<TOCWorkerResponse>) => {
   } else if (e.data.status === 'error') {
     const errorMessage = e.data.message || 'Unknown error occurred in worker.';
     console.error('Worker Error:', errorMessage);
-    showStatus(`Error: ${errorMessage}`, 'error');
+    showStatus(getTranslations().tableOfContents.error.replace('{error}', errorMessage), 'error');
   }
 };
 

@@ -2,6 +2,7 @@ import createModule from '@neslinesli93/qpdf-wasm';
 import { showLoader, hideLoader, showAlert } from '../ui';
 import { readFileAsArrayBuffer, downloadFile } from '../utils/helpers';
 import { state } from '../state';
+import { getTranslations } from '../i18n/index.js';
 import JSZip from 'jszip';
 
 let qpdfInstance: any = null;
@@ -10,7 +11,7 @@ async function initializeQpdf() {
   if (qpdfInstance) {
     return qpdfInstance;
   }
-  showLoader('Initializing optimization engine...');
+  showLoader(getTranslations().linearize.initializing);
   try {
     qpdfInstance = await createModule({
       locateFile: () => '/qpdf.wasm',
@@ -18,8 +19,8 @@ async function initializeQpdf() {
   } catch (error) {
     console.error('Failed to initialize qpdf-wasm:', error);
     showAlert(
-      'Initialization Error',
-      'Could not load the optimization engine. Please refresh the page and try again.'
+      getTranslations().linearize.initErrorTitle,
+      getTranslations().linearize.initErrorMessage
     );
     throw error;
   } finally {
@@ -34,11 +35,11 @@ export async function linearizePdf() {
     (file: File) => file.type === 'application/pdf'
   );
   if (!pdfFiles || pdfFiles.length === 0) {
-    showAlert('No PDF Files', 'Please upload at least one PDF file.');
+    showAlert(getTranslations().linearize.noPdfTitle, getTranslations().linearize.noPdfMessage);
     return;
   }
 
-  showLoader('Optimizing PDFs for web view (linearizing)...');
+  showLoader(getTranslations().linearize.optimizing);
   const zip = new JSZip(); // Create a JSZip instance
   let qpdf: any;
   let successCount = 0;
@@ -52,7 +53,11 @@ export async function linearizePdf() {
       const inputPath = `/input_${i}.pdf`;
       const outputPath = `/output_${i}.pdf`;
 
-      showLoader(`Optimizing ${file.name} (${i + 1}/${pdfFiles.length})...`);
+      showLoader(getTranslations().linearize.optimizingFile
+        .replace('{filename}', file.name)
+        .replace('{current}', (i + 1).toString())
+        .replace('{total}', pdfFiles.length.toString())
+      );
 
       try {
         const fileBuffer = await readFileAsArrayBuffer(file);
@@ -99,18 +104,18 @@ export async function linearizePdf() {
     }
 
     if (successCount === 0) {
-      throw new Error('No PDF files could be linearized.');
+      throw new Error(getTranslations().linearize.noFilesProcessed);
     }
 
-    showLoader('Generating ZIP file...');
+    showLoader(getTranslations().linearize.generatingZip);
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     downloadFile(zipBlob, 'linearized-pdfs.zip');
 
-    let alertMessage = `${successCount} PDF(s) linearized successfully.`;
+    let alertMessage = getTranslations().linearize.successMessage.replace('{successCount}', successCount.toString());
     if (errorCount > 0) {
-      alertMessage += ` ${errorCount} file(s) failed.`;
+      alertMessage += ' ' + getTranslations().linearize.failureMessage.replace('{errorCount}', errorCount.toString());
     }
-    showAlert('Processing Complete', alertMessage);
+    showAlert(getTranslations().linearize.processingComplete, alertMessage);
   } catch (error: any) {
     console.error('Linearization process error:', error);
     showAlert(

@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { readFileAsArrayBuffer } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 let viewerIframe: HTMLIFrameElement | null = null;
 let viewerReady = false;
@@ -9,7 +10,7 @@ let viewerReady = false;
 export async function setupFormFiller() {
   if (!state.files || !state.files[0]) return;
 
-  showLoader('Loading PDF form...');
+  showLoader(getTranslations().formFiller.loading);
   const pdfViewerContainer = document.getElementById('pdf-viewer-container');
 
   if (!pdfViewerContainer) {
@@ -44,8 +45,8 @@ export async function setupFormFiller() {
   } catch (e) {
     console.error('Critical error setting up form filler:', e);
     showAlert(
-      'Error',
-      'Failed to load PDF form viewer.'
+      getTranslations().formFiller.loadErrorTitle,
+      getTranslations().formFiller.loadErrorMessage
     );
     hideLoader();
   }
@@ -53,7 +54,7 @@ export async function setupFormFiller() {
 
 export async function processAndDownloadForm() {
   if (!viewerIframe || !viewerReady) {
-    showAlert('Viewer not ready', 'Please wait for the form to finish loading.');
+    showAlert(getTranslations().formFiller.viewerNotReadyTitle, getTranslations().formFiller.viewerNotReadyMessage);
     return;
   }
 
@@ -62,8 +63,8 @@ export async function processAndDownloadForm() {
     if (!viewerWindow) {
       console.error('Cannot access iframe window');
       showAlert(
-        'Download',
-        'Please use the Download button in the PDF viewer toolbar above.'
+        getTranslations().formFiller.downloadTitle,
+        getTranslations().formFiller.useToolbarButton
       );
       return;
     }
@@ -72,8 +73,8 @@ export async function processAndDownloadForm() {
     if (!viewerDoc) {
       console.error('Cannot access iframe document');
       showAlert(
-        'Download',
-        'Please use the Download button in the PDF viewer toolbar above.'
+        getTranslations().formFiller.downloadTitle,
+        getTranslations().formFiller.useToolbarButton
       );
       return;
     }
@@ -91,8 +92,8 @@ export async function processAndDownloadForm() {
         secondaryDownload.click();
       } else {
         showAlert(
-          'Download',
-          'Please use the Download button in the PDF viewer toolbar above.'
+          getTranslations().formFiller.downloadTitle,
+          getTranslations().formFiller.useToolbarButton
         );
       }
     }

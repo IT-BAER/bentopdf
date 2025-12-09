@@ -13,7 +13,7 @@ export async function sanitizePdf() {
     return;
   }
 
-  showLoader('Sanitizing PDF...');
+  showLoader(getTranslations().sanitize.sanitizing);
   try {
     const pdfDoc = state.pdfDoc;
 
@@ -566,8 +566,8 @@ export async function sanitizePdf() {
 
     if (!changesMade) {
       showAlert(
-        'No Changes',
-        'No items were selected for removal or none were found in the PDF.'
+        getTranslations().sanitize.noChangesTitle,
+        getTranslations().sanitize.noChangesMessage
       );
       hideLoader();
       return;
@@ -578,10 +578,10 @@ export async function sanitizePdf() {
       new Blob([sanitizedPdfBytes], { type: 'application/pdf' }),
       'sanitized.pdf'
     );
-    showAlert(getTranslations().success, 'PDF has been sanitized and downloaded.');
+    showAlert(getTranslations().success, getTranslations().sanitize.successMessage);
   } catch (e) {
     console.error('Sanitization Error:', e);
-    showAlert(getTranslations().error, `An error occurred during sanitization: ${e.message}`);
+    showAlert(getTranslations().error, getTranslations().sanitize.errorMessage.replace('{error}', e.message));
   } finally {
     hideLoader();
   }

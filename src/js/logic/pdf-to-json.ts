@@ -1,6 +1,7 @@
 import JSZip from 'jszip'
 import { downloadFile, formatBytes, readFileAsArrayBuffer } from '../utils/helpers';
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js';
+import { getTranslations } from '../i18n/index.js';
 
 const worker = new Worker(new URL('/workers/pdf-to-json.worker.js', import.meta.url));
 
@@ -63,28 +64,28 @@ pdfFilesInput.addEventListener('change', (e) => {
     updateFileList()
 
     if (selectedFiles.length === 0) {
-      showStatus('Please select at least 1 PDF file', 'info')
+      showStatus(getTranslations().pdfToJson.selectFile, 'info')
     } else {
-      showStatus(`${selectedFiles.length} file(s) selected. Ready to convert!`, 'info')
+      showStatus(getTranslations().pdfToJson.filesSelected.replace('{count}', selectedFiles.length.toString()), 'info')
     }
   }
 })
 
 async function convertPDFsToJSON() {
   if (selectedFiles.length === 0) {
-    showStatus('Please select at least 1 PDF file', 'error')
+    showStatus(getTranslations().pdfToJson.selectFile, 'error')
     return
   }
 
   try {
     convertBtn.disabled = true
-    showStatus('Reading files (Main Thread)...', 'info')
+    showStatus(getTranslations().pdfToJson.readingFiles, 'info')
 
     const fileBuffers = await Promise.all(
       selectedFiles.map(file => readFileAsArrayBuffer(file))
     )
 
-    showStatus('Converting PDFs to JSON..', 'info')
+    showStatus(getTranslations().pdfToJson.converting, 'info')
 
     worker.postMessage({
       command: 'convert',
@@ -94,7 +95,7 @@ async function convertPDFsToJSON() {
 
   } catch (error) {
     console.error('Error reading files:', error)
-    showStatus(`❌ Error reading files: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error')
+    showStatus(`❌ ${getTranslations().pdfToJson.errorReading.replace('{error}', error instanceof Error ? error.message : 'Unknown error')}`, 'error')
     convertBtn.disabled = false
   }
 }

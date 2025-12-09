@@ -7,6 +7,7 @@ import {
   generateOutputFilename,
 } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument, PDFName, PDFDict, PDFStream, PDFNumber } from 'pdf-lib';
 
@@ -271,7 +272,7 @@ export async function compress() {
 
   try {
     if (state.files.length === 0) {
-      showAlert('No Files', 'Please select at least one PDF file.');
+      showAlert(getTranslations().compress.noFilesTitle, getTranslations().compress.noFilesMessage);
       hideLoader();
       return;
     }
@@ -284,15 +285,15 @@ export async function compress() {
       let usedMethod;
 
       if (algorithm === 'vector') {
-        showLoader('Running Vector (Smart) compression...');
+        showLoader(getTranslations().compress.runningVector);
         resultBytes = await performSmartCompression(arrayBuffer, smartSettings);
         usedMethod = 'Vector';
       } else if (algorithm === 'photon') {
-        showLoader('Running Photon (Rasterize) compression...');
+        showLoader(getTranslations().compress.runningPhoton);
         resultBytes = await performLegacyCompression(arrayBuffer, legacySettings);
         usedMethod = 'Photon';
       } else {
-        showLoader('Running Automatic (Vector first)...');
+        showLoader(getTranslations().compress.runningAutoVector);
         const vectorResultBytes = await performSmartCompression(
           arrayBuffer,
           smartSettings
@@ -302,8 +303,8 @@ export async function compress() {
           resultBytes = vectorResultBytes;
           usedMethod = 'Vector (Automatic)';
         } else {
-          showAlert('Vector failed to reduce size. Trying Photon...', 'info');
-          showLoader('Running Automatic (Photon fallback)...');
+          showAlert(getTranslations().compress.vectorFailed, 'info');
+          showLoader(getTranslations().compress.runningAutoPhoton);
           resultBytes = await performLegacyCompression(
             arrayBuffer,
             legacySettings
@@ -320,15 +321,13 @@ export async function compress() {
 
       if (savings > 0) {
         showAlert(
-          'Compression Complete',
-          `Method: **${usedMethod}**. ` +
-          `File size reduced from ${originalSize} to ${compressedSize} (Saved ${savingsPercent}%).`
+          getTranslations().compress.completeTitle,
+          getTranslations().compress.completeMessageSingle.replace('{method}', usedMethod).replace('{original}', originalSize).replace('{compressed}', compressedSize).replace('{percent}', savingsPercent)
         );
       } else {
         showAlert(
-          'Compression Finished',
-          `Method: **${usedMethod}**. ` +
-          `Could not reduce file size. Original: ${originalSize}, New: ${compressedSize}.`,
+          getTranslations().compress.finishedTitle,
+          getTranslations().compress.finishedMessageSingle.replace('{method}', usedMethod).replace('{original}', originalSize).replace('{compressed}', compressedSize),
           // @ts-expect-error TS(2554) FIXME: Expected 2 arguments, but got 3.
           'warning'
         );
@@ -339,7 +338,7 @@ export async function compress() {
         generateOutputFilename(state.files[0]?.name, 'compressed.pdf')
       );
     } else {
-      showLoader('Compressing multiple PDFs...');
+      showLoader(getTranslations().compress.compressingMultiple);
       const JSZip = (await import('jszip')).default;
       const zip = new JSZip();
       let totalOriginalSize = 0;
@@ -347,7 +346,7 @@ export async function compress() {
 
       for (let i = 0; i < state.files.length; i++) {
         const file = state.files[i];
-        showLoader(`Compressing ${i + 1}/${state.files.length}: ${file.name}...`);
+        showLoader(getTranslations().compress.compressingProgress.replace('{current}', (i + 1).toString()).replace('{total}', state.files.length.toString()).replace('{filename}', file.name));
         const arrayBuffer = await readFileAsArrayBuffer(file);
         totalOriginalSize += file.size;
 
@@ -380,15 +379,13 @@ export async function compress() {
 
       if (totalSavings > 0) {
         showAlert(
-          'Compression Complete',
-          `Compressed ${state.files.length} PDF(s). ` +
-          `Total size reduced from ${formatBytes(totalOriginalSize)} to ${formatBytes(totalCompressedSize)} (Saved ${totalSavingsPercent}%).`
+          getTranslations().compress.completeTitle,
+          getTranslations().compress.completeMessageMultiple.replace('{count}', state.files.length.toString()).replace('{original}', formatBytes(totalOriginalSize)).replace('{compressed}', formatBytes(totalCompressedSize)).replace('{percent}', totalSavingsPercent)
         );
       } else {
         showAlert(
-          'Compression Finished',
-          `Compressed ${state.files.length} PDF(s). ` +
-          `Total size: ${formatBytes(totalCompressedSize)}.`
+          getTranslations().compress.finishedTitle,
+          getTranslations().compress.finishedMessageMultiple.replace('{count}', state.files.length.toString()).replace('{compressed}', formatBytes(totalCompressedSize))
         );
       }
 
@@ -396,8 +393,8 @@ export async function compress() {
     }
   } catch (e) {
     showAlert(
-      'Error',
-      `An error occurred during compression. Error: ${e.message}`
+      getTranslations().compress.errorTitle,
+      getTranslations().compress.errorMessage.replace('{error}', e.message)
     );
   } finally {
     hideLoader();

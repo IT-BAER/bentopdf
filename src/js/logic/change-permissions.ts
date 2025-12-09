@@ -24,15 +24,15 @@ export async function changePermissions() {
   let qpdf: any;
 
   try {
-    showLoader('Initializing...');
+    showLoader(getTranslations().changePermissions.initializing);
     qpdf = await initializeQpdf();
 
-    showLoader('Reading PDF...');
+    showLoader(getTranslations().changePermissions.readingPdf);
     const fileBuffer = await readFileAsArrayBuffer(file);
     const uint8Array = new Uint8Array(fileBuffer as ArrayBuffer);
     qpdf.FS.writeFile(inputPath, uint8Array);
 
-    showLoader('Processing PDF permissions...');
+    showLoader(getTranslations().changePermissions.processing);
 
     const args = [inputPath];
 
@@ -114,7 +114,7 @@ export async function changePermissions() {
       throw new Error('Processing failed: ' + errorMsg || 'Unknown error');
     }
 
-    showLoader('Preparing download...');
+    showLoader(getTranslations().changePermissions.preparingDownload);
     const outputFile = qpdf.FS.readFile(outputPath, { encoding: 'binary' });
 
     if (!outputFile || outputFile.length === 0) {
@@ -126,10 +126,10 @@ export async function changePermissions() {
 
     hideLoader();
 
-    let successMessage = 'PDF permissions changed successfully!';
+    let successMessage = getTranslations().changePermissions.successMessage;
     if (!shouldEncrypt) {
       successMessage =
-        'PDF decrypted successfully! All encryption and restrictions removed.';
+        getTranslations().changePermissions.decryptedSuccess;
     }
 
     showAlert(getTranslations().success, successMessage);
@@ -139,18 +139,18 @@ export async function changePermissions() {
 
     if (error.message === 'INVALID_PASSWORD') {
       showAlert(
-        'Incorrect Password',
-        'The current password you entered is incorrect. Please try again.'
+        getTranslations().changePermissions.incorrectPasswordTitle,
+        getTranslations().changePermissions.incorrectPasswordMessage
       );
     } else if (error.message === 'PASSWORD_REQUIRED') {
       showAlert(
-        'Password Required',
-        'This PDF is password-protected. Please enter the current password to proceed.'
+        getTranslations().changePermissions.passwordRequiredTitle,
+        getTranslations().changePermissions.passwordRequiredMessage
       );
     } else {
       showAlert(
-        'Processing Failed',
-        `An error occurred: ${error.message || 'The PDF might be corrupted or password protected.'}`
+        getTranslations().changePermissions.processingFailedTitle,
+        getTranslations().changePermissions.processingFailedMessage.replace('{error}', error.message || getTranslations().changePermissions.defaultError)
       );
     }
   } finally {

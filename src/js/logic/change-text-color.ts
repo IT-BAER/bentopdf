@@ -99,7 +99,7 @@ export async function setupTextColorTool() {
 
 export async function changeTextColor() {
   if (!state.pdfDoc) {
-    showAlert(getTranslations().error, 'PDF not loaded.');
+    showAlert(getTranslations().error, getTranslations().changeTextColor.pdfNotLoaded);
     return;
   }
 
@@ -107,7 +107,7 @@ export async function changeTextColor() {
   const { r, g, b } = hexToRgb(colorHex);
   const darknessThreshold = 120;
 
-  showLoader('Changing text color...');
+  showLoader(getTranslations().changeTextColor.changingColor);
   try {
     const newPdfDoc = await PDFLibDocument.create();
     const pdf = await getPDFDocument(
@@ -115,7 +115,7 @@ export async function changeTextColor() {
     ).promise;
 
     for (let i = 1; i <= pdf.numPages; i++) {
-      showLoader(`Processing page ${i} of ${pdf.numPages}...`);
+      showLoader(getTranslations().changeTextColor.processingPage.replace('{page}', i.toString()).replace('{total}', pdf.numPages.toString()));
       const page = await pdf.getPage(i);
       const viewport = page.getViewport({ scale: 2.0 }); // High resolution for quality
 
@@ -167,7 +167,7 @@ export async function changeTextColor() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Could not change text color.');
+    showAlert(getTranslations().error, getTranslations().changeTextColor.error);
   } finally {
     hideLoader();
   }

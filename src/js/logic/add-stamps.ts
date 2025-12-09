@@ -1,5 +1,6 @@
 import { formatBytes, readFileAsArrayBuffer } from '../utils/helpers'
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js'
+import { getTranslations } from '../i18n/index.js';
 
 let selectedFile: File | null = null
 let viewerIframe: HTMLIFrameElement | null = null
@@ -144,7 +145,7 @@ if (pdfInput) {
 if (saveStampedBtn) {
   saveStampedBtn.addEventListener('click', () => {
     if (!viewerIframe) {
-      alert('Viewer not ready. Please upload a PDF and wait for it to finish loading.')
+      alert(getTranslations().addStamps.viewerNotReady)
       return
     }
 
@@ -162,10 +163,10 @@ if (saveStampedBtn) {
         return
       }
 
-      alert('Could not access the stamped-PDF exporter. Please use the Export → PDF button in the viewer toolbar as a fallback.')
+      alert(getTranslations().addStamps.exporterAccessError)
     } catch (e) {
       console.error('Failed to trigger stamped PDF export:', e)
-      alert('Could not export the stamped PDF. Please use the Export → PDF button in the viewer toolbar as a fallback.')
+      alert(getTranslations().addStamps.exportError)
     }
   })
 }

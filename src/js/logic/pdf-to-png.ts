@@ -9,7 +9,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mi
 
 
 export async function pdfToPng() {
-  showLoader('Converting to PNG...');
+  showLoader(getTranslations().pdfToPng.converting);
   try {
     const pdf = await getPDFDocument(
       await readFileAsArrayBuffer(state.files[0])

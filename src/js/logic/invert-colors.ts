@@ -10,10 +10,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mi
 
 export async function invertColors() {
   if (!state.pdfDoc) {
-    showAlert(getTranslations().error, 'PDF not loaded.');
+    showAlert(getTranslations().error, getTranslations().invertColors.pdfNotLoaded);
     return;
   }
-  showLoader('Inverting PDF colors...');
+  showLoader(getTranslations().invertColors.inverting);
   try {
     const newPdfDoc = await PDFLibDocument.create();
     const pdfBytes = await state.pdfDoc.save();
@@ -62,7 +62,7 @@ export async function invertColors() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Could not invert PDF colors.');
+    showAlert(getTranslations().error, getTranslations().invertColors.error);
   } finally {
     hideLoader();
   }

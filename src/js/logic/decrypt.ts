@@ -14,7 +14,7 @@ export async function decrypt() {
   )?.value;
 
   if (!password) {
-    showAlert('Input Required', 'Please enter the PDF password.');
+    showAlert(getTranslations().decrypt.inputRequired, getTranslations().decrypt.enterPassword);
     return;
   }
 
@@ -23,16 +23,16 @@ export async function decrypt() {
   let qpdf: any;
 
   try {
-    showLoader('Initializing decryption...');
+    showLoader(getTranslations().decrypt.initializing);
     qpdf = await initializeQpdf();
 
-    showLoader('Reading encrypted PDF...');
+    showLoader(getTranslations().decrypt.reading);
     const fileBuffer = await readFileAsArrayBuffer(file);
     const uint8Array = new Uint8Array(fileBuffer as ArrayBuffer);
 
     qpdf.FS.writeFile(inputPath, uint8Array);
 
-    showLoader('Decrypting PDF...');
+    showLoader(getTranslations().decrypt.decrypting);
 
     const args = [inputPath, '--password=' + password, '--decrypt', outputPath];
 
@@ -50,11 +50,11 @@ export async function decrypt() {
       throw qpdfError;
     }
 
-    showLoader('Preparing download...');
+    showLoader(getTranslations().decrypt.preparingDownload);
     const outputFile = qpdf.FS.readFile(outputPath, { encoding: 'binary' });
 
     if (outputFile.length === 0) {
-      throw new Error('Decryption resulted in an empty file.');
+      throw new Error(getTranslations().decrypt.emptyFile);
     }
 
     const blob = new Blob([outputFile], { type: 'application/pdf' });
@@ -63,7 +63,7 @@ export async function decrypt() {
     hideLoader();
     showAlert(
       getTranslations().success,
-      'PDF decrypted successfully! Your download has started.'
+      getTranslations().decrypt.success
     );
   } catch (error: any) {
     console.error('Error during PDF decryption:', error);
@@ -71,18 +71,18 @@ export async function decrypt() {
 
     if (error.message === 'INVALID_PASSWORD') {
       showAlert(
-        'Incorrect Password',
-        'The password you entered is incorrect. Please try again.'
+        getTranslations().decrypt.incorrectPasswordTitle,
+        getTranslations().decrypt.incorrectPasswordMessage
       );
     } else if (error.message?.includes('password')) {
       showAlert(
-        'Password Error',
-        'Unable to decrypt the PDF with the provided password.'
+        getTranslations().decrypt.passwordErrorTitle,
+        getTranslations().decrypt.passwordErrorMessage
       );
     } else {
       showAlert(
-        'Decryption Failed',
-        `An error occurred: ${error.message || 'The password you entered is wrong or the file is corrupted.'}`
+        getTranslations().decrypt.decryptionFailedTitle,
+        getTranslations().decrypt.decryptionFailedMessage.replace('{error}', error.message || getTranslations().decrypt.fallbackError)
       );
     }
   } finally {

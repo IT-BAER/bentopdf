@@ -166,7 +166,7 @@ export async function txtToPdf() {
   const uploadPanel = document.getElementById('txt-upload-panel');
   const isUploadMode = !uploadPanel?.classList.contains('hidden');
 
-  showLoader('Creating PDF...');
+  showLoader(getTranslations().txtToPdf.creatingPdf);
   try {
     // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
     const fontFamilyKey = document.getElementById('font-family').value;
@@ -194,7 +194,7 @@ export async function txtToPdf() {
           `${baseName}.pdf`
         );
       } else {
-        showLoader('Creating PDFs and ZIP archive...');
+        showLoader(getTranslations().txtToPdf.creatingZip);
         const zip = new JSZip();
 
         for (const file of state.files) {
@@ -217,7 +217,7 @@ export async function txtToPdf() {
       // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
       const text = document.getElementById('text-input').value;
       if (!text.trim()) {
-        showAlert('Input Required', 'Please enter some text to convert.');
+        showAlert(getTranslations().txtToPdf.inputRequiredTitle, getTranslations().txtToPdf.inputRequiredMessage);
         hideLoader();
         return;
       }
@@ -236,7 +236,7 @@ export async function txtToPdf() {
     }
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Failed to create PDF from text.');
+    showAlert(getTranslations().error, getTranslations().txtToPdf.error);
   } finally {
     hideLoader();
   }

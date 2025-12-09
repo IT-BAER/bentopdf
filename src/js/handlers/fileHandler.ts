@@ -569,10 +569,10 @@ async function handleMultiFileUpload(toolId) {
         encryptedPDFFileNames.push(encryptedPDF.file.name);
       });
 
-      const errorMessage = `PDFs found that are password-protected\n\nPlease use the Decrypt or Change Permissions tool on these files first:\n\n${encryptedPDFFileNames.join('\n')}`;
+      const errorMessage = getTranslations().fileHandler.protectedPdfsMessage.replace('{files}', encryptedPDFFileNames.join('\n'));
 
       hideLoader(); // Hide loader before showing alert
-      showAlert('Protected PDFs', errorMessage);
+      showAlert(getTranslations().fileHandler.protectedPdfs, errorMessage);
 
       switchView('grid');
 
@@ -728,7 +728,7 @@ export function setupFileInputHandler(toolId) {
       const validFiles = newFiles.filter(file => validTypes.includes(file.type));
 
       if (validFiles.length < newFiles.length) {
-        showAlert('Invalid Files', 'Some files were skipped because they are not supported images.');
+        showAlert(getTranslations().fileHandler.invalidFiles, getTranslations().fileHandler.unsupportedImages);
       }
 
       newFiles = validFiles;

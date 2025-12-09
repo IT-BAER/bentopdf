@@ -13,7 +13,7 @@ import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 
 export async function imageToPdf() {
   if (state.files.length === 0) {
-    showAlert('No Files', 'Please select at least one image file.');
+    showAlert(getTranslations().imageToPdf.noFiles, getTranslations().imageToPdf.selectImage);
     return;
   }
 
@@ -57,7 +57,7 @@ export async function imageToPdf() {
         state.files = filesByType[type] as File[];
         await heicToPdf();
       } else {
-        showLoader('Converting images to PDF...');
+        showLoader(getTranslations().imageToPdf.converting);
         try {
 
           const pdfDoc = await PDFLibDocument.create();
@@ -92,7 +92,7 @@ export async function imageToPdf() {
           );
         } catch (e) {
           console.error(e);
-          showAlert(getTranslations().error, 'Failed to convert images to PDF.');
+          showAlert(getTranslations().error, getTranslations().imageToPdf.error);
         } finally {
           hideLoader();
         }
@@ -103,7 +103,7 @@ export async function imageToPdf() {
     return;
   }
 
-  showLoader('Converting mixed image types to PDF...');
+  showLoader(getTranslations().imageToPdf.convertingMixed);
   try {
     const pdfDoc = await PDFLibDocument.create();
 

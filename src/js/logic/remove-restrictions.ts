@@ -5,6 +5,7 @@ import {
   readFileAsArrayBuffer,
 } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 export async function removeRestrictions() {
   const file = state.files[0];
@@ -17,16 +18,16 @@ export async function removeRestrictions() {
   let qpdf: any;
 
   try {
-    showLoader('Initializing...');
+    showLoader(getTranslations().removeRestrictions.initializing);
     qpdf = await initializeQpdf();
 
-    showLoader('Reading PDF...');
+    showLoader(getTranslations().removeRestrictions.reading);
     const fileBuffer = await readFileAsArrayBuffer(file);
     const uint8Array = new Uint8Array(fileBuffer as ArrayBuffer);
 
     qpdf.FS.writeFile(inputPath, uint8Array);
 
-    showLoader('Removing restrictions...');
+    showLoader(getTranslations().removeRestrictions.removing);
 
     const args = [inputPath];
 
@@ -55,7 +56,7 @@ export async function removeRestrictions() {
       );
     }
 
-    showLoader('Preparing download...');
+    showLoader(getTranslations().removeRestrictions.preparing);
     const outputFile = qpdf.FS.readFile(outputPath, { encoding: 'binary' });
 
     if (!outputFile || outputFile.length === 0) {

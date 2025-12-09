@@ -11,12 +11,12 @@ export async function addBlankPage() {
   const pageCountInput = document.getElementById('page-count').value;
 
   if (pageNumberInput.trim() === '') {
-    showAlert('Invalid Input', 'Please enter a page number.');
+    showAlert(getTranslations().addBlankPage.invalidInput, getTranslations().addBlankPage.enterPageNumber);
     return;
   }
 
   if (pageCountInput.trim() === '') {
-    showAlert('Invalid Input', 'Please enter the number of pages to insert.');
+    showAlert(getTranslations().addBlankPage.invalidInput, getTranslations().addBlankPage.enterPageCount);
     return;
   }
 
@@ -25,21 +25,21 @@ export async function addBlankPage() {
   const totalPages = state.pdfDoc.getPageCount();
   if (isNaN(position) || position < 0 || position > totalPages) {
     showAlert(
-      'Invalid Input',
-      `Please enter a number between 0 and ${totalPages}.`
+      getTranslations().addBlankPage.invalidInput,
+      getTranslations().addBlankPage.enterValidPageNumber.replace('{totalPages}', totalPages.toString())
     );
     return;
   }
 
   if (isNaN(pageCount) || pageCount < 1) {
     showAlert(
-      'Invalid Input',
-      'Please enter a valid number of pages (1 or more).'
+      getTranslations().addBlankPage.invalidInput,
+      getTranslations().addBlankPage.enterValidPageCount
     );
     return;
   }
 
-  showLoader(`Adding ${pageCount} blank page${pageCount > 1 ? 's' : ''}...`);
+  showLoader(getTranslations().addBlankPage.addingBlankPages.replace('{count}', pageCount.toString()));
   try {
     const newPdf = await PDFLibDocument.create();
     const { width, height } = state.pdfDoc.getPage(0).getSize();
@@ -70,7 +70,7 @@ export async function addBlankPage() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, `Could not add blank page${pageCount > 1 ? 's' : ''}.`);
+    showAlert(getTranslations().error, getTranslations().addBlankPage.couldNotAddBlankPages);
   } finally {
     hideLoader();
   }

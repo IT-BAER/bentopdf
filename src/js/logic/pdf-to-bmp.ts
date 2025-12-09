@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import JSZip from 'jszip';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -54,7 +55,7 @@ function encodeBMP(imageData: any) {
 }
 
 export async function pdfToBmp() {
-  showLoader('Converting PDF to BMP images...');
+  showLoader(getTranslations().pdfToBmp.converting);
   try {
     const pdf = await getPDFDocument(
       await readFileAsArrayBuffer(state.files[0])
@@ -62,7 +63,7 @@ export async function pdfToBmp() {
     const zip = new JSZip();
 
     for (let i = 1; i <= pdf.numPages; i++) {
-      showLoader(`Processing page ${i} of ${pdf.numPages}...`);
+      showLoader(getTranslations().pdfToBmp.processingPage.replace('{current}', i.toString()).replace('{total}', pdf.numPages.toString()));
       const page = await pdf.getPage(i);
       const viewport = page.getViewport({ scale: 1.5 });
       const canvas = document.createElement('canvas');
@@ -83,14 +84,14 @@ export async function pdfToBmp() {
       zip.file(`page_${i}.bmp`, bmpBuffer);
     }
 
-    showLoader('Compressing files into a ZIP...');
+    showLoader(getTranslations().pdfToBmp.compressing);
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     downloadFile(zipBlob, 'converted_bmp_images.zip');
   } catch (e) {
     console.error(e);
     showAlert(
-      'Error',
-      'Failed to convert PDF to BMP. The file might be corrupted.'
+      getTranslations().pdfToBmp.errorTitle,
+      getTranslations().pdfToBmp.errorMessage
     );
   } finally {
     hideLoader();

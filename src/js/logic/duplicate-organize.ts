@@ -76,8 +76,8 @@ function attachEventListeners(element: any) {
       initializePageGridSortable();
     } else {
       showAlert(
-        'Cannot Delete',
-        'You cannot delete the last page of the document.'
+        getTranslations().duplicateOrganize.cannotDeleteTitle,
+        getTranslations().duplicateOrganize.cannotDeleteMessage
       );
     }
   });
@@ -90,7 +90,7 @@ export async function renderDuplicateOrganizeThumbnails() {
   // Cleanup any previous lazy loading observers
   cleanupLazyRendering();
 
-  showLoader('Rendering page previews...');
+  showLoader(getTranslations().duplicateOrganize.renderingPreviews);
   const pdfData = await state.pdfDoc.save();
   const pdfjsDoc = await getPDFDocument({ data: pdfData }).promise;
 
@@ -158,7 +158,7 @@ export async function renderDuplicateOrganizeThumbnails() {
         useLazyLoading: true,
         lazyLoadMargin: '400px',
         onProgress: (current, total) => {
-          showLoader(`Rendering page previews: ${current}/${total}`);
+          showLoader(getTranslations().duplicateOrganize.renderingPreviewsProgress.replace('{current}', current).replace('{total}', total));
         },
         onBatchComplete: () => {
           createIcons({ icons });
@@ -169,14 +169,14 @@ export async function renderDuplicateOrganizeThumbnails() {
     initializePageGridSortable();
   } catch (error) {
     console.error('Error rendering thumbnails:', error);
-    showAlert(getTranslations().error, 'Failed to render page previews');
+    showAlert(getTranslations().error, getTranslations().duplicateOrganize.renderError);
   } finally {
     hideLoader();
   }
 }
 
 export async function processAndSave() {
-  showLoader('Building new PDF...');
+  showLoader(getTranslations().duplicateOrganize.buildingPdf);
   try {
     const grid = document.getElementById('page-grid');
     const finalPageElements = grid.querySelectorAll('.page-thumbnail');
@@ -189,7 +189,7 @@ export async function processAndSave() {
     console.log('Original PDF Page Count:', state.pdfDoc?.getPageCount());
 
     if (finalIndices.length === 0) {
-      showAlert(getTranslations().error, 'No valid pages to save.');
+      showAlert(getTranslations().error, getTranslations().duplicateOrganize.noValidPages);
       return;
     }
 
@@ -199,7 +199,7 @@ export async function processAndSave() {
     const invalidIndices = finalIndices.filter(i => i >= totalPages);
     if (invalidIndices.length > 0) {
       console.error('Found invalid indices:', invalidIndices);
-      showAlert(getTranslations().error, 'Some pages could not be processed. Please try again.');
+      showAlert(getTranslations().error, getTranslations().duplicateOrganize.processingError);
       return;
     }
 
@@ -213,7 +213,7 @@ export async function processAndSave() {
     );
   } catch (e) {
     console.error('Save error:', e);
-    showAlert(getTranslations().error, 'Failed to save the new PDF. Check console for details.');
+    showAlert(getTranslations().error, getTranslations().duplicateOrganize.saveError);
   } finally {
     hideLoader();
   }

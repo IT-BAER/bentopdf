@@ -9,7 +9,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mi
 
 
 export async function pdfToWebp() {
-  showLoader('Converting to WebP...');
+  showLoader(getTranslations().pdfToWebp.converting);
   try {
     const pdf = await getPDFDocument(
       await readFileAsArrayBuffer(state.files[0])

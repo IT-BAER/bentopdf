@@ -4,7 +4,7 @@ import { state } from '../state.js';
 import { PDFName, PDFString } from 'pdf-lib';
 
 export async function editMetadata() {
-  showLoader('Updating metadata...');
+  showLoader(getTranslations().editMetadata.updating);
   try {
     // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
     state.pdfDoc.setTitle(document.getElementById('meta-title').value);
@@ -84,8 +84,8 @@ export async function editMetadata() {
   } catch (e) {
     console.error(e);
     showAlert(
-      'Error',
-      'Could not update metadata. Please check that date formats are correct.'
+      getTranslations().error,
+      getTranslations().editMetadata.error
     );
   } finally {
     hideLoader();

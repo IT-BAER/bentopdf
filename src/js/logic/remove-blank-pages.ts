@@ -38,7 +38,7 @@ async function isPageBlank(page: PDFPageProxy, threshold: number) {
 
 async function analyzePages() {
   if (!state.pdfDoc) return;
-  showLoader('Analyzing for blank pages...');
+  showLoader(getTranslations().removeBlankPages.analyzing);
 
   const pdfBytes = await state.pdfDoc.save();
   const pdf = await getPDFDocument({ data: pdfBytes }).promise;
@@ -89,7 +89,9 @@ async function updateAnalysisUI() {
   }
 
   if (pagesToRemove.length > 0) {
-    analysisText.textContent = `Found ${pagesToRemove.length} blank page(s) to remove: ${pagesToRemove.join(', ')}`;
+    analysisText.textContent = getTranslations().removeBlankPages.foundPages
+      .replace('{count}', pagesToRemove.length.toString())
+      .replace('{pages}', pagesToRemove.join(', '));
     previewContainer.classList.remove('hidden');
 
     for (const pageNum of pagesToRemove) {
@@ -110,8 +112,7 @@ async function updateAnalysisUI() {
       thumbnailsContainer.appendChild(img);
     }
   } else {
-    analysisText.textContent =
-      'No blank pages found at this sensitivity level.';
+    analysisText.textContent = getTranslations().removeBlankPages.noPagesFoundAtSensitivity;
     previewContainer.classList.remove('hidden');
   }
 }
@@ -124,7 +125,7 @@ export async function setupRemoveBlankPagesTool() {
 }
 
 export async function removeBlankPages() {
-  showLoader('Removing blank pages...');
+  showLoader(getTranslations().removeBlankPages.removing);
   try {
     const sensitivity = parseInt(
       (document.getElementById('sensitivity-slider') as HTMLInputElement).value
@@ -144,8 +145,8 @@ export async function removeBlankPages() {
     if (indicesToKeep.length === 0) {
       hideLoader();
       showAlert(
-        'No Content Found',
-        'All pages were identified as blank at the current sensitivity setting. No new file was created. Try lowering the sensitivity if you believe this is an error.'
+        getTranslations().removeBlankPages.allPagesBlankTitle,
+        getTranslations().removeBlankPages.allPagesBlankMessage
       );
       return;
     }
@@ -153,8 +154,8 @@ export async function removeBlankPages() {
     if (indicesToKeep.length === state.pdfDoc.getPageCount()) {
       hideLoader();
       showAlert(
-        getTranslations().noPagesRemoved,
-        getTranslations().noBlankPagesFound
+        getTranslations().removeBlankPages.noPagesRemoved,
+        getTranslations().removeBlankPages.noBlankPagesFound
       );
       return;
     }
@@ -170,7 +171,7 @@ export async function removeBlankPages() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Could not remove blank pages.');
+    showAlert(getTranslations().error, getTranslations().removeBlankPages.error);
   } finally {
     hideLoader();
   }

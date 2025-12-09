@@ -1,6 +1,7 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, generateOutputFilename } from '../utils/helpers.js';
 import { state } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 import { PDFName } from 'pdf-lib';
 
 export function setupRemoveAnnotationsTool() {
@@ -71,7 +72,7 @@ export function removeAnnotationsFromDoc(
 }
 
 export async function removeAnnotations() {
-  showLoader('Removing annotations...');
+  showLoader(getTranslations().removeAnnotations.removing);
   try {
     const totalPages = state.pdfDoc.getPageCount();
     let targetPageIndices = [];

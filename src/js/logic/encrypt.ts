@@ -17,7 +17,7 @@ export async function encrypt() {
       ?.value || '';
 
   if (!userPassword) {
-    showAlert('Input Required', 'Please enter a user password.');
+    showAlert(getTranslations().encrypt.inputRequired, getTranslations().encrypt.enterUserPassword);
     return;
   }
 
@@ -29,16 +29,16 @@ export async function encrypt() {
   let qpdf: any;
 
   try {
-    showLoader('Initializing encryption...');
+    showLoader(getTranslations().encrypt.initializing);
     qpdf = await initializeQpdf();
 
-    showLoader('Reading PDF...');
+    showLoader(getTranslations().encrypt.readingPdf);
     const fileBuffer = await readFileAsArrayBuffer(file);
     const uint8Array = new Uint8Array(fileBuffer as ArrayBuffer);
 
     qpdf.FS.writeFile(inputPath, uint8Array);
 
-    showLoader('Encrypting PDF with 256-bit AES...');
+    showLoader(getTranslations().encrypt.encrypting);
 
     const args = [inputPath, '--encrypt', userPassword, ownerPassword, '256'];
 
@@ -63,15 +63,15 @@ export async function encrypt() {
     } catch (qpdfError: any) {
       console.error('qpdf execution error:', qpdfError);
       throw new Error(
-        'Encryption failed: ' + (qpdfError.message || 'Unknown error')
+        getTranslations().encrypt.encryptionFailed.replace('{error}', qpdfError.message || getTranslations().addAttachments.unknownError)
       );
     }
 
-    showLoader('Preparing download...');
+    showLoader(getTranslations().encrypt.preparingDownload);
     const outputFile = qpdf.FS.readFile(outputPath, { encoding: 'binary' });
 
     if (!outputFile || outputFile.length === 0) {
-      throw new Error('Encryption resulted in an empty file.');
+      throw new Error(getTranslations().encrypt.emptyFile);
     }
 
     const blob = new Blob([outputFile], { type: 'application/pdf' });
@@ -79,10 +79,9 @@ export async function encrypt() {
 
     hideLoader();
 
-    let successMessage = 'PDF encrypted successfully with 256-bit AES!';
+    let successMessage = getTranslations().encrypt.successMessage;
     if (!hasDistinctOwnerPassword) {
-      successMessage +=
-        ' Note: Without a separate owner password, the PDF has no usage restrictions.';
+      successMessage += ' ' + getTranslations().encrypt.successMessageNote;
     }
 
     showAlert(getTranslations().success, successMessage);
@@ -90,8 +89,8 @@ export async function encrypt() {
     console.error('Error during PDF encryption:', error);
     hideLoader();
     showAlert(
-      'Encryption Failed',
-      `An error occurred: ${error.message || 'The PDF might be corrupted.'}`
+      getTranslations().encrypt.encryptionFailedTitle,
+      getTranslations().encrypt.errorOccurred.replace('{error}', error.message || 'The PDF might be corrupted.')
     );
   } finally {
     try {

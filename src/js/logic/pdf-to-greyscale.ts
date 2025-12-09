@@ -12,7 +12,7 @@ export async function pdfToGreyscale() {
     showAlert(getTranslations().error, 'PDF not loaded.');
     return;
   }
-  showLoader('Converting to greyscale...');
+  showLoader(getTranslations().pdfToGreyscale.converting);
   try {
     const newPdfDoc = await PDFLibDocument.create();
     const pdfBytes = await state.pdfDoc.save();

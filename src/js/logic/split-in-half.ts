@@ -9,10 +9,10 @@ export async function splitInHalf() {
   // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
   const splitType = document.getElementById('split-type').value;
   if (!state.pdfDoc) {
-    showAlert(getTranslations().error, 'No PDF document is loaded.');
+    showAlert(getTranslations().error, getTranslations().splitInHalf.noPdfLoaded);
     return;
   }
-  showLoader('Splitting PDF pages...');
+  showLoader(getTranslations().splitInHalf.splitting);
   try {
     const newPdfDoc = await PDFLibDocument.create();
     const pages = state.pdfDoc.getPages();
@@ -22,7 +22,7 @@ export async function splitInHalf() {
       const { width, height } = originalPage.getSize();
       const whiteColor = rgb(1, 1, 1); // For masking
 
-      showLoader(`Processing page ${i + 1} of ${pages.length}...`);
+      showLoader(getTranslations().splitInHalf.processingPage.replace('{current}', (i + 1).toString()).replace('{total}', pages.length.toString()));
 
       // Copy the page twice for all split types
       const [page1] = await newPdfDoc.copyPages(state.pdfDoc, [i]);
@@ -49,7 +49,7 @@ export async function splitInHalf() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'An error occurred while splitting the PDF.');
+    showAlert(getTranslations().error, getTranslations().splitInHalf.error);
   } finally {
     hideLoader();
   }

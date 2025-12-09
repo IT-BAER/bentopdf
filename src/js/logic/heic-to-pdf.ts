@@ -6,10 +6,10 @@ import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 
 export async function heicToPdf() {
   if (state.files.length === 0) {
-    showAlert('No Files', 'Please select at least one HEIC file.');
+    showAlert(getTranslations().heicToPdf.noFiles, getTranslations().heicToPdf.selectHeic);
     return;
   }
-  showLoader('Converting HEIC to PDF...');
+  showLoader(getTranslations().heicToPdf.converting);
   try {
     const pdfDoc = await PDFLibDocument.create();
     for (const file of state.files) {
@@ -39,8 +39,8 @@ export async function heicToPdf() {
   } catch (e) {
     console.error(e);
     showAlert(
-      'Error',
-      'Failed to convert HEIC to PDF. One of the files may be invalid or unsupported.'
+      getTranslations().heicToPdf.errorTitle,
+      getTranslations().heicToPdf.error
     );
   } finally {
     hideLoader();

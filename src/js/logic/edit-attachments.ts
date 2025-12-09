@@ -25,7 +25,7 @@ async function loadAttachmentsList() {
   allAttachments = [];
 
   try {
-    showLoader('Loading attachments...');
+    showLoader(getTranslations().editAttachments.loading);
 
     const file = state.files[0];
     const fileBuffer = await readFileAsArrayBuffer(file);
@@ -40,7 +40,7 @@ async function loadAttachmentsList() {
   } catch (error) {
     console.error('Error loading attachments:', error);
     hideLoader();
-    showAlert(getTranslations().error, 'Failed to load attachments from PDF.');
+    showAlert(getTranslations().error, getTranslations().editAttachments.loadError);
   }
 }
 
@@ -65,17 +65,17 @@ worker.onmessage = (e) => {
       `edited-attachments-${data.fileName}`
     );
 
-    showAlert(getTranslations().success, 'Attachments updated successfully!');
+    showAlert(getTranslations().success, getTranslations().editAttachments.success);
   } else if (data.status === 'error') {
     hideLoader();
-    showAlert(getTranslations().error, data.message || 'Unknown error occurred.');
+    showAlert(getTranslations().error, data.message || getTranslations().editAttachments.unknownError);
   }
 };
 
 worker.onerror = (error) => {
   hideLoader();
   console.error('Worker error:', error);
-  showAlert(getTranslations().error, 'Worker error occurred. Check console for details.');
+  showAlert(getTranslations().error, getTranslations().editAttachments.workerError);
 };
 
 function displayAttachments(attachments) {
@@ -91,7 +91,7 @@ function displayAttachments(attachments) {
   if (attachments.length === 0) {
     const noAttachments = document.createElement('p');
     noAttachments.className = 'text-gray-400 text-center py-4';
-    noAttachments.textContent = 'No attachments found in this PDF.';
+    noAttachments.textContent = getTranslations().editAttachments.noAttachments;
     attachmentsList.appendChild(noAttachments);
     return;
   }
@@ -100,7 +100,7 @@ function displayAttachments(attachments) {
   controlsContainer.className = 'attachments-controls mb-4 flex justify-end';
   const removeAllBtn = document.createElement('button');
   removeAllBtn.className = 'btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm';
-  removeAllBtn.textContent = 'Remove All Attachments';
+  removeAllBtn.textContent = getTranslations().editAttachments.removeAll;
   removeAllBtn.onclick = () => {
     if (allAttachments.length === 0) return;
 
@@ -119,7 +119,7 @@ function displayAttachments(attachments) {
           }
         }
       });
-      removeAllBtn.textContent = 'Remove All Attachments';
+      removeAllBtn.textContent = getTranslations().editAttachments.removeAll;
     } else {
       allAttachments.forEach(attachment => {
         attachmentsToRemove.add(attachment.index);
@@ -133,7 +133,7 @@ function displayAttachments(attachments) {
           }
         }
       });
-      removeAllBtn.textContent = 'Deselect All';
+      removeAllBtn.textContent = getTranslations().editAttachments.deselectAll;
     }
   };
 
@@ -155,9 +155,9 @@ function displayAttachments(attachments) {
     const levelSpan = document.createElement('span');
     levelSpan.className = 'text-gray-400 text-sm block';
     if (attachment.page === 0) {
-      levelSpan.textContent = 'Document-level attachment';
+      levelSpan.textContent = getTranslations().editAttachments.documentLevel;
     } else {
-      levelSpan.textContent = `Page ${attachment.page} attachment`;
+      levelSpan.textContent = getTranslations().editAttachments.pageLevel.replace('{page}', attachment.page.toString());
     }
 
     infoDiv.append(nameSpan, levelSpan);
@@ -168,7 +168,7 @@ function displayAttachments(attachments) {
     const removeBtn = document.createElement('button');
     removeBtn.className = `btn ${attachmentsToRemove.has(attachment.index) ? 'bg-gray-600' : 'bg-red-600'} hover:bg-red-700 text-white px-3 py-1 rounded text-sm`;
     removeBtn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
-    removeBtn.title = 'Remove attachment';
+    removeBtn.title = getTranslations().editAttachments.removeAttachment;
     removeBtn.onclick = () => {
       if (attachmentsToRemove.has(attachment.index)) {
         attachmentsToRemove.delete(attachment.index);
@@ -182,7 +182,7 @@ function displayAttachments(attachments) {
         removeBtn.classList.remove('bg-red-600');
       }
       const allSelected = allAttachments.every(attachment => attachmentsToRemove.has(attachment.index));
-      removeAllBtn.textContent = allSelected ? 'Deselect All' : 'Remove All Attachments';
+      removeAllBtn.textContent = allSelected ? getTranslations().editAttachments.deselectAll : getTranslations().editAttachments.removeAll;
     };
 
     actionsDiv.append(removeBtn);
@@ -193,11 +193,11 @@ function displayAttachments(attachments) {
 
 export async function editAttachments() {
   if (!state.files || state.files.length === 0) {
-    showAlert(getTranslations().error, 'No PDF file loaded.');
+    showAlert(getTranslations().error, getTranslations().editAttachments.noPdf);
     return;
   }
 
-  showLoader('Processing attachments...');
+  showLoader(getTranslations().editAttachments.processing);
 
   try {
     const file = state.files[0];
@@ -214,6 +214,6 @@ export async function editAttachments() {
   } catch (error) {
     console.error('Error editing attachments:', error);
     hideLoader();
-    showAlert(getTranslations().error, 'Failed to edit attachments.');
+    showAlert(getTranslations().error, getTranslations().editAttachments.editError);
   }
 }

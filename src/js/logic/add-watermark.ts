@@ -7,6 +7,7 @@ import {
   generateOutputFilename,
 } from '../utils/helpers.js';
 import { state, resetState } from '../state.js';
+import { getTranslations } from '../i18n/index.js';
 
 import {
   PDFDocument as PDFLibDocument,
@@ -82,7 +83,7 @@ export async function addWatermark() {
     ) as HTMLInputElement
   ).value;
 
-  showLoader('Adding watermark...');
+  showLoader(getTranslations().addWatermark.addingWatermark);
 
   try {
     const pages = state.pdfDoc.getPages();
@@ -96,7 +97,7 @@ export async function addWatermark() {
         document.getElementById('image-watermark-input') as HTMLInputElement
       ).files?.[0];
       if (!imageFile)
-        throw new Error('Please select an image file for the watermark.');
+        throw new Error(getTranslations().addWatermark.selectImage);
 
       const imageBytes = await readFileAsArrayBuffer(imageFile);
       if (imageFile.type === 'image/png') {
@@ -105,7 +106,7 @@ export async function addWatermark() {
         watermarkAsset = await state.pdfDoc.embedJpg(imageBytes);
       } else {
         throw new Error(
-          'Unsupported Image. Please use a PNG or JPG for the watermark.'
+          getTranslations().addWatermark.unsupportedImage
         );
       }
     }
@@ -117,7 +118,7 @@ export async function addWatermark() {
         // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
         const text = document.getElementById('watermark-text').value;
         if (!text.trim())
-          throw new Error('Please enter text for the watermark.');
+          throw new Error(getTranslations().addWatermark.enterText);
 
         const fontSize =
           parseInt(
@@ -181,8 +182,8 @@ export async function addWatermark() {
   } catch (e) {
     console.error(e);
     showAlert(
-      'Error',
-      e.message || 'Could not add the watermark. Please check your inputs.'
+      getTranslations().error,
+      e.message || getTranslations().addWatermark.error
     );
   } finally {
     hideLoader();

@@ -6,7 +6,7 @@ import { getTranslations } from '../i18n/index.js';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 
 export async function organize() {
-  showLoader('Saving changes...');
+  showLoader(getTranslations().organize.saving);
   try {
     const newPdf = await PDFLibDocument.create();
     const pageContainer = document.getElementById('page-organizer');
@@ -24,7 +24,7 @@ export async function organize() {
     );
   } catch (e) {
     console.error(e);
-    showAlert(getTranslations().error, 'Could not save the changes.');
+    showAlert(getTranslations().error, getTranslations().organize.error);
   } finally {
     hideLoader();
   }
