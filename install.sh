@@ -402,6 +402,12 @@ if [ -d "$APP_DIR" ]; then
     
     # Check if it's a git repo
     if [ -d ".git" ]; then
+        # Clean local changes to ensure smooth pull
+        echo -e "${BLUE}Cleaning local changes before update...${NC}"
+        git stash --quiet 2>/dev/null || true
+        git clean -fd --quiet 2>/dev/null || true
+        git reset --hard HEAD --quiet 2>/dev/null || true
+        
         sudo -u "$APP_USER" git pull origin main 2>/dev/null || git pull origin main
     fi
 else
