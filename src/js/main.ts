@@ -10,11 +10,19 @@ import { formatShortcutDisplay, formatStars } from './utils/helpers.js';
 import { APP_VERSION, injectVersion } from '../version.js';
 import { initI18n, applyTranslations, rewriteLinks, injectLanguageSwitcher, createLanguageSwitcher, t } from './i18n/index.js';
 import { startBackgroundPreload } from './utils/wasm-preloader.js';
+import { initTheme, accentColors, setAccentColor, getAccentColor, findClosestAccent, createAccentFromHex, applyAccentColorOnly, toggleThemeMode } from './theme/index.js';
+import { applyBrandingConfig, getConfig } from './utils/config.js';
 
 const init = async () => {
   await initI18n();
   injectLanguageSwitcher();
   applyTranslations();
+  
+  // Initialize theme (accent colors, dark/light mode)
+  initTheme();
+  
+  // Apply branding configuration from config.js
+  applyBrandingConfig();
 
   pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
   if (__SIMPLE_MODE__) {

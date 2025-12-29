@@ -1,4 +1,14 @@
 {
+  "rewrites": [
+    { "source": "/en/**", "destination": "/$1" },
+    { "source": "/de/**", "destination": "/$1" },
+    { "source": "/zh/**", "destination": "/$1" },
+    { "source": "/vi/**", "destination": "/$1" },
+    { "source": "/en", "destination": "/index.html" },
+    { "source": "/de", "destination": "/index.html" },
+    { "source": "/zh", "destination": "/index.html" },
+    { "source": "/vi", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "**/*",
