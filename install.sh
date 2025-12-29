@@ -158,12 +158,16 @@ if [ "$UPDATE_MODE" = true ]; then
         echo -e "${GREEN}✓ Service stopped${NC}"
     fi
 
-    # Backup config
+    # Backup user config from public folder (if exists) - this is the persistent location
     CONFIG_BACKUP=""
-    if [ -f "$APP_DIR/dist/config.js" ]; then
+    if [ -f "$APP_DIR/public/config.js" ]; then
+        CONFIG_BACKUP="$APP_DIR/public/config.js"
+        echo -e "${GREEN}✓ User config found at $APP_DIR/public/config.js (will be preserved)${NC}"
+    elif [ -f "$APP_DIR/dist/config.js" ]; then
+        # Fallback: backup dist config if no public config exists
         CONFIG_BACKUP=$(mktemp)
         cp "$APP_DIR/dist/config.js" "$CONFIG_BACKUP"
-        echo -e "${GREEN}✓ Backed up config.js${NC}"
+        echo -e "${GREEN}✓ Backed up dist/config.js${NC}"
     fi
 
     # Download and extract
@@ -186,11 +190,16 @@ if [ "$UPDATE_MODE" = true ]; then
     # Save version
     echo "$LATEST_VERSION" > "$APP_DIR/version.txt"
 
-    # Restore config
-    if [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
+    # Restore config - prioritize user config from public folder
+    if [ -f "$APP_DIR/public/config.js" ]; then
+        # Copy user config from public to dist (where serve looks for it)
+        cp "$APP_DIR/public/config.js" "$APP_DIR/dist/config.js"
+        echo -e "${GREEN}✓ Applied user config from public/config.js${NC}"
+    elif [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
+        # Restore from backup (legacy case)
         cp "$CONFIG_BACKUP" "$APP_DIR/dist/config.js"
-        rm "$CONFIG_BACKUP"
-        echo -e "${GREEN}✓ Restored config.js${NC}"
+        rm -f "$CONFIG_BACKUP"
+        echo -e "${GREEN}✓ Restored config.js from backup${NC}"
     fi
 
     # Fix permissions
@@ -261,9 +270,16 @@ echo -e "Downloading ${GREEN}$LATEST_VERSION${NC}..."
 
 # Create directories
 mkdir -p "$APP_DIR/dist"
+mkdir -p "$APP_DIR/public"
 
 # Download and extract
 curl -sL "$DOWNLOAD_URL" | tar -xz -C "$APP_DIR/dist"
+
+# Create default public/config.js for user customizations
+if [ ! -f "$APP_DIR/public/config.js" ]; then
+    cp "$APP_DIR/dist/config.js" "$APP_DIR/public/config.js"
+    echo -e "${GREEN}✓ Created public/config.js for customizations${NC}"
+fi
 
 # Save version
 echo "$LATEST_VERSION" > "$APP_DIR/version.txt"
@@ -325,6 +341,10 @@ if systemctl is-active --quiet ${APP_NAME}; then
     echo -e "${NC}"
     echo -e "${GREEN}✓ PDF-Tools $LATEST_VERSION running on port ${APP_PORT}${NC}"
     echo -e "${GREEN}✓ Access at: http://localhost:${APP_PORT}${NC}"
+    echo ""
+    echo -e "${BLUE}Customization:${NC}"
+    echo "  Edit: $APP_DIR/public/config.js"
+    echo "  Then: sudo systemctl restart ${APP_NAME}"
     echo ""
     echo -e "${BLUE}Commands:${NC}"
     echo "  sudo systemctl status ${APP_NAME}     # Check status"
