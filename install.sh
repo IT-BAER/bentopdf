@@ -28,7 +28,7 @@ APP_PORT="${PDF_TOOLS_PORT:-3000}"
 NODE_VERSION="20"
 REPO_URL="https://github.com/IT-BAER/bentopdf.git"
 RAW_URL="https://raw.githubusercontent.com/IT-BAER/bentopdf/main"
-MIN_RAM_MB=768  # Minimum RAM required for build process
+MIN_RAM_MB=2048  # Minimum RAM required for Vite 7 build process
 
 # Parse arguments
 UPDATE_MODE=false
@@ -234,10 +234,11 @@ if [ "$UPDATE_MODE" = true ]; then
     echo -e "\n${BLUE}[4/4] Rebuilding application...${NC}"
     
     # Increase Node.js memory limit for build process (prevents heap out of memory errors)
-    export NODE_OPTIONS="--max-old-space-size=1024"
+    # Vite 7 requires more memory - use 2GB minimum
+    export NODE_OPTIONS="--max-old-space-size=2048"
     
     sudo -u "$APP_USER" npm install --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps
-    sudo -u "$APP_USER" NODE_OPTIONS="--max-old-space-size=1024" npm run build 2>/dev/null || NODE_OPTIONS="--max-old-space-size=1024" npm run build
+    sudo -u "$APP_USER" NODE_OPTIONS="--max-old-space-size=2048" npm run build 2>/dev/null || NODE_OPTIONS="--max-old-space-size=2048" npm run build
     
     # Merge user config with new config options
     if [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
@@ -424,7 +425,8 @@ sudo -u "$APP_USER" npm install --legacy-peer-deps 2>/dev/null || npm install --
 
 echo -e "${BLUE}Building application...${NC}"
 # Increase Node.js memory limit for build process (prevents heap out of memory errors)
-sudo -u "$APP_USER" NODE_OPTIONS="--max-old-space-size=1024" npm run build 2>/dev/null || NODE_OPTIONS="--max-old-space-size=1024" npm run build
+# Vite 7 requires more memory - use 2GB minimum
+sudo -u "$APP_USER" NODE_OPTIONS="--max-old-space-size=2048" npm run build 2>/dev/null || NODE_OPTIONS="--max-old-space-size=2048" npm run build
 
 # Fix permissions
 chown -R "$APP_USER:$APP_USER" "$APP_DIR"
