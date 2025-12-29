@@ -125,6 +125,10 @@ export default defineConfig(({ mode }) => ({
     viteStaticCopy({
       targets: [
         {
+          src: 'serve.json',
+          dest: '.'
+        },
+        {
           src: 'node_modules/@bentopdf/pymupdf-wasm/assets/*.wasm',
           dest: 'pymupdf-wasm'
         },
