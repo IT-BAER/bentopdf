@@ -3,7 +3,7 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    # Only trigger on tags - avoids duplicate runs when pushing tag + main together
     tags: ["v*"]
   pull_request:
     branches: ["main"]
