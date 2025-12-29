@@ -1,7 +1,6 @@
 import JSZip from 'jszip'
 import { downloadFile, formatBytes, readFileAsArrayBuffer } from '../utils/helpers';
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js';
-import { getTranslations } from '../i18n/index.js';
 
 const worker = new Worker(import.meta.env.BASE_URL + 'workers/json-to-pdf.worker.js');
 
@@ -64,28 +63,28 @@ jsonFilesInput.addEventListener('change', (e) => {
     updateFileList()
 
     if (selectedFiles.length === 0) {
-      showStatus(getTranslations().jsonToPdf.selectFile, 'info')
+      showStatus('Please select at least 1 JSON file', 'info')
     } else {
-      showStatus(getTranslations().jsonToPdf.readyToConvert.replace('{count}', selectedFiles.length.toString()), 'info')
+      showStatus(`${selectedFiles.length} file(s) selected. Ready to convert!`, 'info')
     }
   }
 })
 
 async function convertJSONsToPDF() {
   if (selectedFiles.length === 0) {
-    showStatus(getTranslations().jsonToPdf.selectFile, 'error')
+    showStatus('Please select at least 1 JSON file', 'error')
     return
   }
 
   try {
     convertBtn.disabled = true
-    showStatus(getTranslations().jsonToPdf.readingFiles, 'info')
+    showStatus('Reading files (Main Thread)...', 'info')
 
     const fileBuffers = await Promise.all(
       selectedFiles.map(file => readFileAsArrayBuffer(file))
     )
 
-    showStatus(getTranslations().jsonToPdf.converting, 'info')
+    showStatus('Converting JSONs to PDFs...', 'info')
 
     worker.postMessage({
       command: 'convert',
@@ -95,7 +94,7 @@ async function convertJSONsToPDF() {
 
   } catch (error) {
     console.error('Error reading files:', error)
-    showStatus(getTranslations().jsonToPdf.errorReading.replace('{error}', error instanceof Error ? error.message : getTranslations().jsonToPdf.unknownError), 'error')
+    showStatus(`❌ Error reading files: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error')
     convertBtn.disabled = false
   }
 }

@@ -1,7 +1,6 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, readFileAsArrayBuffer, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
+import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
 import { state } from '../state.js';
-import { getTranslations } from '../i18n/index.js';
 import Cropper from 'cropperjs';
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
@@ -40,7 +39,7 @@ function saveCurrentCrop() {
  * @param {number} num The page number to render.
  */
 async function displayPageAsImage(num: any) {
-  showLoader(getTranslations().cropper.renderingPage.replace('{num}', num));
+  showLoader(`Rendering Page ${num}...`);
 
   try {
     const page = await cropperState.pdfDoc.getPage(num);
@@ -87,11 +86,11 @@ async function displayPageAsImage(num: any) {
       updatePageInfo();
       enableControls();
       hideLoader();
-      showAlert(getTranslations().cropper.readyTitle, getTranslations().cropper.readyMessage);
+      showAlert('Ready', 'Please select an area to crop.');
     };
   } catch (error) {
     console.error('Error rendering page:', error);
-    showAlert(getTranslations().error, getTranslations().cropper.renderError);
+    showAlert('Error', 'Failed to render page.');
     hideLoader();
   }
 }
@@ -188,7 +187,7 @@ async function performFlatteningCrop(cropData: any) {
 
   for (let i = 0; i < totalPages; i++) {
     const pageNum = i + 1;
-    showLoader(getTranslations().cropper.processingPage.replace('{pageNum}', pageNum.toString()).replace('{totalPages}', totalPages.toString()));
+    showLoader(`Processing page ${pageNum} of ${totalPages}...`);
 
     if (cropData[pageNum]) {
       const page = await cropperState.pdfDoc.getPage(pageNum);
@@ -264,7 +263,7 @@ export async function setupCropperTool() {
     await displayPageAsImage(cropperState.currentPageNum);
   } catch (error) {
     console.error('Error setting up cropper tool:', error);
-    showAlert(getTranslations().error, getTranslations().cropper.loadError);
+    showAlert('Error', 'Failed to load PDF for cropping.');
   }
 
   document
@@ -292,7 +291,7 @@ export async function setupCropperTool() {
         const currentCrop =
           cropperState.pageCrops[cropperState.currentPageNum];
         if (!currentCrop) {
-          showAlert(getTranslations().cropper.noCropAreaTitle, getTranslations().cropper.noCropAreaMessage);
+          showAlert('No Crop Area', 'Please select an area to crop first.');
           return;
         }
         // Apply the active page's crop to all pages
@@ -312,13 +311,13 @@ export async function setupCropperTool() {
 
       if (Object.keys(finalCropData).length === 0) {
         showAlert(
-          getTranslations().cropper.noCropAreaTitle,
-          getTranslations().cropper.noCropAreaMessageAll
+          'No Crop Area',
+          'Please select an area on at least one page to crop.'
         );
         return;
       }
 
-      showLoader(getTranslations().cropper.applyingCrop);
+      showLoader('Applying crop...');
 
       try {
         let finalPdfBytes;
@@ -334,15 +333,17 @@ export async function setupCropperTool() {
           finalPdfBytes = await pdfToModify.save();
         }
 
-        const fallbackName = isDestructive ? 'cropped-flattened.pdf' : 'cropped.pdf';
+        const fileName = isDestructive
+          ? 'flattened_crop.pdf'
+          : 'standard_crop.pdf';
         downloadFile(
           new Blob([finalPdfBytes], { type: 'application/pdf' }),
-          generateOutputFilename(state.files[0]?.name, fallbackName)
+          fileName
         );
-        showAlert(getTranslations().success, getTranslations().cropper.cropComplete);
+        showAlert('Success', 'Crop complete! Your download has started.');
       } catch (e) {
         console.error(e);
-        showAlert(getTranslations().error, getTranslations().cropper.cropError);
+        showAlert('Error', 'An error occurred during cropping.');
       } finally {
         hideLoader();
       }

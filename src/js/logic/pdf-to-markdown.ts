@@ -1,10 +1,9 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer, getPDFDocument } from '../utils/helpers.js';
 import { state } from '../state.js';
-import { getTranslations } from '../i18n/index.js';
 
 export async function pdfToMarkdown() {
-  showLoader(getTranslations().pdfToMarkdown.converting);
+  showLoader('Converting to Markdown...');
   try {
     const file = state.files[0];
     const arrayBuffer = await readFileAsArrayBuffer(file);

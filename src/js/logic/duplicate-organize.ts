@@ -1,7 +1,6 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, getPDFDocument, generateOutputFilename } from '../utils/helpers.js';
+import { downloadFile, getPDFDocument } from '../utils/helpers.js';
 import { state } from '../state.js';
-import { getTranslations } from '../i18n/index.js';
 import { renderPagesProgressively, cleanupLazyRendering } from '../utils/render-utils.js';
 import Sortable from 'sortablejs';
 import { icons, createIcons } from 'lucide';
@@ -76,8 +75,8 @@ function attachEventListeners(element: any) {
       initializePageGridSortable();
     } else {
       showAlert(
-        getTranslations().duplicateOrganize.cannotDeleteTitle,
-        getTranslations().duplicateOrganize.cannotDeleteMessage
+        'Cannot Delete',
+        'You cannot delete the last page of the document.'
       );
     }
   });
@@ -90,7 +89,7 @@ export async function renderDuplicateOrganizeThumbnails() {
   // Cleanup any previous lazy loading observers
   cleanupLazyRendering();
 
-  showLoader(getTranslations().duplicateOrganize.renderingPreviews);
+  showLoader('Rendering page previews...');
   const pdfData = await state.pdfDoc.save();
   const pdfjsDoc = await getPDFDocument({ data: pdfData }).promise;
 
@@ -158,7 +157,7 @@ export async function renderDuplicateOrganizeThumbnails() {
         useLazyLoading: true,
         lazyLoadMargin: '400px',
         onProgress: (current, total) => {
-          showLoader(getTranslations().duplicateOrganize.renderingPreviewsProgress.replace('{current}', current.toString()).replace('{total}', total.toString()));
+          showLoader(`Rendering page previews: ${current}/${total}`);
         },
         onBatchComplete: () => {
           createIcons({ icons });
@@ -169,14 +168,14 @@ export async function renderDuplicateOrganizeThumbnails() {
     initializePageGridSortable();
   } catch (error) {
     console.error('Error rendering thumbnails:', error);
-    showAlert(getTranslations().error, getTranslations().duplicateOrganize.renderError);
+    showAlert('Error', 'Failed to render page previews');
   } finally {
     hideLoader();
   }
 }
 
 export async function processAndSave() {
-  showLoader(getTranslations().duplicateOrganize.buildingPdf);
+  showLoader('Building new PDF...');
   try {
     const grid = document.getElementById('page-grid');
     const finalPageElements = grid.querySelectorAll('.page-thumbnail');
@@ -189,7 +188,7 @@ export async function processAndSave() {
     console.log('Original PDF Page Count:', state.pdfDoc?.getPageCount());
 
     if (finalIndices.length === 0) {
-      showAlert(getTranslations().error, getTranslations().duplicateOrganize.noValidPages);
+      showAlert('Error', 'No valid pages to save.');
       return;
     }
 
@@ -199,7 +198,7 @@ export async function processAndSave() {
     const invalidIndices = finalIndices.filter(i => i >= totalPages);
     if (invalidIndices.length > 0) {
       console.error('Found invalid indices:', invalidIndices);
-      showAlert(getTranslations().error, getTranslations().duplicateOrganize.processingError);
+      showAlert('Error', 'Some pages could not be processed. Please try again.');
       return;
     }
 
@@ -209,11 +208,11 @@ export async function processAndSave() {
     const newPdfBytes = await newPdfDoc.save();
     downloadFile(
       new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' }),
-      generateOutputFilename(state.files[0]?.name, 'organized.pdf')
+      'organized.pdf'
     );
   } catch (e) {
     console.error('Save error:', e);
-    showAlert(getTranslations().error, getTranslations().duplicateOrganize.saveError);
+    showAlert('Error', 'Failed to save the new PDF. Check console for details.');
   } finally {
     hideLoader();
   }

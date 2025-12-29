@@ -1,5 +1,4 @@
 import { state } from '../state.js';
-import { getTranslations } from '../i18n/index.js';
 import {
   showLoader,
   hideLoader,
@@ -594,10 +593,10 @@ async function handleMultiFileUpload(toolId) {
         encryptedPDFFileNames.push(encryptedPDF.file.name);
       });
 
-      const errorMessage = getTranslations().fileHandler.protectedPdfsMessage.replace('{files}', encryptedPDFFileNames.join('\n'));
+      const errorMessage = `PDFs found that are password-protected\n\nPlease use the Decrypt or Change Permissions tool on these files first:\n\n${encryptedPDFFileNames.join('\n')}`;
 
       hideLoader(); // Hide loader before showing alert
-      showAlert(getTranslations().fileHandler.protectedPdfs, errorMessage);
+      showAlert('Protected PDFs', errorMessage);
 
       switchView('grid');
 
@@ -755,7 +754,7 @@ export function setupFileInputHandler(toolId) {
       const validFiles = newFiles.filter(file => validTypes.includes(file.type));
 
       if (validFiles.length < newFiles.length) {
-        showAlert(getTranslations().fileHandler.invalidFiles, getTranslations().fileHandler.unsupportedImages);
+        showAlert('Invalid Files', 'Some files were skipped because they are not supported images.');
       }
 
       newFiles = validFiles;
