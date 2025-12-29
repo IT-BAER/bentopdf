@@ -24,23 +24,13 @@ import * as pdfjsLib from 'pdfjs-dist';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
+// Re-export rotation state utilities
+export { getRotationState, updateRotationState, resetRotationState, initializeRotationState } from '../utils/rotation-state.js';
+
 const rotationState: number[] = [];
 let imageSortableInstance: Sortable | null = null;
 const activeImageUrls = new Map<File, string>();
 
-export function getRotationState(): readonly number[] {
-  return rotationState;
-}
-
-export function updateRotationState(pageIndex: number, rotation: number) {
-  if (pageIndex >= 0 && pageIndex < rotationState.length) {
-    rotationState[pageIndex] = rotation;
-  }
-}
-
-export function resetRotationState() {
-  rotationState.length = 0;
-}
 
 async function handleSinglePdfUpload(toolId, file) {
   showLoader('Loading PDF...');
@@ -118,7 +108,7 @@ async function handleSinglePdfUpload(toolId, file) {
         .toString();
     }
 
-    if (toolId === 'organize' || toolId === 'rotate') {
+    if (toolId === 'organize' || toolId === 'rotate' || toolId === 'delete-pages') {
       await renderPageThumbnails(toolId, state.pdfDoc);
 
       if (toolId === 'rotate') {
@@ -135,14 +125,19 @@ async function handleSinglePdfUpload(toolId, file) {
         const rotateAllRightBtn = document.getElementById(
           'rotate-all-right-btn'
         );
+        const rotateAllCustomBtn = document.getElementById('rotate-all-custom-btn');
+        const rotateAllCustomInput = document.getElementById('custom-rotate-all-input') as HTMLInputElement;
+        const rotateAllDecrementBtn = document.getElementById('rotate-all-decrement-btn');
+        const rotateAllIncrementBtn = document.getElementById('rotate-all-increment-btn');
+
 
         rotateAllControls.classList.remove('hidden');
         createIcons({ icons });
 
-        const rotateAll = (direction) => {
+        const rotateAll = (angle: number) => {
           // Update rotation state for ALL pages (including unrendered ones)
           for (let i = 0; i < rotationState.length; i++) {
-            rotationState[i] = (rotationState[i] + direction * 90 + 360) % 360;
+            rotationState[i] = (rotationState[i] + angle);
           }
 
           // Update DOM for currently rendered pages
@@ -150,15 +145,44 @@ async function handleSinglePdfUpload(toolId, file) {
             const pageIndex = parseInt((item as HTMLElement).dataset.pageIndex || '0');
             const newRotation = rotationState[pageIndex];
             (item as HTMLElement).dataset.rotation = newRotation.toString();
+
             const thumbnail = item.querySelector('canvas, img');
             if (thumbnail) {
               (thumbnail as HTMLElement).style.transform =
                 `rotate(${newRotation}deg)`;
             }
+
+            const input = item.querySelector('input');
+            if (input) {
+              input.value = newRotation.toString();
+            }
           });
         };
-        rotateAllLeftBtn.onclick = () => rotateAll(-1);
-        rotateAllRightBtn.onclick = () => rotateAll(1);
+        rotateAllLeftBtn.onclick = () => rotateAll(-90);
+        rotateAllRightBtn.onclick = () => rotateAll(90);
+
+        if (rotateAllCustomBtn && rotateAllCustomInput) {
+          rotateAllCustomBtn.onclick = () => {
+            const angle = parseInt(rotateAllCustomInput.value);
+            if (!isNaN(angle) && angle !== 0) {
+              rotateAll(angle);
+            }
+          };
+
+          if (rotateAllDecrementBtn) {
+            rotateAllDecrementBtn.onclick = () => {
+              let current = parseInt(rotateAllCustomInput.value) || 0;
+              rotateAllCustomInput.value = (current - 1).toString();
+            };
+          }
+
+          if (rotateAllIncrementBtn) {
+            rotateAllIncrementBtn.onclick = () => {
+              let current = parseInt(rotateAllCustomInput.value) || 0;
+              rotateAllCustomInput.value = (current + 1).toString();
+            };
+          }
+        }
       }
     }
 
@@ -440,24 +464,24 @@ async function handleSinglePdfUpload(toolId, file) {
 
       addBtn.onclick = () => {
         const fieldWrapper = document.createElement('div');
-        fieldWrapper.className = 'flex items-center gap-2 custom-field-wrapper';
+        fieldWrapper.className = 'flex flex-col sm:flex-row items-stretch sm:items-center gap-2 custom-field-wrapper';
 
         const keyInput = document.createElement('input');
         keyInput.type = 'text';
         keyInput.placeholder = 'Key (e.g., Department)';
         keyInput.className =
-          'custom-meta-key w-1/3 bg-gray-800 border border-gray-600 text-white rounded-lg p-2';
+          'custom-meta-key w-full sm:w-1/3 bg-gray-800 border border-gray-600 text-white rounded-lg p-2';
 
         const valueInput = document.createElement('input');
         valueInput.type = 'text';
         valueInput.placeholder = 'Value (e.g., Marketing)';
         valueInput.className =
-          'custom-meta-value flex-grow bg-gray-800 border border-gray-600 text-white rounded-lg p-2';
+          'custom-meta-value w-full sm:flex-grow bg-gray-800 border border-gray-600 text-white rounded-lg p-2';
 
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
         removeBtn.className =
-          'btn p-2 text-red-500 hover:bg-gray-700 rounded-full';
+          'btn p-2 text-red-500 hover:bg-gray-700 rounded-full self-center sm:self-auto';
         removeBtn.innerHTML = '<i data-lucide="trash-2"></i>';
         removeBtn.addEventListener('click', () => fieldWrapper.remove());
 
@@ -591,9 +615,11 @@ async function handleMultiFileUpload(toolId) {
     }
   }
 
-  if (toolId === 'merge') {
-    toolLogic.merge.setup();
-  } else if (toolId === 'alternate-merge') {
+  // if (toolId === 'merge') {
+  //   toolLogic.merge.setup();
+  // }
+
+  if (toolId === 'alternate-merge') {
     toolLogic['alternate-merge'].setup();
   } else if (toolId === 'image-to-pdf') {
     const imageList = document.getElementById('image-list');
@@ -708,7 +734,7 @@ async function handleMultiFileUpload(toolId) {
     }
   }
 
-  if (toolId === 'jpg-to-pdf' || toolId === 'png-to-pdf') {
+  if (toolId === 'png-to-pdf') {
     const optionsDiv = document.getElementById(`${toolId}-options`);
     if (optionsDiv) {
       optionsDiv.classList.remove('hidden');
@@ -796,42 +822,6 @@ export function setupFileInputHandler(toolId) {
           }
         };
       }
-    } else if (toolId === 'edit') {
-      const file = state.files[0];
-      if (!file) return;
-
-      const pdfWrapper = document.getElementById('embed-pdf-wrapper');
-      const pdfContainer = document.getElementById('embed-pdf-container');
-
-      pdfContainer.textContent = ''; // Clear safely
-
-      if (state.currentPdfUrl) {
-        URL.revokeObjectURL(state.currentPdfUrl);
-      }
-      pdfWrapper.classList.remove('hidden');
-      const fileURL = URL.createObjectURL(file);
-      state.currentPdfUrl = fileURL;
-
-      const script = document.createElement('script');
-      script.type = 'module';
-      script.textContent = `
-                import EmbedPDF from 'https://snippet.embedpdf.com/embedpdf.js';
-                EmbedPDF.init({
-                    type: 'container',
-                    target: document.getElementById('embed-pdf-container'),
-                    src: '${fileURL}',
-                    theme: 'dark',
-                });
-            `;
-      document.head.appendChild(script);
-
-      const backBtn = document.getElementById('back-to-grid');
-      const urlRevoker = () => {
-        URL.revokeObjectURL(fileURL);
-        state.currentPdfUrl = null;
-        backBtn.removeEventListener('click', urlRevoker);
-      };
-      backBtn.addEventListener('click', urlRevoker);
     }
   };
 

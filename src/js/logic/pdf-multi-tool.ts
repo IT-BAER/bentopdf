@@ -6,12 +6,14 @@ import Sortable from 'sortablejs';
 import { downloadFile, getPDFDocument } from '../utils/helpers';
 import { renderPagesProgressively, cleanupLazyRendering, renderPageToCanvas, createPlaceholder } from '../utils/render-utils';
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js';
-import { getTranslations } from '../i18n/index.js';
+import { repairPdfFile } from './repair-pdf.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
   import.meta.url
 ).toString();
+
+import { t } from '../i18n/i18n';
 
 interface PageData {
   id: string; // Unique ID for DOM reconciliation
@@ -107,7 +109,7 @@ function showLoading(current: number, total: number) {
   loader.classList.remove('hidden');
   const percentage = Math.round((current / total) * 100);
   progress.style.width = `${percentage}%`;
-  text.textContent = `Rendering pages...`;
+  text.textContent = t('multiTool.renderingPages');
 }
 
 async function withButtonLoading(buttonId: string, action: () => Promise<void>) {
@@ -152,13 +154,13 @@ function initializeTool() {
   initializeGlobalShortcuts();
 
   document.getElementById('close-tool-btn')?.addEventListener('click', () => {
-    window.location.href = '/';
+    window.location.href = import.meta.env.BASE_URL;
   });
 
   document.getElementById('upload-pdfs-btn')?.addEventListener('click', () => {
     console.log('Upload button clicked, isRendering:', isRendering);
     if (isRendering) {
-      showModal(getTranslations().pdfMultiTool.pleaseWait, getTranslations().pdfMultiTool.renderingPagesWait, 'info');
+      showModal(t('multiTool.pleaseWait'), t('multiTool.pagesRendering'), 'info');
       return;
     }
     document.getElementById('pdf-file-input')?.click();
@@ -194,8 +196,9 @@ function initializeTool() {
   });
   document.getElementById('bulk-download-btn')?.addEventListener('click', () => {
     if (isRendering) return;
+    if (isRendering) return;
     if (selectedPages.size === 0) {
-      showModal(getTranslations().noPagesSelected, getTranslations().selectPageToDownload, 'info');
+      showModal(t('multiTool.noPagesSelected'), t('multiTool.selectOnePage'), 'info');
       return;
     }
     withButtonLoading('bulk-download-btn', async () => {
@@ -217,8 +220,9 @@ function initializeTool() {
 
   document.getElementById('export-pdf-btn')?.addEventListener('click', () => {
     if (isRendering) return;
+    if (isRendering) return;
     if (allPages.length === 0) {
-      showModal(getTranslations().noPagesTitle, getTranslations().noPagesToExport, 'info');
+      showModal(t('multiTool.noPages'), t('multiTool.noPagesToExport'), 'info');
       return;
     }
     withButtonLoading('export-pdf-btn', async () => {
@@ -329,7 +333,7 @@ async function handlePdfUpload(e: Event) {
 
 async function loadPdfs(files: File[]) {
   if (isRendering) {
-    showModal(getTranslations().pdfMultiTool.pleaseWait, getTranslations().pdfMultiTool.renderingPagesWait, 'info');
+    showModal(t('multiTool.pleaseWait'), t('multiTool.pagesRendering'), 'info');
     return;
   }
 
@@ -352,8 +356,27 @@ async function loadPdfs(files: File[]) {
       if (renderCancelled) break;
 
       try {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdfDoc = await PDFLibDocument.load(arrayBuffer);
+        let arrayBuffer: ArrayBuffer;
+
+        try {
+          console.log(`Repairing ${file.name}...`);
+          const loadingText = document.getElementById('loading-text');
+          if (loadingText) loadingText.textContent = `Repairing ${file.name}...`;
+
+          const repairedData = await repairPdfFile(file);
+          if (repairedData) {
+            arrayBuffer = repairedData.buffer as ArrayBuffer;
+            console.log(`Successfully repaired ${file.name} before loading.`);
+          } else {
+            console.warn(`Repair returned null for ${file.name}, using original file.`);
+            arrayBuffer = await file.arrayBuffer();
+          }
+        } catch (repairError) {
+          console.warn(`Failed to repair ${file.name}, attempting to load original:`, repairError);
+          arrayBuffer = await file.arrayBuffer();
+        }
+
+        const pdfDoc = await PDFLibDocument.load(arrayBuffer, { ignoreEncryption: true, throwOnInvalidObject: false });
         currentPdfDocs.push(pdfDoc);
         const pdfIndex = currentPdfDocs.length - 1;
 
@@ -405,7 +428,7 @@ async function loadPdfs(files: File[]) {
 
       } catch (e) {
         console.error(`Failed to load PDF ${file.name}:`, e);
-        showModal(getTranslations().error, getTranslations().pdfMultiTool.loadError.replace('{fileName}', file.name), 'error');
+        showModal(t('multiTool.error'), `${t('multiTool.failedToLoad')} ${file.name}.`, 'error');
       }
     }
 
@@ -482,7 +505,7 @@ function createPageElement(canvas: HTMLCanvasElement | null, index: number): HTM
     loading.className = 'flex flex-col items-center justify-center text-gray-400';
     loading.innerHTML = `
       <i data-lucide="loader" class="w-8 h-8 animate-spin mb-2"></i>
-      <span class="text-xs">Loading...</span>
+      <span class="text-xs">${t('common.loading')}</span>
     `;
     preview.appendChild(loading);
     preview.classList.add('bg-gray-700'); // Darker background for loading
@@ -491,7 +514,7 @@ function createPageElement(canvas: HTMLCanvasElement | null, index: number): HTM
   // Page info
   const info = document.createElement('div');
   info.className = 'text-xs text-gray-400 text-center mb-2';
-  info.textContent = `Page ${index + 1}`;
+  info.textContent = `${t('common.page')} ${index + 1}`;
 
   // Actions toolbar
   const actions = document.createElement('div');
@@ -505,7 +528,7 @@ function createPageElement(canvas: HTMLCanvasElement | null, index: number): HTM
   const selectBtn = document.createElement('button');
   selectBtn.className = 'absolute top-2 right-2 p-1 rounded bg-gray-900/70 hover:bg-gray-800 z-10';
   selectBtn.innerHTML = selectedPages.has(index)
-    ? '<i data-lucide="check-square" class="w-4 h-4 text-accent"></i>'
+    ? '<i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>'
     : '<i data-lucide="square" class="w-4 h-4 text-gray-200"></i>';
   selectBtn.onclick = (e) => {
     e.stopPropagation();
@@ -532,7 +555,7 @@ function createPageElement(canvas: HTMLCanvasElement | null, index: number): HTM
   const duplicateBtn = document.createElement('button');
   duplicateBtn.className = 'p-1 rounded hover:bg-gray-700';
   duplicateBtn.innerHTML = '<i data-lucide="copy" class="w-4 h-4 text-gray-300"></i>';
-  duplicateBtn.title = 'Duplicate this page';
+  duplicateBtn.title = t('multiTool.actions.duplicatePage');
   duplicateBtn.onclick = (e) => {
     e.stopPropagation();
     snapshot();
@@ -543,7 +566,7 @@ function createPageElement(canvas: HTMLCanvasElement | null, index: number): HTM
   const deleteBtn = document.createElement('button');
   deleteBtn.className = 'p-1 rounded hover:bg-gray-700';
   deleteBtn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4 text-red-400"></i>';
-  deleteBtn.title = 'Delete this page';
+  deleteBtn.title = t('multiTool.actions.deletePage');
   deleteBtn.onclick = (e) => {
     e.stopPropagation();
     snapshot();
@@ -554,7 +577,7 @@ function createPageElement(canvas: HTMLCanvasElement | null, index: number): HTM
   const insertBtn = document.createElement('button');
   insertBtn.className = 'p-1 rounded hover:bg-gray-700';
   insertBtn.innerHTML = '<i data-lucide="file-plus" class="w-4 h-4 text-gray-300"></i>';
-  insertBtn.title = 'Insert PDF after this page';
+  insertBtn.title = t('multiTool.actions.insertPdf');
   insertBtn.onclick = (e) => {
     e.stopPropagation();
     snapshot();
@@ -565,7 +588,7 @@ function createPageElement(canvas: HTMLCanvasElement | null, index: number): HTM
   const splitBtn = document.createElement('button');
   splitBtn.className = 'p-1 rounded hover:bg-gray-700';
   splitBtn.innerHTML = '<i data-lucide="scissors" class="w-4 h-4 text-gray-300"></i>';
-  splitBtn.title = 'Toggle split after this page';
+  splitBtn.title = t('multiTool.actions.toggleSplit');
   splitBtn.onclick = (e) => {
     e.stopPropagation();
     snapshot();
@@ -637,7 +660,7 @@ function toggleSelectOptimized(index: number) {
 
   if (selectedPages.has(index)) {
     card.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-500');
-    selectBtn.innerHTML = '<i data-lucide="check-square" class="w-4 h-4 text-accent"></i>';
+    selectBtn.innerHTML = '<i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>';
   } else {
     card.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-500');
     selectBtn.innerHTML = '<i data-lucide="square" class="w-4 h-4 text-gray-200"></i>';
@@ -736,7 +759,7 @@ async function handleInsertPdf(e: Event) {
 
   try {
     const arrayBuffer = await file.arrayBuffer();
-    const pdfDoc = await PDFLibDocument.load(arrayBuffer);
+    const pdfDoc = await PDFLibDocument.load(arrayBuffer, { ignoreEncryption: true, throwOnInvalidObject: false });
     currentPdfDocs.push(pdfDoc);
     const pdfIndex = currentPdfDocs.length - 1;
 
@@ -799,7 +822,7 @@ async function handleInsertPdf(e: Event) {
 
   } catch (e) {
     console.error('Failed to insert PDF:', e);
-    showModal(getTranslations().error, getTranslations().pdfMultiTool.insertError, 'error');
+    showModal('Error', 'Failed to insert PDF. The file may be corrupted.', 'error');
   }
 
   input.value = '';
@@ -854,7 +877,7 @@ function addBlankPage() {
 
 function bulkRotate(delta: number) {
   if (selectedPages.size === 0) {
-    showModal(getTranslations().pdfMultiTool.noSelection, getTranslations().pdfMultiTool.noSelectionRotate, 'info');
+    showModal('No Selection', 'Please select pages to rotate.', 'info');
     return;
   }
 
@@ -884,7 +907,7 @@ function bulkRotate(delta: number) {
 
 function bulkDelete() {
   if (selectedPages.size === 0) {
-    showModal(getTranslations().pdfMultiTool.noSelection, getTranslations().pdfMultiTool.noSelectionDelete, 'info');
+    showModal('No Selection', 'Please select pages to delete.', 'info');
     return;
   }
   const indices = Array.from(selectedPages).sort((a, b) => b - a);
@@ -901,7 +924,7 @@ function bulkDelete() {
 
 function bulkDuplicate() {
   if (selectedPages.size === 0) {
-    showModal(getTranslations().pdfMultiTool.noSelection, getTranslations().pdfMultiTool.noSelectionDuplicate, 'info');
+    showModal('No Selection', 'Please select pages to duplicate.', 'info');
     return;
   }
   const indices = Array.from(selectedPages).sort((a, b) => b - a);
@@ -914,7 +937,7 @@ function bulkDuplicate() {
 
 function bulkSplit() {
   if (selectedPages.size === 0) {
-    showModal(getTranslations().pdfMultiTool.noSelection, getTranslations().pdfMultiTool.noSelectionSplit, 'info');
+    showModal('No Selection', 'Please select pages to mark for splitting.', 'info');
     return;
   }
   const indices = Array.from(selectedPages);
@@ -931,7 +954,7 @@ function bulkSplit() {
 
 async function downloadAll() {
   if (allPages.length === 0) {
-    showModal(getTranslations().noPagesTitle, getTranslations().uploadPdfFirst, 'info');
+    showModal('No Pages', 'Please upload PDFs first.', 'info');
     return;
   }
 
@@ -1002,10 +1025,10 @@ async function downloadSplitPdfs() {
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     downloadFile(zipBlob, 'split-documents.zip');
 
-    showModal(getTranslations().success, getTranslations().pdfMultiTool.splitSuccess.replace('{count}', segments.length.toString()), 'success');
+    showModal('Success', `Downloaded ${segments.length} PDF files in a ZIP archive.`, 'success');
   } catch (e) {
     console.error('Failed to create split PDFs:', e);
-    showModal(getTranslations().error, getTranslations().pdfMultiTool.splitError, 'error');
+    showModal('Error', 'Failed to create split PDFs.', 'error');
   } finally {
     hideLoading(); // Ensure loader is hidden if we used it (though showModal replaces it)
   }
@@ -1039,10 +1062,10 @@ async function downloadPagesAsPdf(indices: number[], filename: string) {
     const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
 
     downloadFile(blob, filename);
-    showModal(getTranslations().success, getTranslations().pdfDownloaded, 'success');
+    showModal('Success', 'PDF downloaded successfully.', 'success');
   } catch (e) {
     console.error('Failed to create PDF:', e);
-    showModal(getTranslations().error, 'Failed to create PDF.', 'error');
+    showModal('Error', 'Failed to create PDF.', 'error');
   }
 }
 
@@ -1086,7 +1109,7 @@ function updatePageDisplay() {
       if (selectBtn) {
         if (selectedPages.has(index)) {
           card.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-500');
-          selectBtn.innerHTML = '<i data-lucide="check-square" class="w-4 h-4 text-accent"></i>';
+          selectBtn.innerHTML = '<i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>';
         } else {
           card.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-500');
           selectBtn.innerHTML = '<i data-lucide="square" class="w-4 h-4 text-gray-200"></i>';

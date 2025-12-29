@@ -69,56 +69,7 @@ export const formatBytes = (bytes: any, decimals = 1) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
-/**
- * Get the MIME type based on file extension
- */
-function getMimeType(filename: string): string {
-  const ext = filename.split('.').pop()?.toLowerCase() || '';
-  const mimeTypes: Record<string, string> = {
-    'pdf': 'application/pdf',
-    'zip': 'application/zip',
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'webp': 'image/webp',
-    'bmp': 'image/bmp',
-    'tiff': 'image/tiff',
-    'tif': 'image/tiff',
-    'svg': 'image/svg+xml',
-    'txt': 'text/plain',
-    'md': 'text/markdown',
-    'json': 'application/json',
-  };
-  return mimeTypes[ext] || 'application/octet-stream';
-}
-
-/**
- * Get file picker accept types based on filename extension
- */
-function getFilePickerAccept(filename: string): FilePickerAcceptType[] {
-  const ext = filename.split('.').pop()?.toLowerCase() || '';
-  const acceptTypes: Record<string, FilePickerAcceptType> = {
-    'pdf': { description: 'PDF Files', accept: { 'application/pdf': ['.pdf'] } },
-    'zip': { description: 'ZIP Archives', accept: { 'application/zip': ['.zip'] } },
-    'jpg': { description: 'JPEG Images', accept: { 'image/jpeg': ['.jpg', '.jpeg'] } },
-    'jpeg': { description: 'JPEG Images', accept: { 'image/jpeg': ['.jpg', '.jpeg'] } },
-    'png': { description: 'PNG Images', accept: { 'image/png': ['.png'] } },
-    'webp': { description: 'WebP Images', accept: { 'image/webp': ['.webp'] } },
-    'bmp': { description: 'BMP Images', accept: { 'image/bmp': ['.bmp'] } },
-    'tiff': { description: 'TIFF Images', accept: { 'image/tiff': ['.tiff', '.tif'] } },
-    'tif': { description: 'TIFF Images', accept: { 'image/tiff': ['.tiff', '.tif'] } },
-    'svg': { description: 'SVG Images', accept: { 'image/svg+xml': ['.svg'] } },
-    'txt': { description: 'Text Files', accept: { 'text/plain': ['.txt'] } },
-    'md': { description: 'Markdown Files', accept: { 'text/markdown': ['.md'] } },
-    'json': { description: 'JSON Files', accept: { 'application/json': ['.json'] } },
-  };
-  return acceptTypes[ext] ? [acceptTypes[ext]] : [];
-}
-
-/**
- * Fallback download using traditional anchor element method
- */
-const fallbackDownload = (blob: Blob, filename: string) => {
+export const downloadFile = (blob: Blob, filename: string): void => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -127,37 +78,6 @@ const fallbackDownload = (blob: Blob, filename: string) => {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-};
-
-/**
- * Download a file with "Save As" dialog using File System Access API.
- * Falls back to traditional download for unsupported browsers.
- */
-export const downloadFile = async (blob: any, filename: string): Promise<void> => {
-  // Check if File System Access API is supported
-  if ('showSaveFilePicker' in window) {
-    try {
-      const handle = await window.showSaveFilePicker({
-        suggestedName: filename,
-        types: getFilePickerAccept(filename),
-      });
-      
-      const writable = await handle.createWritable();
-      await writable.write(blob);
-      await writable.close();
-      return;
-    } catch (err: any) {
-      // User cancelled the save dialog - this is not an error
-      if (err.name === 'AbortError') {
-        return;
-      }
-      // For other errors, fall back to traditional download
-      console.warn('File System Access API failed, falling back to traditional download:', err);
-    }
-  }
-  
-  // Fallback for browsers that don't support File System Access API
-  fallbackDownload(blob instanceof Blob ? blob : new Blob([blob], { type: getMimeType(filename) }), filename);
 };
 
 export const readFileAsArrayBuffer = (file: any) => {
@@ -169,12 +89,12 @@ export const readFileAsArrayBuffer = (file: any) => {
   });
 };
 
-export function parsePageRanges(rangeString: any, totalPages: any) {
+export function parsePageRanges(rangeString: string, totalPages: number): number[] {
   if (!rangeString || rangeString.trim() === '') {
     return Array.from({ length: totalPages }, (_, i) => i);
   }
 
-  const indices = new Set();
+  const indices = new Set<number>();
   const parts = rangeString.split(',');
 
   for (const part of parts) {
@@ -208,9 +128,10 @@ export function parsePageRanges(rangeString: any, totalPages: any) {
     }
   }
 
-  // @ts-expect-error TS(2362) FIXME: The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
+
   return Array.from(indices).sort((a, b) => a - b);
 }
+
 
 /**
  * Formats an ISO 8601 date string (e.g., "2008-02-21T17:15:56-08:00")
@@ -247,7 +168,7 @@ export async function initializeQpdf() {
   showLoader('Initializing PDF engine...');
   try {
     qpdfInstance = await createModule({
-      locateFile: () => '/qpdf.wasm',
+      locateFile: () => import.meta.env.BASE_URL + 'qpdf.wasm',
     });
   } catch (error) {
     console.error('Failed to initialize qpdf-wasm:', error);
@@ -316,24 +237,6 @@ export function formatShortcutDisplay(shortcut: string, isMac: boolean): string 
     .join(isMac ? '' : '+');
 }
 
-/**
- * Generates an output filename based on the original filename and operation suffix.
- * Preserves the original base name and adds a suffix before the extension.
- * @param originalFilename - The original filename (e.g., "document.pdf")
- * @param suffix - The operation suffix to add (e.g., "rotated", "watermarked")
- * @param fallbackName - Fallback name if original is not available (default: "output")
- * @returns The original filename or fallback if not available
- */
-export function generateOutputFilename(
-  originalFilename: string | undefined | null,
-  fallbackName: string = 'output.pdf'
-): string {
-  if (!originalFilename) {
-    return fallbackName;
-  }
-  return originalFilename;
-}
-
 export function resetAndReloadTool(preResetCallback?: () => void) {
   const toolid = state.activeTool;
 
@@ -377,6 +280,6 @@ export function getPDFDocument(src: any) {
   // This is required for PDF.js v5+ to load OpenJPEG for certain images
   return pdfjsLib.getDocument({
     ...params,
-    wasmUrl: '/pdfjs-viewer/wasm/',
+    wasmUrl: import.meta.env.BASE_URL + 'pdfjs-viewer/wasm/',
   });
 }

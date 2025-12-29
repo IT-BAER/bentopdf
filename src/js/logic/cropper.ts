@@ -181,7 +181,8 @@ async function performFlatteningCrop(cropData: any) {
 
   // Load the original PDF with pdf-lib to copy un-cropped pages from
   const sourcePdfDocForCopying = await PDFLibDocument.load(
-    cropperState.originalPdfBytes
+    cropperState.originalPdfBytes, 
+    {ignoreEncryption: true, throwOnInvalidObject: false}
   );
   const totalPages = cropperState.pdfDoc.numPages;
 
@@ -219,10 +220,14 @@ async function performFlatteningCrop(cropData: any) {
         finalHeight
       );
 
-      const pngBytes = await new Promise((res) =>
-        finalCanvas.toBlob((blob) => blob.arrayBuffer().then(res), 'image/png')
+      // Quality value from the compress-pdf.js settings.
+      // 0.9 for "High Quality", 0.6 for "Balanced". Let's use High Quality.
+      const jpegQuality = 0.9;
+
+      const jpegBytes = await new Promise((res) =>
+        finalCanvas.toBlob((blob) => blob.arrayBuffer().then(res), 'image/jpeg', jpegQuality)
       );
-      const embeddedImage = await newPdfDoc.embedPng(pngBytes as ArrayBuffer);
+      const embeddedImage = await newPdfDoc.embedJpg(jpegBytes as ArrayBuffer);
       const newPage = newPdfDoc.addPage([finalWidth, finalHeight]);
       newPage.drawImage(embeddedImage, {
         x: 0,
@@ -322,7 +327,8 @@ export async function setupCropperTool() {
           finalPdfBytes = await newPdfDoc.save();
         } else {
           const pdfToModify = await PDFLibDocument.load(
-            cropperState.originalPdfBytes
+            cropperState.originalPdfBytes,
+            {ignoreEncryption: true, throwOnInvalidObject: false}
           );
           await performMetadataCrop(pdfToModify, finalCropData);
           finalPdfBytes = await pdfToModify.save();

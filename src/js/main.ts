@@ -1,220 +1,504 @@
 import { categories } from './config/tools.js';
 import { dom, switchView, hideAlert, showLoader, hideLoader, showAlert } from './ui.js';
-import { setupToolInterface } from './handlers/toolSelectionHandler.js';
 import { state, resetState } from './state.js';
 import { ShortcutsManager } from './logic/shortcuts.js';
 import { createIcons, icons } from 'lucide';
+import '@phosphor-icons/web/regular';
 import * as pdfjsLib from 'pdfjs-dist';
 import '../css/styles.css';
-import { formatShortcutDisplay } from './utils/helpers.js';
+import { formatShortcutDisplay, formatStars } from './utils/helpers.js';
 import { APP_VERSION, injectVersion } from '../version.js';
-import { initI18n, setLanguage, getCategoryName, getToolTranslation, getTranslations, type Language } from './i18n/index.js';
-import { initTheme, accentColors, setAccentColor, getAccentColor, findClosestAccent, createAccentFromHex, applyAccentColorOnly, toggleThemeMode } from './theme/index.js';
-import { applyBrandingConfig, getConfig } from './utils/config.js';
+import { initI18n, applyTranslations, rewriteLinks, injectLanguageSwitcher, createLanguageSwitcher, t } from './i18n/index.js';
+import { startBackgroundPreload } from './utils/wasm-preloader.js';
 
-/**
- * Render the tool grid with translated category names and tool names
- */
-const renderToolGrid = () => {
-  dom.toolGrid.textContent = '';
-  const currentAccent = getAccentColor();
+const init = async () => {
+  await initI18n();
+  injectLanguageSwitcher();
+  applyTranslations();
 
-  categories.forEach((category) => {
-    const categoryGroup = document.createElement('div');
-    categoryGroup.className = 'category-group col-span-full';
-
-    const title = document.createElement('h2');
-    title.className = 'text-xl font-bold mb-4 mt-8 first:mt-0 text-white';
-    title.style.color = currentAccent.value;
-    title.textContent = getCategoryName(category.name);
-
-    const toolsContainer = document.createElement('div');
-    toolsContainer.className =
-      'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6';
-
-    category.tools.forEach((tool) => {
-      let toolCard: HTMLDivElement | HTMLAnchorElement;
-
-      if (tool.href) {
-        toolCard = document.createElement('a');
-        toolCard.href = tool.href;
-        toolCard.className =
-          'tool-card block bg-gray-800 rounded-xl p-4 cursor-pointer flex flex-col items-center justify-center text-center no-underline hover:shadow-lg transition duration-200';
-      } else {
-        toolCard = document.createElement('div');
-        toolCard.className =
-          'tool-card bg-gray-800 rounded-xl p-4 cursor-pointer flex flex-col items-center justify-center text-center hover:shadow-lg transition duration-200';
-        toolCard.dataset.toolId = tool.id;
-      }
-
-      const icon = document.createElement('i');
-      icon.className = 'w-10 h-10 mb-3';
-      icon.style.color = currentAccent.value;
-      icon.setAttribute('data-lucide', tool.icon);
-
-      // Get translated tool name and subtitle
-      const translation = getToolTranslation(tool.name);
-
-      const toolName = document.createElement('h3');
-      toolName.className = 'font-semibold text-white';
-      toolName.textContent = translation.name;
-
-      toolCard.append(icon, toolName);
-
-      if (tool.subtitle) {
-        const toolSubtitle = document.createElement('p');
-        toolSubtitle.className = 'text-xs text-gray-400 mt-1 px-2';
-        toolSubtitle.textContent = translation.subtitle || tool.subtitle;
-        toolCard.appendChild(toolSubtitle);
-      }
-
-      toolsContainer.appendChild(toolCard);
-    });
-
-    categoryGroup.append(title, toolsContainer);
-    dom.toolGrid.appendChild(categoryGroup);
-  });
-
-  // Re-initialize Lucide icons for newly created elements
-  createIcons({ icons });
-};
-
-const init = () => {
   pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+  if (__SIMPLE_MODE__) {
+    const hideBrandingSections = () => {
+      const nav = document.querySelector('nav');
+      if (nav) {
+        nav.style.display = 'none';
 
-  // Initialize theme (accent colors)
-  initTheme();
+        const simpleNav = document.createElement('nav');
+        simpleNav.className =
+          'bg-gray-800 border-b border-gray-700 sticky top-0 z-30';
+        simpleNav.innerHTML = `
+          <div class="container mx-auto px-4">
+            <div class="flex justify-start items-center h-16">
+              <div class="flex-shrink-0 flex items-center cursor-pointer" id="home-logo">
+                <img src="/images/favicon.svg" alt="Bento PDF Logo" class="h-8 w-8">
+                <span class="text-white font-bold text-xl ml-2">
+                  <a href="index.html">BentoPDF</a>
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.insertBefore(simpleNav, document.body.firstChild);
+      }
 
-  // Initialize i18n
-  initI18n();
+      const heroSection = document.getElementById('hero-section');
+      if (heroSection) {
+        heroSection.style.display = 'none';
+      }
 
-  // Apply branding configuration (app name, logo, feature toggles)
-  applyBrandingConfig();
+      const githubLink = document.querySelector('a[href*="github.com/alam00000/bentopdf"]');
+      if (githubLink) {
+        (githubLink as HTMLElement).style.display = 'none';
+      }
 
-  // Setup color picker with debounced re-render for performance
-  const config = getConfig();
-  const colorPicker = document.getElementById('accent-color-picker') as HTMLInputElement | null;
-  if (colorPicker && !config.forceAccentColor) {
-    colorPicker.value = getAccentColor().value;
-    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-    
-    // Live preview on input (CSS only, fast)
-    colorPicker.addEventListener('input', (e) => {
-      const target = e.target as HTMLInputElement;
-      const customAccent = createAccentFromHex(target.value);
-      applyAccentColorOnly(customAccent);
-    });
-    
-    // Save and re-render on change (when picker closes or stops)
-    colorPicker.addEventListener('change', (e) => {
-      const target = e.target as HTMLInputElement;
-      const customAccent = createAccentFromHex(target.value);
-      setAccentColor(customAccent);
-      renderToolGrid();
-    });
-  }
+      const featuresSection = document.getElementById('features-section');
+      if (featuresSection) {
+        featuresSection.style.display = 'none';
+      }
 
-  // Setup language selector
-  const languageSelector = document.getElementById('language-selector') as HTMLSelectElement | null;
-  if (languageSelector) {
-    languageSelector.addEventListener('change', (e) => {
-      const target = e.target as HTMLSelectElement;
-      setLanguage(target.value as Language);
-      renderToolGrid();
-    });
-  }
+      const securitySection = document.getElementById(
+        'security-compliance-section'
+      );
+      if (securitySection) {
+        securitySection.style.display = 'none';
+      }
 
-  // Setup theme toggle button
-  const themeToggleBtn = document.getElementById('theme-toggle-btn');
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-      toggleThemeMode();
-    });
-  }
+      const faqSection = document.getElementById('faq-accordion');
+      if (faqSection) {
+        faqSection.style.display = 'none';
+      }
 
-  // Hide shortcuts button on touch devices
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  if (isTouchDevice) {
-    const shortcutsBtn = document.getElementById('open-shortcuts-btn');
-    if (shortcutsBtn) {
-      shortcutsBtn.style.display = 'none';
-    }
-  }
+      const testimonialsSection = document.getElementById(
+        'testimonials-section'
+      );
+      if (testimonialsSection) {
+        testimonialsSection.style.display = 'none';
+      }
 
-  renderToolGrid();
+      const supportSection = document.getElementById('support-section');
+      if (supportSection) {
+        supportSection.style.display = 'none';
+      }
 
-  const searchBar = document.getElementById('search-bar');
+      // Hide "Used by companies" section
+      const usedBySection = document.querySelector('.hide-section') as HTMLElement;
+      if (usedBySection) {
+        usedBySection.style.display = 'none';
+      }
 
-  searchBar?.addEventListener('input', () => {
-    const categoryGroups = dom.toolGrid.querySelectorAll('.category-group');
-    // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
-    const searchTerm = searchBar.value.toLowerCase().trim();
+      const footer = document.querySelector('footer');
+      if (footer && !document.querySelector('[data-simple-footer]')) {
+        footer.style.display = 'none';
 
-    categoryGroups.forEach((group) => {
-      const toolCards = group.querySelectorAll('.tool-card');
-      let visibleToolsInCategory = 0;
+        const simpleFooter = document.createElement('footer');
+        simpleFooter.className = 'mt-16 border-t-2 border-gray-700 py-8';
+        simpleFooter.setAttribute('data-simple-footer', 'true');
+        simpleFooter.innerHTML = `
+          <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <div class="flex items-center mb-2">
+                  <img src="/images/favicon.svg" alt="Bento PDF Logo" class="h-8 w-8 mr-2">
+                  <span class="text-white font-bold text-lg">BentoPDF</span>
+                </div>
+                <p class="text-gray-400 text-sm">
+                  &copy; 2025 BentoPDF. All rights reserved.
+                </p>
+                <p class="text-gray-500 text-xs mt-2">
+                  Version <span id="app-version-simple">${APP_VERSION}</span>
+                </p>
+              </div>
+              <div id="simple-mode-lang-switcher" class="flex-shrink-0"></div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(simpleFooter);
 
-      toolCards.forEach((card) => {
-        const toolName = card.querySelector('h3').textContent.toLowerCase();
-        const toolSubtitle =
-          card.querySelector('p')?.textContent.toLowerCase() || '';
-        const isMatch =
-          toolName.includes(searchTerm) || toolSubtitle.includes(searchTerm);
-
-        card.classList.toggle('hidden', !isMatch);
-        if (isMatch) {
-          visibleToolsInCategory++;
+        const langContainer = simpleFooter.querySelector('#simple-mode-lang-switcher');
+        if (langContainer) {
+          const switcher = createLanguageSwitcher();
+          const dropdown = switcher.querySelector('div[role="menu"]');
+          if (dropdown) {
+            dropdown.classList.remove('mt-2');
+            dropdown.classList.add('bottom-full', 'mb-2');
+          }
+          langContainer.appendChild(switcher);
         }
+      }
+
+      const sectionDividers = document.querySelectorAll('.section-divider');
+      sectionDividers.forEach((divider) => {
+        (divider as HTMLElement).style.display = 'none';
       });
 
-      group.classList.toggle('hidden', visibleToolsInCategory === 0);
-    });
-  });
+      document.title = 'BentoPDF - PDF Tools';
 
-  window.addEventListener('keydown', function (e) {
-    const key = e.key.toLowerCase();
-    const isMac = navigator.userAgent.toUpperCase().includes('MAC');
-    const isCtrlK = e.ctrlKey && key === 'k';
-    const isCmdK = isMac && e.metaKey && key === 'k';
+      const toolsHeader = document.getElementById('tools-header');
+      if (toolsHeader) {
+        const title = toolsHeader.querySelector('h2');
+        const subtitle = toolsHeader.querySelector('p');
+        if (title) {
+          title.textContent = 'PDF Tools';
+          title.className = 'text-4xl md:text-5xl font-bold text-white mb-3';
+        }
+        if (subtitle) {
+          subtitle.textContent = 'Select a tool to get started';
+          subtitle.className = 'text-lg text-gray-400';
+        }
+      }
 
-    if (isCtrlK || isCmdK) {
-      e.preventDefault();
-      searchBar?.focus();
-    }
-  });
+      const app = document.getElementById('app');
+      if (app) {
+        app.style.paddingTop = '1rem';
+      }
+    };
 
-  const shortcutK = document.getElementById('shortcut');
-  const isIosOrAndroid = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  if (isIosOrAndroid && shortcutK) {
-    shortcutK.style.display = 'none';
-  } else if (shortcutK) {
-    shortcutK.textContent = navigator.userAgent.toUpperCase().includes('MAC')
-      ? '⌘ + K'
-      : 'Ctrl + K';
+    hideBrandingSections();
   }
 
-  dom.toolGrid?.addEventListener('click', (e) => {
-    // @ts-expect-error TS(2339) FIXME: Property 'closest' does not exist on type 'EventTa... Remove this comment to see the full error message
-    const card = e.target.closest('.tool-card');
-    if (card) {
-      const toolId = card.dataset.toolId;
-      setupToolInterface(toolId);
-    }
-  });
-  dom.backToGridBtn?.addEventListener('click', () => switchView('grid'));
-  dom.alertOkBtn?.addEventListener('click', hideAlert);
+  // Hide shortcuts buttons on mobile devices (Android/iOS)
+  // exclude iPad -> users can connect keyboard and use shortcuts
+  const isMobile = /Android|iPhone|iPod/i.test(navigator.userAgent);
+  const keyboardShortcutBtn = document.getElementById('shortcut');
+  const shortcutSettingsBtn = document.getElementById('open-shortcuts-btn');
 
-  if (window.location.hash.startsWith('#tool-')) {
-    const toolId = window.location.hash.substring(6);
-    setTimeout(() => {
-      setupToolInterface(toolId);
-      history.replaceState(null, '', window.location.pathname);
-    }, 100);
+  if (isMobile) {
+    if (keyboardShortcutBtn) keyboardShortcutBtn.style.display = 'none';
+    if (shortcutSettingsBtn) shortcutSettingsBtn.style.display = 'none';
+  } else {
+    if (keyboardShortcutBtn) {
+      keyboardShortcutBtn.textContent = navigator.userAgent.toUpperCase().includes('MAC')
+        ? '⌘ + K'
+        : 'Ctrl + K';
+    }
+  }
+
+
+  const categoryTranslationKeys: Record<string, string> = {
+    'Popular Tools': 'tools:categories.popularTools',
+    'Edit & Annotate': 'tools:categories.editAnnotate',
+    'Convert to PDF': 'tools:categories.convertToPdf',
+    'Convert from PDF': 'tools:categories.convertFromPdf',
+    'Organize & Manage': 'tools:categories.organizeManage',
+    'Optimize & Repair': 'tools:categories.optimizeRepair',
+    'Secure PDF': 'tools:categories.securePdf',
+  };
+
+  const toolTranslationKeys: Record<string, string> = {
+    'PDF Multi Tool': 'tools:pdfMultiTool',
+    'Merge PDF': 'tools:mergePdf',
+    'Split PDF': 'tools:splitPdf',
+    'Compress PDF': 'tools:compressPdf',
+    'PDF Editor': 'tools:pdfEditor',
+    'JPG to PDF': 'tools:jpgToPdf',
+    'Sign PDF': 'tools:signPdf',
+    'Crop PDF': 'tools:cropPdf',
+    'Extract Pages': 'tools:extractPages',
+    'Duplicate & Organize': 'tools:duplicateOrganize',
+    'Delete Pages': 'tools:deletePages',
+    'Edit Bookmarks': 'tools:editBookmarks',
+    'Table of Contents': 'tools:tableOfContents',
+    'Page Numbers': 'tools:pageNumbers',
+    'Add Watermark': 'tools:addWatermark',
+    'Header & Footer': 'tools:headerFooter',
+    'Invert Colors': 'tools:invertColors',
+    'Background Color': 'tools:backgroundColor',
+    'Change Text Color': 'tools:changeTextColor',
+    'Add Stamps': 'tools:addStamps',
+    'Remove Annotations': 'tools:removeAnnotations',
+    'PDF Form Filler': 'tools:pdfFormFiller',
+    'Create PDF Form': 'tools:createPdfForm',
+    'Remove Blank Pages': 'tools:removeBlankPages',
+    'Images to PDF': 'tools:imageToPdf',
+    'PNG to PDF': 'tools:pngToPdf',
+    'WebP to PDF': 'tools:webpToPdf',
+    'SVG to PDF': 'tools:svgToPdf',
+    'BMP to PDF': 'tools:bmpToPdf',
+    'HEIC to PDF': 'tools:heicToPdf',
+    'TIFF to PDF': 'tools:tiffToPdf',
+    'Text to PDF': 'tools:textToPdf',
+    'JSON to PDF': 'tools:jsonToPdf',
+    'PDF to JPG': 'tools:pdfToJpg',
+    'PDF to PNG': 'tools:pdfToPng',
+    'PDF to WebP': 'tools:pdfToWebp',
+    'PDF to BMP': 'tools:pdfToBmp',
+    'PDF to TIFF': 'tools:pdfToTiff',
+    'PDF to Greyscale': 'tools:pdfToGreyscale',
+    'PDF to JSON': 'tools:pdfToJson',
+    'OCR PDF': 'tools:ocrPdf',
+    'Alternate & Mix Pages': 'tools:alternateMix',
+    'Organize & Duplicate': 'tools:duplicateOrganize',
+    'Add Attachments': 'tools:addAttachments',
+    'Extract Attachments': 'tools:extractAttachments',
+    'Edit Attachments': 'tools:editAttachments',
+    'Divide Pages': 'tools:dividePages',
+    'Add Blank Page': 'tools:addBlankPage',
+    'Reverse Pages': 'tools:reversePages',
+    'Rotate PDF': 'tools:rotatePdf',
+    'Rotate by Custom Degrees': 'tools:rotateCustom',
+    'N-Up PDF': 'tools:nUpPdf',
+    'Combine to Single Page': 'tools:combineToSinglePage',
+    'View Metadata': 'tools:viewMetadata',
+    'Edit Metadata': 'tools:editMetadata',
+    'PDFs to ZIP': 'tools:pdfsToZip',
+    'Compare PDFs': 'tools:comparePdfs',
+    'Posterize PDF': 'tools:posterizePdf',
+    'Fix Page Size': 'tools:fixPageSize',
+    'Linearize PDF': 'tools:linearizePdf',
+    'Page Dimensions': 'tools:pageDimensions',
+    'Remove Restrictions': 'tools:removeRestrictions',
+    'Repair PDF': 'tools:repairPdf',
+    'Encrypt PDF': 'tools:encryptPdf',
+    'Sanitize PDF': 'tools:sanitizePdf',
+    'Decrypt PDF': 'tools:decryptPdf',
+    'Flatten PDF': 'tools:flattenPdf',
+    'Remove Metadata': 'tools:removeMetadata',
+    'Change Permissions': 'tools:changePermissions',
+  };
+
+  // Homepage-only tool grid rendering (not used on individual tool pages)
+  if (dom.toolGrid) {
+    dom.toolGrid.textContent = '';
+
+    categories.forEach((category) => {
+      const categoryGroup = document.createElement('div');
+      categoryGroup.className = 'category-group col-span-full';
+
+      const title = document.createElement('h2');
+      title.className = 'text-xl font-bold text-indigo-400 mb-4 mt-8 first:mt-0 text-white';
+      const categoryKey = categoryTranslationKeys[category.name];
+      title.textContent = categoryKey ? t(categoryKey) : category.name;
+
+      const toolsContainer = document.createElement('div');
+      toolsContainer.className =
+        'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6';
+
+      category.tools.forEach((tool) => {
+        let toolCard: HTMLDivElement | HTMLAnchorElement;
+
+        if (tool.href) {
+          toolCard = document.createElement('a');
+          toolCard.href = tool.href;
+          toolCard.className =
+            'tool-card block bg-gray-800 rounded-xl p-4 cursor-pointer flex flex-col items-center justify-center text-center no-underline hover:shadow-lg transition duration-200';
+        } else {
+          toolCard = document.createElement('div');
+          toolCard.className =
+            'tool-card bg-gray-800 rounded-xl p-4 cursor-pointer flex flex-col items-center justify-center text-center hover:shadow-lg transition duration-200';
+          toolCard.dataset.toolId = getToolId(tool);
+        }
+
+        const icon = document.createElement('i');
+        icon.className = 'w-10 h-10 mb-3 text-indigo-400';
+
+        if (tool.icon.startsWith('ph-')) {
+          icon.className = `ph ${tool.icon} text-4xl mb-3 text-indigo-400`;
+        } else {
+          icon.setAttribute('data-lucide', tool.icon);
+        }
+
+        const toolName = document.createElement('h3');
+        toolName.className = 'font-semibold text-white';
+        const toolKey = toolTranslationKeys[tool.name];
+        toolName.textContent = toolKey ? t(`${toolKey}.name`) : tool.name;
+
+        toolCard.append(icon, toolName);
+
+        if (tool.subtitle) {
+          const toolSubtitle = document.createElement('p');
+          toolSubtitle.className = 'text-xs text-gray-400 mt-1 px-2';
+          toolSubtitle.textContent = toolKey ? t(`${toolKey}.subtitle`) : tool.subtitle;
+          toolCard.appendChild(toolSubtitle);
+        }
+
+        toolsContainer.appendChild(toolCard);
+      });
+
+      categoryGroup.append(title, toolsContainer);
+      dom.toolGrid.appendChild(categoryGroup);
+    });
+
+    const searchBar = document.getElementById('search-bar');
+    const categoryGroups = dom.toolGrid.querySelectorAll('.category-group');
+
+    const fuzzyMatchWithScore = (searchTerm: string, targetText: string): number => {
+      if (!searchTerm) return 100;
+
+      const search = searchTerm.toLowerCase();
+      const target = targetText.toLowerCase();
+
+      if (target === search) return 100;
+
+      if (target.includes(search)) {
+        if (target.startsWith(search)) return 95;
+        if (target.includes(' ' + search)) return 90;
+        return 85;
+      }
+
+      const words = target.split(/\s+/);
+      const searchWords = search.split(/\s+/);
+
+      let wordBoundaryScore = 0;
+      let matchedWords = 0;
+
+      for (const searchWord of searchWords) {
+        for (const targetWord of words) {
+          if (targetWord.startsWith(searchWord)) {
+            matchedWords++;
+            wordBoundaryScore += 20;
+            break;
+          }
+        }
+      }
+
+      if (matchedWords === searchWords.length) {
+        return Math.min(80, wordBoundaryScore);
+      }
+
+      let searchIndex = 0;
+      let targetIndex = 0;
+      let consecutiveMatches = 0;
+      let maxConsecutive = 0;
+      let totalMatches = 0;
+
+      while (searchIndex < search.length && targetIndex < target.length) {
+        if (search[searchIndex] === target[targetIndex]) {
+          searchIndex++;
+          totalMatches++;
+          consecutiveMatches++;
+          maxConsecutive = Math.max(maxConsecutive, consecutiveMatches);
+        } else {
+          consecutiveMatches = 0;
+        }
+        targetIndex++;
+      }
+
+      if (searchIndex !== search.length) return 0;
+      const matchRatio = totalMatches / search.length;
+      const consecutiveBonus = (maxConsecutive / search.length) * 20;
+      const lengthPenalty = Math.max(0, (target.length - search.length) / target.length) * 10;
+
+      const score = Math.max(0, Math.min(75,
+        (matchRatio * 50) + consecutiveBonus - lengthPenalty
+      ));
+
+      return score;
+    };
+
+    searchBar.addEventListener('input', () => {
+      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
+      const searchTerm = searchBar.value.toLowerCase().trim();
+
+      categoryGroups.forEach((group) => {
+        const toolCards = Array.from(group.querySelectorAll('.tool-card'));
+
+        const scoredCards = toolCards.map((card) => {
+          const toolName = card.querySelector('h3')?.textContent || '';
+          const toolSubtitle = card.querySelector('p')?.textContent || '';
+
+          const nameScore = fuzzyMatchWithScore(searchTerm, toolName);
+          const subtitleScore = fuzzyMatchWithScore(searchTerm, toolSubtitle);
+
+          const score = Math.max(nameScore, subtitleScore) +
+            (nameScore > 0 && subtitleScore > 0 ? 5 : 0);
+
+          return { card, score };
+        });
+
+        scoredCards.sort((a, b) => b.score - a.score);
+
+        let visibleToolsInCategory = 0;
+        const threshold = 10;
+
+        scoredCards.forEach(({ card, score }, index) => {
+          const isMatch = score >= threshold;
+          card.classList.toggle('hidden', !isMatch);
+
+          if (isMatch) {
+            visibleToolsInCategory++;
+            (card as HTMLElement).style.order = index.toString();
+          }
+        });
+
+        group.classList.toggle('hidden', visibleToolsInCategory === 0);
+      });
+    });
+
+    window.addEventListener('keydown', function (e) {
+      const key = e.key.toLowerCase();
+      const isMac = navigator.userAgent.toUpperCase().includes('MAC');
+      const isCtrlK = e.ctrlKey && key === 'k';
+      const isCmdK = isMac && e.metaKey && key === 'k';
+
+      if (isCtrlK || isCmdK) {
+        e.preventDefault();
+        searchBar.focus();
+      }
+    });
+
+    dom.toolGrid.addEventListener('click', (e) => {
+      // All tools now use href and navigate directly - no modal handling needed
+    });
+  }
+
+  if (dom.backToGridBtn) {
+    dom.backToGridBtn.addEventListener('click', () => switchView('grid'));
+  }
+
+  if (dom.alertOkBtn) {
+    dom.alertOkBtn.addEventListener('click', hideAlert);
+  }
+
+  const faqAccordion = document.getElementById('faq-accordion');
+  if (faqAccordion) {
+    faqAccordion.addEventListener('click', (e) => {
+      // @ts-expect-error TS(2339) FIXME: Property 'closest' does not exist on type 'EventTa... Remove this comment to see the full error message
+      const questionButton = e.target.closest('.faq-question');
+      if (!questionButton) return;
+
+      const faqItem = questionButton.parentElement;
+      const answer = faqItem.querySelector('.faq-answer');
+
+      faqItem.classList.toggle('open');
+
+      if (faqItem.classList.contains('open')) {
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      } else {
+        answer.style.maxHeight = '0px';
+      }
+    });
   }
 
   createIcons({ icons });
   console.log('Please share our tool and share the love!');
+
+  // Start background WASM preloading on all pages
+  startBackgroundPreload();
+
+
+  const githubStarsElements = [
+    document.getElementById('github-stars-desktop'),
+    document.getElementById('github-stars-mobile')
+  ];
+
+  if (githubStarsElements.some(el => el) && !__SIMPLE_MODE__) {
+    fetch('https://api.github.com/repos/alam00000/bentopdf')
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.stargazers_count !== undefined) {
+          const formattedStars = formatStars(data.stargazers_count);
+          githubStarsElements.forEach(el => {
+            if (el) el.textContent = formattedStars;
+          });
+        }
+      })
+      .catch(() => {
+        githubStarsElements.forEach(el => {
+          if (el) el.textContent = '-';
+        });
+      });
+  }
+
 
   // Initialize Shortcuts System
   ShortcutsManager.init();
@@ -230,9 +514,9 @@ const init = () => {
 
   if (shortcutsTabBtn && preferencesTabBtn) {
     shortcutsTabBtn.addEventListener('click', () => {
-      shortcutsTabBtn.classList.add('bg-orange-600', 'text-white');
+      shortcutsTabBtn.classList.add('bg-indigo-600', 'text-white');
       shortcutsTabBtn.classList.remove('text-gray-300');
-      preferencesTabBtn.classList.remove('bg-orange-600', 'text-white');
+      preferencesTabBtn.classList.remove('bg-indigo-600', 'text-white');
       preferencesTabBtn.classList.add('text-gray-300');
       shortcutsTabContent?.classList.remove('hidden');
       preferencesTabContent?.classList.add('hidden');
@@ -242,9 +526,9 @@ const init = () => {
     });
 
     preferencesTabBtn.addEventListener('click', () => {
-      preferencesTabBtn.classList.add('bg-orange-600', 'text-white');
+      preferencesTabBtn.classList.add('bg-indigo-600', 'text-white');
       preferencesTabBtn.classList.remove('text-gray-300');
-      shortcutsTabBtn.classList.remove('bg-orange-600', 'text-white');
+      shortcutsTabBtn.classList.remove('bg-indigo-600', 'text-white');
       shortcutsTabBtn.classList.add('text-gray-300');
       preferencesTabContent?.classList.remove('hidden');
       shortcutsTabContent?.classList.add('hidden');
@@ -300,13 +584,13 @@ const init = () => {
   if (dom.openShortcutsBtn) {
     dom.openShortcutsBtn.addEventListener('click', () => {
       renderShortcutsList();
-      dom.shortcutsModal?.classList.remove('hidden');
+      dom.shortcutsModal.classList.remove('hidden');
     });
   }
 
   if (dom.closeShortcutsModalBtn) {
     dom.closeShortcutsModalBtn.addEventListener('click', () => {
-      dom.shortcutsModal?.classList.add('hidden');
+      dom.shortcutsModal.classList.add('hidden');
     });
   }
 
@@ -321,10 +605,9 @@ const init = () => {
 
   if (dom.resetShortcutsBtn) {
     dom.resetShortcutsBtn.addEventListener('click', async () => {
-      const trans = getTranslations();
       const confirmed = await showWarningModal(
-        trans.shortcutsModal.resetShortcuts,
-        trans.shortcutsModal.resetConfirm,
+        t('settings.warnings.resetTitle'),
+        t('settings.warnings.resetMessage'),
         true
       );
 
@@ -351,19 +634,18 @@ const init = () => {
         if (file) {
           const reader = new FileReader();
           reader.onload = async (e) => {
-            const trans = getTranslations();
             const content = e.target?.result as string;
             if (ShortcutsManager.importSettings(content)) {
               renderShortcutsList();
               await showWarningModal(
-                trans.shortcutsModal.importSuccessful,
-                trans.shortcutsModal.importSuccessfulMsg,
+                t('settings.warnings.importSuccessTitle'),
+                t('settings.warnings.importSuccessMessage'),
                 false
               );
             } else {
               await showWarningModal(
-                trans.shortcutsModal.importFailed,
-                trans.shortcutsModal.importFailedMsg,
+                t('settings.warnings.importFailTitle'),
+                t('settings.warnings.importFailMessage'),
                 false
               );
             }
@@ -447,10 +729,10 @@ const init = () => {
 
       if (confirmMode) {
         dom.warningCancelBtn.style.display = '';
-        dom.warningConfirmBtn.textContent = getTranslations().proceed;
+        dom.warningConfirmBtn.textContent = 'Proceed';
       } else {
         dom.warningCancelBtn.style.display = 'none';
-        dom.warningConfirmBtn.textContent = getTranslations().ok;
+        dom.warningConfirmBtn.textContent = 'OK';
       }
 
       const handleConfirm = () => {
@@ -509,7 +791,9 @@ const init = () => {
 
       const header = document.createElement('h3');
       header.className = 'text-gray-400 text-xs font-bold uppercase tracking-wider mb-3 pl-1';
-      header.textContent = getCategoryName(category.name);
+      // Translate category name
+      const categoryKey = categoryTranslationKeys[category.name];
+      header.textContent = categoryKey ? t(categoryKey) : category.name;
       section.appendChild(header);
 
       const itemsContainer = document.createElement('div');
@@ -530,25 +814,23 @@ const init = () => {
         left.className = 'flex items-center gap-3';
 
         const icon = document.createElement('i');
-        icon.className = 'w-5 h-5 text-accent';
+        icon.className = 'w-5 h-5 text-indigo-400';
         icon.setAttribute('data-lucide', tool.icon);
 
-        // Use translated tool name
-        const toolTranslation = getToolTranslation(tool.name);
         const name = document.createElement('span');
         name.className = 'text-gray-200 font-medium';
-        name.textContent = toolTranslation.name;
+        const toolKey = toolTranslationKeys[tool.name];
+        name.textContent = toolKey ? t(`${toolKey}.name`) : tool.name;
 
         left.append(icon, name);
 
         const right = document.createElement('div');
         right.className = 'relative';
 
-        const trans = getTranslations();
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'shortcut-input w-32 bg-gray-800 border border-gray-600 text-white text-center text-sm rounded px-2 py-1 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all';
-        input.placeholder = trans.shortcutsModal.clickToSet;
+        input.placeholder = t('settings.clickToSet');
         input.value = formatShortcutDisplay(currentShortcut, isMac);
         input.readOnly = true;
 
@@ -616,45 +898,44 @@ const init = () => {
 
           if (!isModifier) {
             const existingToolId = ShortcutsManager.findToolByShortcut(combo);
-            const trans = getTranslations();
 
             if (existingToolId && existingToolId !== toolId) {
               const existingTool = allTools.find(t => getToolId(t) === existingToolId);
-              // Use translated tool name
-              const existingToolTranslation = existingTool ? getToolTranslation(existingTool.name) : null;
-              const existingToolName = existingToolTranslation?.name || existingToolId;
+              const existingToolName = existingTool?.name || existingToolId;
               const displayCombo = formatShortcutDisplay(combo, isMac);
 
+              const existingToolKey = existingTool ? toolTranslationKeys[existingTool.name] : null;
+              const translatedToolName = existingToolKey ? t(`${existingToolKey}.name`) : existingToolName;
+
               await showWarningModal(
-                trans.shortcutsModal.shortcutInUse,
-                `<strong>${displayCombo}</strong> ${trans.shortcutsModal.shortcutInUseMsg}<br><br>` +
-                `<em>"${existingToolName}"</em><br><br>` +
-                `${trans.shortcutsModal.chooseDifferent}`,
+                t('settings.warnings.alreadyInUse'),
+                `<strong>${displayCombo}</strong> ${t('settings.warnings.assignedTo')}<br><br>` +
+                `<em>"${translatedToolName}"</em><br><br>` +
+                t('settings.warnings.chooseDifferent'),
                 false
               );
 
               input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-              input.classList.remove('border-accent', 'text-accent');
+              input.classList.remove('border-indigo-500', 'text-indigo-400');
               input.blur();
               return;
             }
 
-            // Check if this is a reserved shortcut
             const reservedWarning = getReservedShortcutWarning(combo, isMac);
             if (reservedWarning) {
               const displayCombo = formatShortcutDisplay(combo, isMac);
               const shouldProceed = await showWarningModal(
-                trans.shortcutsModal.reservedWarning,
-                `<strong>${displayCombo}</strong> ${trans.shortcutsModal.reservedWarningMsg}<br><br>` +
+                t('settings.warnings.reserved'),
+                `<strong>${displayCombo}</strong> ${t('settings.warnings.commonlyUsed')}<br><br>` +
                 `"<em>${reservedWarning}</em>"<br><br>` +
-                `${trans.shortcutsModal.reservedWarningNote}<br><br>` +
-                `${trans.shortcutsModal.useAnyway}`
+                `${t('settings.warnings.unreliable')}<br><br>` +
+                t('settings.warnings.useAnyway')
               );
 
               if (!shouldProceed) {
                 // Revert display
                 input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-                input.classList.remove('border-accent', 'text-accent');
+                input.classList.remove('border-indigo-500', 'text-indigo-400');
                 input.blur();
                 return;
               }
@@ -675,13 +956,13 @@ const init = () => {
         };
 
         input.onfocus = () => {
-          input.value = 'Press keys...';
-          input.classList.add('border-accent', 'text-accent');
+          input.value = t('settings.pressKeys');
+          input.classList.add('border-indigo-500', 'text-indigo-400');
         };
 
         input.onblur = () => {
           input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
-          input.classList.remove('border-accent', 'text-accent');
+          input.classList.remove('border-indigo-500', 'text-indigo-400');
         };
 
         right.append(input);
@@ -723,6 +1004,9 @@ const init = () => {
       });
     });
   }
+
+  // Rewrite links after all dynamic content is fully loaded
+  rewriteLinks();
 };
 
-document.addEventListener('DOMContentLoaded', init);
+window.addEventListener('load', init);

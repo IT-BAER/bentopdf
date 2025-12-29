@@ -7,6 +7,7 @@ export const singlePdfLoadTools = [
   'pdf-to-png',
   'pdf-to-webp',
   'pdf-to-greyscale',
+  'edit',
   'edit-metadata',
   'remove-metadata',
 
@@ -69,4 +70,5 @@ export const multiFileTools = [
   'compress',
   'extract-attachments',
   'flatten',
+  'repair-pdf',
 ];

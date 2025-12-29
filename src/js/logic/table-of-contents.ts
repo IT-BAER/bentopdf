@@ -3,7 +3,7 @@ import { initializeGlobalShortcuts } from "../utils/shortcuts-init.js";
 import { getTranslations } from '../i18n/index.js';
 
 
-const worker = new Worker('/workers/table-of-contents.worker.js');
+const worker = new Worker(import.meta.env.BASE_URL + 'workers/table-of-contents.worker.js');
 
 let pdfFile: File | null = null;
 
@@ -200,7 +200,7 @@ worker.onerror = (error) => {
 
 if (backToToolsBtn) {
   backToToolsBtn.addEventListener('click', () => {
-    window.location.href = '/';
+    window.location.href = import.meta.env.BASE_URL;
   });
 }
 

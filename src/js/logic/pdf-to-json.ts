@@ -3,7 +3,7 @@ import { downloadFile, formatBytes, readFileAsArrayBuffer } from '../utils/helpe
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js';
 import { getTranslations } from '../i18n/index.js';
 
-const worker = new Worker(new URL('/workers/pdf-to-json.worker.js', import.meta.url));
+const worker = new Worker(import.meta.env.BASE_URL + 'workers/pdf-to-json.worker.js');
 
 let selectedFiles: File[] = []
 
@@ -145,7 +145,7 @@ worker.onmessage = async (e: MessageEvent) => {
 
 if (backToToolsBtn) {
   backToToolsBtn.addEventListener('click', () => {
-    window.location.href = '/'
+    window.location.href = import.meta.env.BASE_URL
   })
 }
 

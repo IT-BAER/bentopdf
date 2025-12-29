@@ -1,7 +1,6 @@
 import { PDFDocument, StandardFonts, rgb, TextAlignment, PDFName, PDFString, PageSizes, PDFBool, PDFDict, PDFArray, PDFRadioGroup } from 'pdf-lib'
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js'
 import { downloadFile, hexToRgb, getPDFDocument } from '../utils/helpers.js'
-import { getTranslations } from '../i18n/index.js'
 import { createIcons, icons } from 'lucide'
 import * as pdfjsLib from 'pdfjs-dist'
 import 'pdfjs-dist/web/pdf_viewer.css'
@@ -9,75 +8,14 @@ import 'pdfjs-dist/web/pdf_viewer.css'
 // Initialize PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
 
-interface FormField {
-    id: string
-    type: 'text' | 'checkbox' | 'radio' | 'dropdown' | 'optionlist' | 'button' | 'signature' | 'date' | 'image'
-    x: number
-    y: number
-    width: number
-    height: number
-    name: string
-    defaultValue: string
-    fontSize: number
-    alignment: 'left' | 'center' | 'right'
-    textColor: string
-    required: boolean
-    readOnly: boolean
-    tooltip: string
-    combCells: number
-    maxLength: number
-    options?: string[]
-    checked?: boolean
-    exportValue?: string
-    groupName?: string
-    label?: string
-    pageIndex: number
-    action?: 'none' | 'reset' | 'print' | 'url' | 'js' | 'showHide'
-    actionUrl?: string
-    jsScript?: string
-    targetFieldName?: string
-    visibilityAction?: 'show' | 'hide' | 'toggle'
-    dateFormat?: string
-    multiline?: boolean
-}
+import { FormField, PageData } from '../types/index.js'
 
-interface PageData {
-    index: number
-    width: number
-    height: number
-    pdfPageData?: string
-}
-
-// Interface for localStorage saved form state
-interface SavedFormState {
-    fields: FormField[]
-    pages: PageData[]
-    pageSize: { width: number; height: number }
-    timestamp: number
-    pdfBase64?: string
-    name?: string
-    id?: string
-}
-
-// Interface for recent forms list
-interface RecentFormEntry {
-    id: string
-    name: string
-    timestamp: number
-    fieldCount: number
-    pageCount: number
-    thumbnail?: string
-}
-
-const FORM_STORAGE_KEY = 'pdftools_last_form'
-const RECENT_FORMS_KEY = 'pdftools_recent_forms'
-const MAX_RECENT_FORMS = 5
 
 let fields: FormField[] = []
 let selectedField: FormField | null = null
 let fieldCounter = 0
-let existingFieldNames: Set<string> = new Set() 
-let existingRadioGroups: Set<string> = new Set() 
+let existingFieldNames: Set<string> = new Set()
+let existingRadioGroups: Set<string> = new Set()
 let draggedElement: HTMLElement | null = null
 let offsetX = 0
 let offsetY = 0
@@ -86,7 +24,6 @@ let pages: PageData[] = []
 let currentPageIndex = 0
 let uploadedPdfDoc: PDFDocument | null = null
 let uploadedPdfjsDoc: any = null
-let originalPdfBytes: Uint8Array | null = null // Store original PDF for restoration
 let pageSize: { width: number; height: number } = { width: 612, height: 792 }
 let currentScale = 1.333
 let pdfViewerOffset = { x: 0, y: 0 }
@@ -125,8 +62,133 @@ const nextPageBtn = document.getElementById('nextPageBtn') as HTMLButtonElement
 const addPageBtn = document.getElementById('addPageBtn') as HTMLButtonElement
 const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement
 const downloadBtn = document.getElementById('downloadBtn') as HTMLButtonElement
-const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement
 const backToToolsBtn = document.getElementById('back-to-tools') as HTMLButtonElement | null
+const gotoPageInput = document.getElementById('gotoPageInput') as HTMLInputElement
+const gotoPageBtn = document.getElementById('gotoPageBtn') as HTMLButtonElement
+
+const gridVInput = document.getElementById('gridVInput') as HTMLInputElement
+const gridHInput = document.getElementById('gridHInput') as HTMLInputElement
+const toggleGridBtn = document.getElementById('toggleGridBtn') as HTMLButtonElement
+const enableGridCheckbox = document.getElementById('enableGridCheckbox') as HTMLInputElement
+let gridV = 2
+let gridH = 2
+let gridAlwaysVisible = false
+let gridEnabled = true
+
+if (gridVInput && gridHInput) {
+    gridVInput.value = '2'
+    gridHInput.value = '2'
+
+    const updateGrid = () => {
+        let v = parseInt(gridVInput.value) || 2
+        let h = parseInt(gridHInput.value) || 2
+
+        if (v < 2) { v = 2; gridVInput.value = '2' }
+        if (h < 2) { h = 2; gridHInput.value = '2' }
+        if (v > 14) { v = 14; gridVInput.value = '14' }
+        if (h > 14) { h = 14; gridHInput.value = '14' }
+
+        gridV = v
+        gridH = h
+
+        if (gridAlwaysVisible && gridEnabled) {
+            renderGrid()
+        }
+    }
+
+    gridVInput.addEventListener('input', updateGrid)
+    gridHInput.addEventListener('input', updateGrid)
+}
+
+if (enableGridCheckbox) {
+    enableGridCheckbox.addEventListener('change', (e) => {
+        gridEnabled = (e.target as HTMLInputElement).checked
+
+        if (!gridEnabled) {
+            removeGrid()
+            if (gridVInput) gridVInput.disabled = true
+            if (gridHInput) gridHInput.disabled = true
+            if (toggleGridBtn) toggleGridBtn.disabled = true
+        } else {
+            if (gridVInput) gridVInput.disabled = false
+            if (gridHInput) gridHInput.disabled = false
+            if (toggleGridBtn) toggleGridBtn.disabled = false
+            if (gridAlwaysVisible) renderGrid()
+        }
+    })
+}
+
+if (toggleGridBtn) {
+    toggleGridBtn.addEventListener('click', () => {
+        gridAlwaysVisible = !gridAlwaysVisible
+
+        if (gridAlwaysVisible) {
+            toggleGridBtn.classList.add('bg-indigo-600')
+            toggleGridBtn.classList.remove('bg-gray-600')
+            if (gridEnabled) renderGrid()
+        } else {
+            toggleGridBtn.classList.remove('bg-indigo-600')
+            toggleGridBtn.classList.add('bg-gray-600')
+            removeGrid()
+        }
+    })
+}
+
+function renderGrid() {
+    const existingGrid = document.getElementById('pdfGrid')
+    if (existingGrid) existingGrid.remove()
+
+    const gridContainer = document.createElement('div')
+    gridContainer.id = 'pdfGrid'
+    gridContainer.className = 'absolute inset-0 pointer-events-none'
+    gridContainer.style.zIndex = '1'
+
+    if (gridV > 0) {
+        const stepX = canvas.offsetWidth / gridV
+        for (let i = 0; i <= gridV; i++) {
+            const line = document.createElement('div')
+            line.className = 'absolute top-0 bottom-0 border-l-2 border-indigo-500 opacity-60'
+            line.style.left = (i * stepX) + 'px'
+            gridContainer.appendChild(line)
+        }
+    }
+
+    if (gridH > 0) {
+        const stepY = canvas.offsetHeight / gridH
+        for (let i = 0; i <= gridH; i++) {
+            const line = document.createElement('div')
+            line.className = 'absolute left-0 right-0 border-t-2 border-indigo-500 opacity-60'
+            line.style.top = (i * stepY) + 'px'
+            gridContainer.appendChild(line)
+        }
+    }
+
+    canvas.insertBefore(gridContainer, canvas.firstChild)
+}
+
+function removeGrid() {
+    const existingGrid = document.getElementById('pdfGrid')
+    if (existingGrid) existingGrid.remove()
+}
+
+if (gotoPageBtn && gotoPageInput) {
+    gotoPageBtn.addEventListener('click', () => {
+        const pageNum = parseInt(gotoPageInput.value)
+        if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= pages.length) {
+            currentPageIndex = pageNum - 1
+            renderCanvas()
+            updatePageNavigation()
+        } else {
+            alert(`Please enter a valid page number between 1 and ${pages.length}`)
+        }
+    })
+
+    gotoPageInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            gotoPageBtn.click()
+        }
+    })
+}
 
 // Tool item interactions
 const toolItems = document.querySelectorAll('.tool-item')
@@ -137,10 +199,13 @@ toolItems.forEach(item => {
             e.dataTransfer.effectAllowed = 'copy'
             const type = (item as HTMLElement).dataset.type || 'text'
             e.dataTransfer.setData('text/plain', type)
+            if (gridEnabled) renderGrid()
         }
     })
 
-    // Click to select tool for placement
+    item.addEventListener('dragend', () => {
+        if (!gridAlwaysVisible && gridEnabled) removeGrid()
+    })
     item.addEventListener('click', () => {
         const type = (item as HTMLElement).dataset.type || 'text'
 
@@ -148,16 +213,16 @@ toolItems.forEach(item => {
         if (selectedToolType === type) {
             // Deselect
             selectedToolType = null
-            item.classList.remove('selected')
+            item.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-600')
             canvas.style.cursor = 'default'
         } else {
             // Deselect previous tool
             if (selectedToolType) {
-                toolItems.forEach(t => t.classList.remove('selected'))
+                toolItems.forEach(t => t.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-600'))
             }
             // Select new tool
             selectedToolType = type
-            item.classList.add('selected')
+            item.classList.add('ring-2', 'ring-indigo-400', 'bg-indigo-600')
             canvas.style.cursor = 'crosshair'
         }
     })
@@ -219,8 +284,9 @@ canvas.addEventListener('dragover', (e) => {
 
 canvas.addEventListener('drop', (e) => {
     e.preventDefault()
+    if (!gridAlwaysVisible) removeGrid()
     const rect = canvas.getBoundingClientRect()
-    const x = e.clientX - rect.left - 75 // Center the field on drop point
+    const x = e.clientX - rect.left - 75
     const y = e.clientY - rect.top - 15
     const type = e.dataTransfer?.getData('text/plain') || 'text'
     createField(type as any, x, y)
@@ -233,7 +299,7 @@ canvas.addEventListener('click', (e) => {
         const y = e.clientY - rect.top - 15
         createField(selectedToolType as any, x, y)
 
-        toolItems.forEach(item => item.classList.remove('selected'))
+        toolItems.forEach(item => item.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-600'))
         selectedToolType = null
         canvas.style.cursor = 'default'
         return
@@ -264,17 +330,19 @@ function createField(type: FormField['type'], x: number, y: number): void {
         tooltip: '',
         combCells: 0,
         maxLength: 0,
-        options: type === 'dropdown' || type === 'optionlist' ? [getTranslations().formCreator.option1, getTranslations().formCreator.option2, getTranslations().formCreator.option3] : undefined,
+        options: type === 'dropdown' || type === 'optionlist' ? ['Option 1', 'Option 2', 'Option 3'] : undefined,
         checked: type === 'radio' || type === 'checkbox' ? false : undefined,
         exportValue: type === 'radio' || type === 'checkbox' ? 'Yes' : undefined,
         groupName: type === 'radio' ? 'RadioGroup1' : undefined,
-        label: type === 'button' ? getTranslations().formCreator.fieldButton : (type === 'image' ? getTranslations().formCreator.clickToUploadImage : undefined),
+        label: type === 'button' ? 'Button' : (type === 'image' ? 'Click to Upload Image' : undefined),
         action: type === 'button' ? 'none' : undefined,
         jsScript: type === 'button' ? 'app.alert("Hello World!");' : undefined,
         visibilityAction: type === 'button' ? 'toggle' : undefined,
         dateFormat: type === 'date' ? 'mm/dd/yyyy' : undefined,
         pageIndex: currentPageIndex,
-        multiline: type === 'text' ? false : undefined
+        multiline: type === 'text' ? false : undefined,
+        borderColor: '#000000',
+        hideBorder: false
     }
 
     fields.push(field)
@@ -291,6 +359,7 @@ function renderField(field: FormField): void {
     fieldWrapper.style.top = field.y + 'px'
     fieldWrapper.style.width = field.width + 'px'
     fieldWrapper.style.overflow = 'visible'
+    fieldWrapper.style.zIndex = '10' // Ensure fields are above grid and PDF
 
     // Create label - hidden by default, shown on group hover or selection
     const label = document.createElement('div')
@@ -307,7 +376,8 @@ function renderField(field: FormField): void {
 
     // Create input container - light border by default, dashed on hover
     const fieldContainer = document.createElement('div')
-    fieldContainer.className = 'field-container relative rounded transition-all'
+    fieldContainer.className =
+        'field-container relative border-2 border-indigo-200 group-hover:border-dashed group-hover:border-indigo-300 bg-indigo-50/30 rounded transition-all'
     fieldContainer.style.width = '100%'
     fieldContainer.style.height = field.height + 'px'
 
@@ -346,7 +416,7 @@ function renderField(field: FormField): void {
         contentEl.style.backgroundColor = '#e6f0ff' // Light blue background like Firefox
 
         // Show selected option or first option or placeholder
-        let displayText = getTranslations().formCreator.selectPlaceholder
+        let displayText = 'Select...'
         if (field.defaultValue && field.options && field.options.includes(field.defaultValue)) {
             displayText = field.defaultValue
         } else if (field.options && field.options.length > 0) {
@@ -382,17 +452,17 @@ function renderField(field: FormField): void {
             // Empty state
             const optEl = document.createElement('div')
             optEl.className = 'px-1 w-full text-black italic'
-            optEl.textContent = getTranslations().formCreator.item1
+            optEl.textContent = 'Item 1'
             contentEl.appendChild(optEl)
         }
 
     } else if (field.type === 'button') {
         contentEl.className = 'field-content w-full h-full flex items-center justify-center bg-gray-200 text-sm font-semibold'
         contentEl.style.color = field.textColor || '#000000'
-        contentEl.textContent = field.label || getTranslations().formCreator.fieldButton
+        contentEl.textContent = field.label || 'Button'
     } else if (field.type === 'signature') {
         contentEl.className = 'w-full h-full flex items-center justify-center bg-gray-50 text-gray-400'
-        contentEl.innerHTML = `<div class="flex flex-col items-center"><i data-lucide="pen-tool" class="w-6 h-6 mb-1"></i><span class="text-[10px]">${getTranslations().formCreator.signHere}</span></div>`
+        contentEl.innerHTML = '<div class="flex flex-col items-center"><i data-lucide="pen-tool" class="w-6 h-6 mb-1"></i><span class="text-[10px]">Sign Here</span></div>'
         setTimeout(() => (window as any).lucide?.createIcons(), 0)
     } else if (field.type === 'date') {
         contentEl.className = 'w-full h-full flex items-center justify-center bg-white text-gray-600 border border-gray-300'
@@ -400,7 +470,7 @@ function renderField(field: FormField): void {
         setTimeout(() => (window as any).lucide?.createIcons(), 0)
     } else if (field.type === 'image') {
         contentEl.className = 'w-full h-full flex items-center justify-center bg-gray-100 text-gray-500 border border-gray-300'
-        contentEl.innerHTML = `<div class="flex flex-col items-center text-center p-1"><i data-lucide="image" class="w-6 h-6 mb-1"></i><span class="text-[10px] leading-tight">${field.label || getTranslations().formCreator.clickToUploadImage}</span></div>`
+        contentEl.innerHTML = `<div class="flex flex-col items-center text-center p-1"><i data-lucide="image" class="w-6 h-6 mb-1"></i><span class="text-[10px] leading-tight">${field.label || 'Click to Upload Image'}</span></div>`
         setTimeout(() => (window as any).lucide?.createIcons(), 0)
     }
 
@@ -425,6 +495,7 @@ function renderField(field: FormField): void {
         offsetX = e.clientX - rect.left - field.x
         offsetY = e.clientY - rect.top - field.y
         selectField(field)
+        if (gridEnabled) renderGrid()
         e.preventDefault()
     })
 
@@ -468,7 +539,7 @@ function renderField(field: FormField): void {
     const handles = ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w']
     handles.forEach((pos) => {
         const handle = document.createElement('div')
-        handle.className = `absolute w-2.5 h-2.5 resize-handle z-10 cursor-${pos}-resize hidden` // Uses CSS styling
+        handle.className = `absolute w-2.5 h-2.5 bg-white border border-indigo-600 z-10 cursor-${pos}-resize resize-handle hidden` // Added hidden class
         const positions: Record<string, string> = {
             nw: 'top-0 left-0 -translate-x-1/2 -translate-y-1/2',
             ne: 'top-0 right-0 translate-x-1/2 -translate-y-1/2',
@@ -586,9 +657,9 @@ document.addEventListener('mouseup', () => {
     draggedElement = null
     resizing = false
     resizeField = null
+    if (!gridAlwaysVisible) removeGrid()
 })
 
-// Touch move for dragging and resizing
 document.addEventListener('touchmove', (e) => {
     const touch = e.touches[0]
     if (resizing && resizeField) {
@@ -652,8 +723,9 @@ function selectField(field: FormField): void {
         const handles = fieldWrapper.querySelectorAll('.resize-handle')
 
         if (container) {
-            // Add selected class for styling
-            container.classList.add('selected')
+            // Remove hover classes and add selected classes
+            container.classList.remove('border-indigo-200', 'group-hover:border-dashed', 'group-hover:border-indigo-300')
+            container.classList.add('border-dashed', 'border-indigo-500', 'bg-indigo-50')
         }
 
         if (label) {
@@ -678,8 +750,9 @@ function deselectAll(): void {
             const handles = fieldWrapper.querySelectorAll('.resize-handle')
 
             if (container) {
-                // Remove selected class
-                container.classList.remove('selected')
+                // Revert to default/hover state
+                container.classList.remove('border-dashed', 'border-indigo-500', 'bg-indigo-50')
+                container.classList.add('border-indigo-200', 'group-hover:border-dashed', 'group-hover:border-indigo-300')
             }
 
             if (label) {
@@ -702,85 +775,93 @@ function showProperties(field: FormField): void {
 
     if (field.type === 'text') {
         specificProps = `
-        <div class="form-group">
-            <label class="form-label">Value</label>
-            <input type="text" id="propValue" value="${field.defaultValue}" ${field.combCells > 0 ? `maxlength="${field.combCells}"` : field.maxLength > 0 ? `maxlength="${field.maxLength}"` : ''} class="form-input">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Value</label>
+            <input type="text" id="propValue" value="${field.defaultValue}" ${field.combCells > 0 ? `maxlength="${field.combCells}"` : field.maxLength > 0 ? `maxlength="${field.maxLength}"` : ''} class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-        <div class="form-group">
-            <label class="form-label">Max Length (0 for unlimited)</label>
-            <input type="number" id="propMaxLength" value="${field.maxLength}" min="0" ${field.combCells > 0 ? 'disabled' : ''} class="form-input disabled:opacity-50">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Max Length (0 for unlimited)</label>
+            <input type="number" id="propMaxLength" value="${field.maxLength}" min="0" ${field.combCells > 0 ? 'disabled' : ''} class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50">
         </div>
-        <div class="form-group">
-            <label class="form-label">Divide into boxes (0 to disable)</label>
-            <input type="number" id="propComb" value="${field.combCells}" min="0" class="form-input">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Divide into boxes (0 to disable)</label>
+            <input type="number" id="propComb" value="${field.combCells}" min="0" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-        <div class="form-group">
-            <label class="form-label">Font Size</label>
-            <input type="number" id="propFontSize" value="${field.fontSize}" min="8" max="72" class="form-input">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Font Size</label>
+            <input type="number" id="propFontSize" value="${field.fontSize}" min="8" max="72" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-        <div class="form-group">
-            <label class="form-label">Text Color</label>
-            <input type="color" id="propTextColor" value="${field.textColor}" class="w-full h-10 rounded-lg border border-gray-600 cursor-pointer bg-transparent">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Text Color</label>
+            <input type="color" id="propTextColor" value="${field.textColor}" class="w-full border border-gray-500 rounded px-2 py-1 h-10">
         </div>
-        <div class="form-group">
-            <label class="form-label">Alignment</label>
-            <select id="propAlignment" class="form-select">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Alignment</label>
+            <select id="propAlignment" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
             <option value="left" ${field.alignment === 'left' ? 'selected' : ''}>Left</option>
             <option value="center" ${field.alignment === 'center' ? 'selected' : ''}>Center</option>
             <option value="right" ${field.alignment === 'right' ? 'selected' : ''}>Right</option>
             </select>
         </div>
-        <div class="flex items-center justify-between bg-gray-700/50 p-3 rounded-lg">
+        <div class="flex items-center justify-between bg-gray-600 p-2 rounded mt-2">
             <label for="propMultiline" class="text-xs font-semibold text-gray-300">Multi-line</label>
-            <button id="propMultilineBtn" class="form-toggle ${field.multiline ? 'active' : ''}"></button>
+            <button id="propMultilineBtn" class="w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${field.multiline ? 'bg-indigo-600' : 'bg-gray-500'} relative">
+                <span class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 ${field.multiline ? 'translate-x-6' : 'translate-x-0'}"></span>
+            </button>
         </div>
         `
     } else if (field.type === 'checkbox') {
         specificProps = `
-        <div class="flex items-center justify-between bg-gray-700/50 p-3 rounded-lg">
+        <div class="flex items-center justify-between bg-gray-600 p-2 rounded">
             <label for="propChecked" class="text-xs font-semibold text-gray-300">Checked State</label>
-            <button id="propCheckedBtn" class="form-toggle ${field.checked ? 'active' : ''}"></button>
+            <button id="propCheckedBtn" class="w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${field.checked ? 'bg-indigo-600' : 'bg-gray-500'} relative">
+                <span class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 ${field.checked ? 'translate-x-6' : 'translate-x-0'}"></span>
+            </button>
         </div>
         `
     } else if (field.type === 'radio') {
         specificProps = `
-        <div class="form-group">
-            <label class="form-label">Group Name (Must be same for group)</label>
-            <input type="text" id="propGroupName" value="${field.groupName}" class="form-input">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Group Name (Must be same for group)</label>
+            <input type="text" id="propGroupName" value="${field.groupName}" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-        <div class="form-group">
-            <label class="form-label">Export Value</label>
-            <input type="text" id="propExportValue" value="${field.exportValue}" class="form-input">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Export Value</label>
+            <input type="text" id="propExportValue" value="${field.exportValue}" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-        <div class="flex items-center justify-between bg-gray-700/50 p-3 rounded-lg">
+        <div class="flex items-center justify-between bg-gray-600 p-2 rounded mt-2">
             <label for="propChecked" class="text-xs font-semibold text-gray-300">Checked State</label>
-            <button id="propCheckedBtn" class="form-toggle ${field.checked ? 'active' : ''}"></button>
+            <button id="propCheckedBtn" class="w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${field.checked ? 'bg-indigo-600' : 'bg-gray-500'} relative">
+                <span class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 ${field.checked ? 'translate-x-6' : 'translate-x-0'}"></span>
+            </button>
         </div>
         `
     } else if (field.type === 'dropdown' || field.type === 'optionlist') {
         specificProps = `
-        <div class="form-group">
-            <label class="form-label">Options (One per line or comma separated)</label>
-            <textarea id="propOptions" class="form-textarea">${field.options?.join('\n')}</textarea>
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Options (One per line or comma separated)</label>
+            <textarea id="propOptions" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500 h-24">${field.options?.join('\n')}</textarea>
         </div>
-        <div class="form-group">
-            <label class="form-label">Selected Option</label>
-            <select id="propSelectedOption" class="form-select">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Selected Option</label>
+            <select id="propSelectedOption" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="">None</option>
                 ${field.options?.map(opt => `<option value="${opt}" ${field.defaultValue === opt ? 'selected' : ''}>${opt}</option>`).join('')}
             </select>
         </div>
-        <p class="form-hint">To actually fill or change the options, use our PDF Form Filler tool.</p>
+        <div class="text-xs text-gray-400 italic mt-2">
+            To actually fill or change the options, use our PDF Form Filler tool.
+        </div>
         `
     } else if (field.type === 'button') {
         specificProps = `
-        <div class="form-group">
-            <label class="form-label">Label</label>
-            <input type="text" id="propLabel" value="${field.label}" class="form-input">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Label</label>
+            <input type="text" id="propLabel" value="${field.label}" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-        <div class="form-group">
-            <label class="form-label">Action</label>
-            <select id="propAction" class="form-select">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Action</label>
+            <select id="propAction" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="none" ${field.action === 'none' ? 'selected' : ''}>None</option>
                 <option value="reset" ${field.action === 'reset' ? 'selected' : ''}>Reset Form</option>
                 <option value="print" ${field.action === 'print' ? 'selected' : ''}>Print Form</option>
@@ -789,25 +870,25 @@ function showProperties(field: FormField): void {
                 <option value="showHide" ${field.action === 'showHide' ? 'selected' : ''}>Show/Hide Field</option>
             </select>
         </div>
-        <div id="propUrlContainer" class="${field.action === 'url' ? '' : 'hidden'} form-group">
-            <label class="form-label">URL</label>
-            <input type="text" id="propActionUrl" value="${field.actionUrl || ''}" placeholder="https://example.com" class="form-input">
+        <div id="propUrlContainer" class="${field.action === 'url' ? '' : 'hidden'}">
+            <label class="block text-xs font-semibold text-gray-300 mb-1">URL</label>
+            <input type="text" id="propActionUrl" value="${field.actionUrl || ''}" placeholder="https://example.com" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-        <div id="propJsContainer" class="${field.action === 'js' ? '' : 'hidden'} form-group">
-            <label class="form-label">Javascript Code</label>
-            <textarea id="propJsScript" class="form-textarea font-mono">${field.jsScript || ''}</textarea>
+        <div id="propJsContainer" class="${field.action === 'js' ? '' : 'hidden'}">
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Javascript Code</label>
+            <textarea id="propJsScript" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500 h-24 font-mono">${field.jsScript || ''}</textarea>
         </div>
         <div id="propShowHideContainer" class="${field.action === 'showHide' ? '' : 'hidden'}">
-            <div class="form-group">
-                <label class="form-label">Target Field</label>
-                <select id="propTargetField" class="form-select">
+            <div class="mb-2">
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Target Field</label>
+                <select id="propTargetField" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="">Select a field...</option>
                     ${fields.filter(f => f.id !== field.id).map(f => `<option value="${f.name}" ${field.targetFieldName === f.name ? 'selected' : ''}>${f.name} (${f.type})</option>`).join('')}
                 </select>
             </div>
-            <div class="form-group">
-                <label class="form-label">Visibility</label>
-                <select id="propVisibilityAction" class="form-select">
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Visibility</label>
+                <select id="propVisibilityAction" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="show" ${field.visibilityAction === 'show' ? 'selected' : ''}>Show</option>
                     <option value="hide" ${field.visibilityAction === 'hide' ? 'selected' : ''}>Hide</option>
                     <option value="toggle" ${field.visibilityAction === 'toggle' ? 'selected' : ''}>Toggle</option>
@@ -817,69 +898,81 @@ function showProperties(field: FormField): void {
         `
     } else if (field.type === 'signature') {
         specificProps = `
-        <p class="form-hint">Signature fields are AcroForm signature fields and would only be visible in an advanced PDF viewer.</p>
+        <div class="text-xs text-gray-400 italic mb-2">
+            Signature fields are AcroForm signature fields and would only be visible in an advanced PDF viewer.
+        </div>
         `
     } else if (field.type === 'date') {
         const formats = ['mm/dd/yyyy', 'dd/mm/yyyy', 'mm/yy', 'dd/mm/yy', 'yyyy/mm/dd', 'mmm d, yyyy', 'd-mmm-yy', 'yy-mm-dd']
         specificProps = `
-        <div class="form-group">
-            <label class="form-label">Date Format</label>
-            <select id="propDateFormat" class="form-select">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Date Format</label>
+            <select id="propDateFormat" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 ${formats.map(f => `<option value="${f}" ${field.dateFormat === f ? 'selected' : ''}>${f}</option>`).join('')}
             </select>
         </div>
-        <p class="form-hint">The selected format will be enforced when the user types or picks a date.</p>
-        <div class="bg-blue-900/30 border border-blue-700/50 rounded-lg p-3 mt-3">
+        <div class="text-xs text-gray-400 italic mt-2">
+            The selected format will be enforced when the user types or picks a date.
+        </div>
+        <div class="bg-blue-900/30 border border-blue-700/50 rounded p-2 mt-2">
             <p class="text-xs text-blue-200 flex gap-2">
                 <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
-                <span><strong>Browser Note:</strong> Firefox and Chrome may show their native date picker format during selection. The correct format will apply when you finish entering the date.</span>
+                <span><strong>Browser Note:</strong> Firefox and Chrome may show their native date picker format during selection. The correct format will apply when you finish entering the date. This is normal browser behavior and not an issue.</span>
             </p>
         </div>
         `
     } else if (field.type === 'image') {
         specificProps = `
-        <div class="form-group">
-            <label class="form-label">Label / Prompt</label>
-            <input type="text" id="propLabel" value="${field.label}" class="form-input">
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Label / Prompt</label>
+            <input type="text" id="propLabel" value="${field.label}" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-        <p class="form-hint">Clicking this field in the PDF will open a file picker to upload an image.</p>
+        <div class="text-xs text-gray-400 italic mt-2">
+            Clicking this field in the PDF will open a file picker to upload an image.
         </div>
         `
     }
 
     propertiesPanel.innerHTML = `
     <div class="space-y-3">
-      <div class="form-group">
-        <label class="form-label">Field Name ${field.type === 'radio' ? '(Group Name)' : ''}</label>
-        <input type="text" id="propName" value="${field.name}" class="form-input">
+      <div>
+        <label class="block text-xs font-semibold text-gray-300 mb-1">Field Name ${field.type === 'radio' ? '(Group Name)' : ''}</label>
+        <input type="text" id="propName" value="${field.name}" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
         <div id="nameError" class="hidden text-red-400 text-xs mt-1"></div>
       </div>
       ${field.type === 'radio' && (existingRadioGroups.size > 0 || fields.some(f => f.type === 'radio' && f.id !== field.id)) ? `
-      <div class="form-group">
-        <label class="form-label">Existing Radio Groups</label>
-        <select id="existingGroups" class="form-select">
+      <div>
+        <label class="block text-xs font-semibold text-gray-300 mb-1">Existing Radio Groups</label>
+        <select id="existingGroups" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
           <option value="">-- Select existing group --</option>
           ${Array.from(existingRadioGroups).map(name => `<option value="${name}">${name}</option>`).join('')}
           ${Array.from(new Set(fields.filter(f => f.type === 'radio' && f.id !== field.id).map(f => f.name))).map(name => !existingRadioGroups.has(name) ? `<option value="${name}">${name}</option>` : '').join('')}
         </select>
-        <p class="form-hint">Select to add this button to an existing group</p>
+        <p class="text-xs text-gray-400 mt-1">Select to add this button to an existing group</p>
       </div>
       ` : ''}
       ${specificProps}
-      <div class="form-group">
-        <label class="form-label">Tooltip / Help Text</label>
-        <input type="text" id="propTooltip" value="${field.tooltip}" placeholder="Description for screen readers" class="form-input">
+      <div>
+        <label class="block text-xs font-semibold text-gray-300 mb-1">Tooltip / Help Text</label>
+        <input type="text" id="propTooltip" value="${field.tooltip}" placeholder="Description for screen readers" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
       </div>
-      <div class="flex items-center gap-2 py-1">
-        <input type="checkbox" id="propRequired" ${field.required ? 'checked' : ''} class="form-checkbox">
+      <div class="flex items-center">
+        <input type="checkbox" id="propRequired" ${field.required ? 'checked' : ''} class="mr-2">
         <label for="propRequired" class="text-xs font-semibold text-gray-300">Required</label>
       </div>
-      <div class="flex items-center gap-2 py-1">
-        <input type="checkbox" id="propReadOnly" ${field.readOnly ? 'checked' : ''} class="form-checkbox">
+      <div class="flex items-center">
+        <input type="checkbox" id="propReadOnly" ${field.readOnly ? 'checked' : ''} class="mr-2">
         <label for="propReadOnly" class="text-xs font-semibold text-gray-300">Read Only</label>
       </div>
-      <button id="deleteBtn" class="btn-delete mt-2">
-        <i data-lucide="trash-2" class="w-4 h-4"></i>
+      <div>
+        <label class="block text-xs font-semibold text-gray-300 mb-1">Border Color</label>
+        <input type="color" id="propBorderColor" value="${field.borderColor || '#000000'}" class="w-full border border-gray-500 rounded px-2 py-1 h-10">
+      </div>
+      <div class="flex items-center">
+        <input type="checkbox" id="propHideBorder" ${field.hideBorder ? 'checked' : ''} class="mr-2">
+        <label for="propHideBorder" class="text-xs font-semibold text-gray-300">Hide Border</label>
+      </div>
+      <button id="deleteBtn" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition text-sm font-semibold">
         Delete Field
       </button>
     </div>
@@ -895,7 +988,7 @@ function showProperties(field: FormField): void {
 
     const validateName = (newName: string): boolean => {
         if (!newName) {
-            nameError.textContent = getTranslations().formCreator.fieldNameEmpty
+            nameError.textContent = 'Field name cannot be empty'
             nameError.classList.remove('hidden')
             propName.classList.add('border-red-500')
             return false
@@ -911,10 +1004,7 @@ function showProperties(field: FormField): void {
         const isDuplicateInPdf = existingFieldNames.has(newName)
 
         if (isDuplicateInFields || isDuplicateInPdf) {
-            const msg = isDuplicateInPdf 
-                ? getTranslations().formCreator.fieldNameDuplicatePdf.replace('{name}', newName)
-                : getTranslations().formCreator.fieldNameDuplicate.replace('{name}', newName)
-            nameError.textContent = msg
+            nameError.textContent = `Field name "${newName}" already exists in this ${isDuplicateInPdf ? 'PDF' : 'form'}. Please try using a unique name.`
             nameError.classList.remove('hidden')
             propName.classList.add('border-red-500')
             return false
@@ -977,6 +1067,17 @@ function showProperties(field: FormField): void {
 
     propReadOnly.addEventListener('change', (e) => {
         field.readOnly = (e.target as HTMLInputElement).checked
+    })
+
+    const propBorderColor = document.getElementById('propBorderColor') as HTMLInputElement
+    const propHideBorder = document.getElementById('propHideBorder') as HTMLInputElement
+
+    propBorderColor.addEventListener('input', (e) => {
+        field.borderColor = (e.target as HTMLInputElement).value
+    })
+
+    propHideBorder.addEventListener('change', (e) => {
+        field.hideBorder = (e.target as HTMLInputElement).checked
     })
 
     deleteBtn.addEventListener('click', () => {
@@ -1103,8 +1204,19 @@ function showProperties(field: FormField): void {
             propMultilineBtn.addEventListener('click', () => {
                 field.multiline = !field.multiline
 
-                // Update Toggle Button UI using form-toggle classes
-                propMultilineBtn.classList.toggle('active', field.multiline)
+                // Update Toggle Button UI
+                const span = propMultilineBtn.querySelector('span')
+                if (field.multiline) {
+                    propMultilineBtn.classList.remove('bg-gray-500')
+                    propMultilineBtn.classList.add('bg-indigo-600')
+                    span?.classList.remove('translate-x-0')
+                    span?.classList.add('translate-x-6')
+                } else {
+                    propMultilineBtn.classList.remove('bg-indigo-600')
+                    propMultilineBtn.classList.add('bg-gray-500')
+                    span?.classList.remove('translate-x-6')
+                    span?.classList.add('translate-x-0')
+                }
 
                 // Update Canvas UI
                 const fieldWrapper = document.getElementById(field.id)
@@ -1130,8 +1242,19 @@ function showProperties(field: FormField): void {
         propCheckedBtn.addEventListener('click', () => {
             field.checked = !field.checked
 
-            // Update Toggle Button UI using form-toggle classes
-            propCheckedBtn.classList.toggle('active', field.checked)
+            // Update Toggle Button UI
+            const span = propCheckedBtn.querySelector('span')
+            if (field.checked) {
+                propCheckedBtn.classList.remove('bg-gray-500')
+                propCheckedBtn.classList.add('bg-indigo-600')
+                span?.classList.remove('translate-x-0')
+                span?.classList.add('translate-x-6')
+            } else {
+                propCheckedBtn.classList.remove('bg-indigo-600')
+                propCheckedBtn.classList.add('bg-gray-500')
+                span?.classList.remove('translate-x-6')
+                span?.classList.add('translate-x-0')
+            }
 
             // Update Canvas UI
             const fieldWrapper = document.getElementById(field.id)
@@ -1295,7 +1418,7 @@ document.addEventListener('keydown', (e) => {
         deleteField(selectedField)
     } else if (e.key === 'Escape' && selectedToolType) {
         // Cancel tool selection
-        toolItems.forEach(item => item.classList.remove('selected'))
+        toolItems.forEach(item => item.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-600'))
         selectedToolType = null
         canvas.style.cursor = 'default'
     }
@@ -1339,8 +1462,8 @@ downloadBtn.addEventListener('click', async () => {
     if (conflictsWithPdf.length > 0) {
         const conflictList = [...new Set(conflictsWithPdf)].map(name => `"${name}"`).join(', ')
         showModal(
-            getTranslations().formCreator.fieldConflictTitle,
-            getTranslations().formCreator.fieldConflictMsg.replace('{names}', conflictList),
+            'Field Name Conflict',
+            `The following field names already exist in the uploaded PDF: ${conflictList}. Please rename these fields before downloading.`,
             'error'
         )
         return
@@ -1349,20 +1472,20 @@ downloadBtn.addEventListener('click', async () => {
     if (duplicates.length > 0) {
         const duplicateList = duplicates.map(name => `"${name}"`).join(', ')
         showModal(
-            getTranslations().formCreator.duplicateFieldNamesTitle,
-            getTranslations().formCreator.duplicateFieldNamesMsg.replace('{names}', duplicateList),
+            'Duplicate Field Names',
+            `The following field names are used more than once: ${duplicateList}. Please rename these fields to use unique names before downloading.`,
             'error'
         )
         return
     }
 
     if (fields.length === 0) {
-        alert(getTranslations().formCreator.noFieldsDownload)
+        alert('Please add at least one field before downloading.')
         return
     }
 
     if (pages.length === 0) {
-        alert(getTranslations().formCreator.noPages)
+        alert('No pages found. Please create a blank PDF or upload one.')
         return
     }
 
@@ -1385,7 +1508,7 @@ downloadBtn.addEventListener('click', async () => {
 
         // Set document metadata for accessibility
         pdfDoc.setTitle('Fillable Form')
-        pdfDoc.setAuthor('PDF-Tools')
+        pdfDoc.setAuthor('BentoPDF')
         pdfDoc.setLanguage('en-US')
 
         const radioGroups = new Map<string, any>() // Track created radio groups
@@ -1418,14 +1541,15 @@ downloadBtn.addEventListener('click', async () => {
             if (field.type === 'text') {
                 const textField = form.createTextField(field.name)
                 const rgbColor = hexToRgb(field.textColor)
+                const borderRgb = hexToRgb(field.borderColor || '#000000')
 
                 textField.addToPage(pdfPage, {
                     x: x,
                     y: y,
                     width: width,
                     height: height,
-                    borderWidth: 1,
-                    borderColor: rgb(0, 0, 0),
+                    borderWidth: field.hideBorder ? 0 : 1,
+                    borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
                     backgroundColor: rgb(1, 1, 1),
                     textColor: rgb(rgbColor.r, rgbColor.g, rgbColor.b),
                 })
@@ -1468,13 +1592,14 @@ downloadBtn.addEventListener('click', async () => {
 
             } else if (field.type === 'checkbox') {
                 const checkBox = form.createCheckBox(field.name)
+                const borderRgb = hexToRgb(field.borderColor || '#000000')
                 checkBox.addToPage(pdfPage, {
                     x: x,
                     y: y,
                     width: width,
                     height: height,
-                    borderWidth: 1,
-                    borderColor: rgb(0, 0, 0),
+                    borderWidth: field.hideBorder ? 0 : 1,
+                    borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
                     backgroundColor: rgb(1, 1, 1),
                 })
                 if (field.checked) checkBox.check()
@@ -1506,13 +1631,14 @@ downloadBtn.addEventListener('click', async () => {
                     }
                 }
 
+                const borderRgb = hexToRgb(field.borderColor || '#000000')
                 radioGroup.addOptionToPage(field.exportValue || 'Yes', pdfPage as any, {
                     x: x,
                     y: y,
                     width: width,
                     height: height,
-                    borderWidth: 1,
-                    borderColor: rgb(0, 0, 0),
+                    borderWidth: field.hideBorder ? 0 : 1,
+                    borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
                     backgroundColor: rgb(1, 1, 1),
                 })
                 if (field.checked) radioGroup.select(field.exportValue || 'Yes')
@@ -1526,13 +1652,14 @@ downloadBtn.addEventListener('click', async () => {
 
             } else if (field.type === 'dropdown') {
                 const dropdown = form.createDropdown(field.name)
+                const borderRgb = hexToRgb(field.borderColor || '#000000')
                 dropdown.addToPage(pdfPage, {
                     x: x,
                     y: y,
                     width: width,
                     height: height,
-                    borderWidth: 1,
-                    borderColor: rgb(0, 0, 0),
+                    borderWidth: field.hideBorder ? 0 : 1,
+                    borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
                     backgroundColor: rgb(1, 1, 1), // Light blue not supported in standard PDF appearance easily without streams
                 })
                 if (field.options) dropdown.setOptions(field.options)
@@ -1555,13 +1682,14 @@ downloadBtn.addEventListener('click', async () => {
 
             } else if (field.type === 'optionlist') {
                 const optionList = form.createOptionList(field.name)
+                const borderRgb = hexToRgb(field.borderColor || '#000000')
                 optionList.addToPage(pdfPage, {
                     x: x,
                     y: y,
                     width: width,
                     height: height,
-                    borderWidth: 1,
-                    borderColor: rgb(0, 0, 0),
+                    borderWidth: field.hideBorder ? 0 : 1,
+                    borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
                     backgroundColor: rgb(1, 1, 1),
                 })
                 if (field.options) optionList.setOptions(field.options)
@@ -1584,13 +1712,14 @@ downloadBtn.addEventListener('click', async () => {
 
             } else if (field.type === 'button') {
                 const button = form.createButton(field.name)
+                const borderRgb = hexToRgb(field.borderColor || '#000000')
                 button.addToPage(field.label || 'Button', pdfPage, {
                     x: x,
                     y: y,
                     width: width,
                     height: height,
-                    borderWidth: 1,
-                    borderColor: rgb(0, 0, 0),
+                    borderWidth: field.hideBorder ? 0 : 1,
+                    borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
                     backgroundColor: rgb(0.8, 0.8, 0.8), // Light gray
                 })
 
@@ -1804,14 +1933,10 @@ downloadBtn.addEventListener('click', async () => {
 
         const pdfBytes = await pdfDoc.save()
         const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
-        
-        // Save form state to localStorage before download
-        saveFormState(pdfBytes)
-        
         downloadFile(blob, 'fillable-form.pdf')
-        showModal(getTranslations().formCreator.success, getTranslations().formCreator.downloadSuccess, 'info', () => {
+        showModal('Success', 'Your PDF has been downloaded successfully.', 'info', () => {
             resetToInitial()
-        }, getTranslations().formCreator.close)
+        }, 'Okay')
     } catch (error) {
         console.error('Error generating PDF:', error)
         const errorMessage = (error as Error).message
@@ -1825,32 +1950,19 @@ downloadBtn.addEventListener('click', async () => {
             if (existingRadioGroups.has(fieldName)) {
                 console.log(`Adding to existing radio group: ${fieldName}`)
             } else {
-                showModal(getTranslations().formCreator.duplicateFieldName, getTranslations().formCreator.duplicateFieldMsg.replace('{fieldName}', fieldName), 'error')
+                showModal('Duplicate Field Name', `A field named "${fieldName}" already exists. Please rename this field to use a unique name before downloading.`, 'error')
             }
         } else {
-            showModal(getTranslations().formCreator.errorTitle, getTranslations().formCreator.errorGeneratingPdf + errorMessage, 'error')
+            showModal('Error', 'Error generating PDF: ' + errorMessage, 'error')
         }
     }
-})
-
-// Save form button - saves current form state to browser storage without downloading
-saveBtn.addEventListener('click', () => {
-    // Check if there are any fields to save
-    if (fields.length === 0) {
-        showModal(getTranslations().formCreator.noFieldsTitle, getTranslations().formCreator.noFieldsMessage, 'warning')
-        return
-    }
-
-    // Save the current form state
-    saveFormState(originalPdfBytes ?? undefined)
-    showModal(getTranslations().formCreator.formSaved, getTranslations().formCreator.formSavedMessage, 'info')
 })
 
 // Back to tools button
 const backToToolsBtns = document.querySelectorAll('[id^="back-to-tools"]') as NodeListOf<HTMLButtonElement>
 backToToolsBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        window.location.href = '/'
+        window.location.href = import.meta.env.BASE_URL
     })
 })
 
@@ -1892,8 +2004,6 @@ function resetToInitial(): void {
     pages = []
     currentPageIndex = 0
     uploadedPdfDoc = null
-    uploadedPdfjsDoc = null
-    originalPdfBytes = null
     selectedField = null
 
     canvas.innerHTML = ''
@@ -1955,7 +2065,7 @@ async function renderCanvas(): Promise<void> {
             const blobUrl = URL.createObjectURL(blob)
 
             const iframe = document.createElement('iframe')
-            iframe.src = `/pdfjs-viewer/viewer.html?file=${encodeURIComponent(blobUrl)}#page=${currentPageIndex + 1}&toolbar=0`
+            iframe.src = `${import.meta.env.BASE_URL}pdfjs-viewer/viewer.html?file=${encodeURIComponent(blobUrl)}#page=${currentPageIndex + 1}&toolbar=0`
             iframe.style.width = '100%'
             iframe.style.height = `${canvasHeight}px`
             iframe.style.border = 'none'
@@ -2142,10 +2252,6 @@ confirmBlankBtn.addEventListener('click', () => {
 async function handlePdfUpload(file: File) {
     try {
         const arrayBuffer = await file.arrayBuffer()
-        
-        // Store original PDF bytes for restoration (before any modifications)
-        originalPdfBytes = new Uint8Array(arrayBuffer)
-        
         uploadedPdfDoc = await PDFDocument.load(arrayBuffer)
 
         // Check for existing fields and update counter
@@ -2212,7 +2318,7 @@ async function handlePdfUpload(file: File) {
         setTimeout(() => createIcons({ icons }), 100)
     } catch (error) {
         console.error('Error loading PDF:', error)
-        showModal(getTranslations().formCreator.errorTitle, getTranslations().formCreator.errorLoadingPdf, 'error')
+        showModal('Error', 'Error loading PDF file. Please try again with a valid PDF.', 'error')
     }
 }
 
@@ -2236,7 +2342,7 @@ addPageBtn.addEventListener('click', () => {
 
 resetBtn.addEventListener('click', () => {
     if (fields.length > 0 || pages.length > 0) {
-        if (confirm(getTranslations().formCreator.resetConfirm)) {
+        if (confirm('Are you sure you want to reset? All your work will be lost.')) {
             resetToInitial()
         }
     } else {
@@ -2252,12 +2358,12 @@ const errorModalClose = document.getElementById('errorModalClose')
 
 let modalCloseCallback: (() => void) | null = null
 
-function showModal(title: string, message: string, type: 'error' | 'warning' | 'info' = 'error', onClose?: () => void, buttonText?: string) {
+function showModal(title: string, message: string, type: 'error' | 'warning' | 'info' = 'error', onClose?: () => void, buttonText: string = 'Close') {
     if (!errorModal || !errorModalTitle || !errorModalMessage || !errorModalClose) return
 
     errorModalTitle.textContent = title
     errorModalMessage.textContent = message
-    errorModalClose.textContent = buttonText || getTranslations().formCreator.close
+    errorModalClose.textContent = buttonText
 
     modalCloseCallback = onClose || null
     errorModal.classList.remove('hidden')
@@ -2286,342 +2392,4 @@ if (errorModal) {
     })
 }
 
-// Save form state to localStorage
-function saveFormState(_pdfBytes?: Uint8Array, formName?: string): void {
-    try {
-        // Generate unique ID for the form
-        const formId = `form_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-        
-        const state: SavedFormState = {
-            id: formId,
-            name: formName || generateFormName(),
-            fields: fields,
-            pages: pages.map(p => ({ index: p.index, width: p.width, height: p.height })),
-            pageSize: pageSize,
-            timestamp: Date.now(),
-        }
-        
-        // Store the ORIGINAL PDF bytes (without added fields) for restoration
-        // This prevents duplicate fields when restoring
-        if (originalPdfBytes) {
-            const base64 = btoa(String.fromCharCode(...originalPdfBytes))
-            state.pdfBase64 = base64
-        }
-        
-        // Save the full form state with its ID
-        localStorage.setItem(`${FORM_STORAGE_KEY}_${formId}`, JSON.stringify(state))
-        
-        // Also save as "last form" for backwards compatibility
-        localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(state))
-        
-        // Update recent forms list
-        addToRecentForms({
-            id: formId,
-            name: state.name || 'Untitled Form',
-            timestamp: state.timestamp,
-            fieldCount: fields.length,
-            pageCount: pages.length,
-        })
-        
-        console.log('Form state saved to localStorage')
-    } catch (error) {
-        console.warn('Failed to save form state to localStorage:', error)
-    }
-}
-
-// Generate a form name based on content
-function generateFormName(): string {
-    const now = new Date()
-    const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
-    return `Form ${dateStr} ${timeStr}`
-}
-
-// Add form to recent forms list
-function addToRecentForms(entry: RecentFormEntry): void {
-    try {
-        const recent = getRecentForms()
-        
-        // Remove existing entry with same ID if exists
-        const filtered = recent.filter(f => f.id !== entry.id)
-        
-        // Add new entry at the beginning
-        filtered.unshift(entry)
-        
-        // Keep only last MAX_RECENT_FORMS
-        const trimmed = filtered.slice(0, MAX_RECENT_FORMS)
-        
-        localStorage.setItem(RECENT_FORMS_KEY, JSON.stringify(trimmed))
-        
-        // Update the UI
-        updateRecentFormsUI()
-    } catch (error) {
-        console.warn('Failed to update recent forms list:', error)
-    }
-}
-
-// Get recent forms list
-function getRecentForms(): RecentFormEntry[] {
-    try {
-        const stored = localStorage.getItem(RECENT_FORMS_KEY)
-        if (stored) {
-            return JSON.parse(stored)
-        }
-    } catch (error) {
-        console.warn('Failed to read recent forms:', error)
-    }
-    return []
-}
-
-// Get a specific form by ID
-function getFormById(formId: string): SavedFormState | null {
-    try {
-        const stored = localStorage.getItem(`${FORM_STORAGE_KEY}_${formId}`)
-        if (stored) {
-            return JSON.parse(stored)
-        }
-    } catch (error) {
-        console.warn('Failed to read form:', error)
-    }
-    return null
-}
-
-// Delete a form from recent forms
-function deleteRecentForm(formId: string): void {
-    try {
-        // Remove from recent forms list
-        const recent = getRecentForms()
-        const filtered = recent.filter(f => f.id !== formId)
-        localStorage.setItem(RECENT_FORMS_KEY, JSON.stringify(filtered))
-        
-        // Remove the form data
-        localStorage.removeItem(`${FORM_STORAGE_KEY}_${formId}`)
-        
-        // Also check if the legacy "last form" matches this ID and remove it
-        const legacy = localStorage.getItem(FORM_STORAGE_KEY)
-        if (legacy) {
-            try {
-                const parsed = JSON.parse(legacy)
-                if (parsed.id === formId || formId.includes('_migrated')) {
-                    localStorage.removeItem(FORM_STORAGE_KEY)
-                }
-            } catch { /* ignore parse errors */ }
-        }
-        
-        // Update UI
-        updateRecentFormsUI()
-    } catch (error) {
-        console.warn('Failed to delete form:', error)
-    }
-}
-
-// Update the recent forms UI
-function updateRecentFormsUI(): void {
-    const container = document.getElementById('recent-forms-container')
-    const list = document.getElementById('recent-forms-list')
-    
-    if (!container || !list) return
-    
-    const recent = getRecentForms()
-    
-    if (recent.length === 0) {
-        container.classList.add('hidden')
-        return
-    }
-    
-    container.classList.remove('hidden')
-    
-    // Build the list HTML
-    list.innerHTML = recent.map(form => {
-        const date = new Date(form.timestamp)
-        const dateStr = date.toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        })
-        
-        return `
-            <div class="recent-form-item group flex items-center justify-between p-3 bg-gray-700/50 hover:bg-gray-600/50 rounded-lg border border-gray-600/50 transition-colors cursor-pointer" data-form-id="${form.id}">
-                <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <div class="w-10 h-10 bg-gray-600/50 rounded-lg flex items-center justify-center text-gray-400">
-                        <i data-lucide="file-text" class="w-5 h-5"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="font-medium text-white truncate">${escapeHtml(form.name)}</div>
-                        <div class="text-xs text-gray-400">${dateStr} • ${form.fieldCount} fields • ${form.pageCount} page${form.pageCount !== 1 ? 's' : ''}</div>
-                    </div>
-                </div>
-                <button class="delete-form-btn opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-400 transition-all" data-form-id="${form.id}" title="Delete">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-            </div>
-        `
-    }).join('')
-    
-    // Re-create icons
-    createIcons({ icons })
-    
-    // Add click handlers for form items
-    list.querySelectorAll('.recent-form-item').forEach(item => {
-        item.addEventListener('click', async (e) => {
-            const target = e.target as HTMLElement
-            // Don't open if clicking delete button
-            if (target.closest('.delete-form-btn')) return
-            
-            const formId = (item as HTMLElement).dataset.formId
-            if (formId) {
-                await loadRecentForm(formId)
-            }
-        })
-    })
-    
-    // Add click handlers for delete buttons
-    list.querySelectorAll('.delete-form-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation()
-            const formId = (btn as HTMLElement).dataset.formId
-            if (formId) {
-                deleteRecentForm(formId)
-            }
-        })
-    })
-}
-
-// Escape HTML to prevent XSS
-function escapeHtml(text: string): string {
-    const div = document.createElement('div')
-    div.textContent = text
-    return div.innerHTML
-}
-
-// Load a recent form
-async function loadRecentForm(formId: string): Promise<void> {
-    const formData = getFormById(formId)
-    if (formData) {
-        await restoreFormState(formData)
-    } else {
-        // Try loading from legacy storage
-        const legacy = localStorage.getItem(FORM_STORAGE_KEY)
-        if (legacy) {
-            const parsed = JSON.parse(legacy)
-            await restoreFormState(parsed)
-        } else {
-            showModal(getTranslations().formCreator.errorTitle, getTranslations().formCreator.formNotFound, 'error')
-        }
-    }
-}
-
-// Restore form state from localStorage
-async function restoreFormState(savedData: SavedFormState): Promise<void> {
-    try {
-        // Clear any existing field DOM elements first
-        canvas.querySelectorAll('.field-wrapper').forEach(el => el.remove())
-        
-        // If we have the PDF bytes, load that as the base
-        if (savedData.pdfBase64) {
-            const binaryString = atob(savedData.pdfBase64)
-            const bytes = new Uint8Array(binaryString.length)
-            for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i)
-            }
-            
-            // Store as original PDF bytes for future saves
-            originalPdfBytes = bytes
-            
-            // Load the PDF
-            uploadedPdfDoc = await PDFDocument.load(bytes)
-            uploadedPdfjsDoc = await pdfjsLib.getDocument({ data: bytes }).promise
-            
-            // Initialize pages from the loaded PDF
-            const numPages = uploadedPdfDoc.getPageCount()
-            pages = []
-            for (let i = 0; i < numPages; i++) {
-                const page = uploadedPdfDoc.getPage(i)
-                const { width, height } = page.getSize()
-                pages.push({ index: i, width, height })
-            }
-            
-            // Set page size from first page
-            if (pages.length > 0) {
-                pageSize = { width: pages[0].width, height: pages[0].height }
-            }
-        } else {
-            // Use saved page data for blank PDF
-            pageSize = savedData.pageSize
-            pages = savedData.pages.map(p => ({ index: p.index, width: p.width, height: p.height }))
-        }
-        
-        // Restore fields
-        fields = savedData.fields
-        fieldCounter = Math.max(...fields.map(f => parseInt(f.id.replace('field_', '')) || 0), 0) + 1
-        
-        // Show tool container and render
-        uploadArea.classList.add('hidden')
-        toolContainer.classList.remove('hidden')
-        
-        currentPageIndex = 0
-        await renderCanvas() // This will render fields for current page
-        updatePageNavigation()
-        updateFieldCount()
-        
-        showModal(getTranslations().formCreator.formRestored, getTranslations().formCreator.formRestoredMsg, 'info', undefined, getTranslations().formCreator.continue)
-    } catch (error) {
-        console.error('Failed to restore form state:', error)
-        showModal(getTranslations().formCreator.restoreFailed, getTranslations().formCreator.restoreFailedMsg, 'error')
-    }
-}
-
-// Listen for resume form event from the page script
-window.addEventListener('pdftools:resume-form', async (e: Event) => {
-    const customEvent = e as CustomEvent<SavedFormState>
-    if (customEvent.detail) {
-        await restoreFormState(customEvent.detail)
-    }
-})
-
-// Migrate legacy saved form to recent forms (one-time migration)
-function migrateLegacyForm(): void {
-    try {
-        const recent = getRecentForms()
-        // Only migrate if recent forms is empty
-        if (recent.length > 0) return
-        
-        const legacy = localStorage.getItem(FORM_STORAGE_KEY)
-        if (legacy) {
-            const parsed: SavedFormState = JSON.parse(legacy)
-            // Only migrate if it's an old-style form (no ID) and has fields
-            if (!parsed.id && parsed.fields && parsed.fields.length > 0) {
-                const formId = `form_${parsed.timestamp}_migrated`
-                parsed.id = formId
-                parsed.name = generateFormName()
-                
-                // Save with new format
-                localStorage.setItem(`${FORM_STORAGE_KEY}_${formId}`, JSON.stringify(parsed))
-                
-                // Add to recent forms
-                addToRecentForms({
-                    id: formId,
-                    name: parsed.name,
-                    timestamp: parsed.timestamp,
-                    fieldCount: parsed.fields.length,
-                    pageCount: parsed.pages.length,
-                })
-                
-                // Clear legacy storage after migration to prevent re-migration
-                localStorage.removeItem(FORM_STORAGE_KEY)
-                
-                console.log('Migrated legacy form to recent forms')
-            }
-        }
-    } catch (error) {
-        console.warn('Failed to migrate legacy form:', error)
-    }
-}
-
-// Initialize recent forms UI on page load
-migrateLegacyForm()
-updateRecentFormsUI()
-
 initializeGlobalShortcuts()
-
