@@ -203,7 +203,7 @@ function hideElement(id: string): void {
 
 /**
  * Apply simple mode - shows only the search bar and tools grid
- * Hides hero, features, header elements, and non-essential sections
+ * Hides header, footer, hero, features, and non-essential sections
  */
 function applySimpleMode(): void {
   // Add a class to body for CSS-based hiding (more reliable)
@@ -217,7 +217,8 @@ function applySimpleMode(): void {
     'security-compliance-section',
     'faq-accordion',
     'testimonials-section',
-    'support-section'
+    'support-section',
+    'donation-ribbon'      // Donation ribbon if present
   ];
   
   sectionsToHide.forEach(id => {
@@ -228,6 +229,20 @@ function applySimpleMode(): void {
     } else {
       console.log('[BentoPDF Config] Section not found:', id);
     }
+  });
+  
+  // Hide navigation header
+  const allNavs = document.querySelectorAll('nav');
+  allNavs.forEach(nav => {
+    (nav as HTMLElement).style.display = 'none';
+    console.log('[BentoPDF Config] Hidden nav element');
+  });
+  
+  // Hide footer
+  const allFooters = document.querySelectorAll('footer');
+  allFooters.forEach(footer => {
+    (footer as HTMLElement).style.display = 'none';
+    console.log('[BentoPDF Config] Hidden footer element');
   });
   
   // Also hide all section dividers

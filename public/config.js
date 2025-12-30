@@ -25,10 +25,11 @@ window.PDFTOOLS_CONFIG = {
 
   // ===== SIMPLE MODE / MINIMAL VIEW =====
   // Set simpleMode to true for a minimal interface showing only
-  // the search bar and tool grid (no hero, features, FAQ, etc.)
+  // the search bar and tool grid (hides header, footer, hero, etc.)
   simpleMode: false,               // *** SIMPLE MODE TOGGLE ***
-                                   // Set to true to hide: hero section, tools header,
-                                   // features, security, FAQ, testimonials, support sections
+                                   // Set to true to hide: navigation header, footer,
+                                   // hero section, tools header, features, security,
+                                   // FAQ, testimonials, support sections
                                    // Creates a minimal view showing only the tool grid
 
   // UI feature toggles
