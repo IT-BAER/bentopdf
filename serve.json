@@ -1,9 +1,11 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
-    { "source": "/en/:path*", "destination": "/:path" },
-    { "source": "/de/:path*", "destination": "/:path" },
-    { "source": "/zh/:path*", "destination": "/:path" },
-    { "source": "/vi/:path*", "destination": "/:path" },
+    { "source": "/en/:path", "destination": "/:path.html" },
+    { "source": "/de/:path", "destination": "/:path.html" },
+    { "source": "/zh/:path", "destination": "/:path.html" },
+    { "source": "/vi/:path", "destination": "/:path.html" },
     { "source": "/en", "destination": "/index.html" },
     { "source": "/de", "destination": "/index.html" },
     { "source": "/zh", "destination": "/index.html" },
