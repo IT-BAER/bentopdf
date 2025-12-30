@@ -17,6 +17,12 @@
   <link href="src/css/styles.css" rel="stylesheet" />
   <!-- Configuration must load first (blocking) - before any other scripts -->
   <script src="/config.js"></script>
+  <!-- Immediately apply simpleMode class to prevent flash of unstyled content -->
+  <script>
+    if (window.PDFTOOLS_CONFIG && window.PDFTOOLS_CONFIG.simpleMode) {
+      document.documentElement.classList.add('simple-mode');
+    }
+  </script>
 </head>
 
 <body class="antialiased">

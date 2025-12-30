@@ -11,6 +11,12 @@
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link href="/src/css/styles.css" rel="stylesheet" />
 <script src="/config.js"></script>
+  <!-- Immediately apply simpleMode class to prevent flash of unstyled content -->
+  <script>
+    if (window.PDFTOOLS_CONFIG && window.PDFTOOLS_CONFIG.simpleMode) {
+      document.documentElement.classList.add('simple-mode');
+    }
+  </script>
 </head>
 
 <body class="antialiased bg-gray-900 text-gray-300">

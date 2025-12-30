@@ -65,6 +65,19 @@
 }
 
 /* Simple mode - hide hero and marketing sections via config.js simpleMode: true */
+/* Applied to html element in head before body renders to prevent flash */
+html.simple-mode nav,
+html.simple-mode footer,
+html.simple-mode #hero-section,
+html.simple-mode #tools-header,
+html.simple-mode #features-section,
+html.simple-mode #security-compliance-section,
+html.simple-mode #faq-accordion,
+html.simple-mode #testimonials-section,
+html.simple-mode #support-section,
+html.simple-mode #donation-ribbon,
+html.simple-mode .section-divider,
+html.simple-mode .hide-section,
 body.simple-mode nav,
 body.simple-mode footer,
 body.simple-mode #hero-section,
@@ -80,6 +93,7 @@ body.simple-mode .hide-section {
   display: none !important;
 }
 
+html.simple-mode #app,
 body.simple-mode #app {
   padding-top: 1rem;
 }

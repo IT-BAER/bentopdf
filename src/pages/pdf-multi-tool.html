@@ -42,6 +42,12 @@
     }
   </style>
 <script src="/config.js"></script>
+  <!-- Immediately apply simpleMode class to prevent flash of unstyled content -->
+  <script>
+    if (window.PDFTOOLS_CONFIG && window.PDFTOOLS_CONFIG.simpleMode) {
+      document.documentElement.classList.add('simple-mode');
+    }
+  </script>
 
 <body class="antialiased bg-gray-900 h-[100dvh] overflow-hidden flex flex-col">
 
