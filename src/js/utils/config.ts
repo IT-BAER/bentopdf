@@ -18,8 +18,7 @@ declare global {
       forceAccentColor?: boolean;
 
       // Feature toggles
-      showHeader?: boolean;
-      showHero?: boolean;
+      simpleMode?: boolean; // Single toggle for minimal/simple UI mode
       showColorPicker?: boolean;
       showThemeToggle?: boolean;
       showLanguageSelector?: boolean;
@@ -36,8 +35,7 @@ export interface PDFToolsConfig {
   faviconUrl: string | null;
   defaultAccentColor: string;
   forceAccentColor: boolean;
-  showHeader: boolean;
-  showHero: boolean;
+  simpleMode: boolean;
   showColorPicker: boolean;
   showThemeToggle: boolean;
   showLanguageSelector: boolean;
@@ -50,8 +48,7 @@ const DEFAULT_CONFIG: PDFToolsConfig = {
   faviconUrl: null,
   defaultAccentColor: '#6366f1',
   forceAccentColor: false,
-  showHeader: true,
-  showHero: true,
+  simpleMode: false,
   showColorPicker: true,
   showThemeToggle: true,
   showLanguageSelector: true,
@@ -70,8 +67,7 @@ export function getConfig(): PDFToolsConfig {
     faviconUrl: windowConfig.faviconUrl ?? DEFAULT_CONFIG.faviconUrl,
     defaultAccentColor: windowConfig.defaultAccentColor ?? DEFAULT_CONFIG.defaultAccentColor,
     forceAccentColor: windowConfig.forceAccentColor ?? DEFAULT_CONFIG.forceAccentColor,
-    showHeader: windowConfig.showHeader ?? DEFAULT_CONFIG.showHeader,
-    showHero: windowConfig.showHero ?? DEFAULT_CONFIG.showHero,
+    simpleMode: windowConfig.simpleMode ?? DEFAULT_CONFIG.simpleMode,
     showColorPicker: windowConfig.showColorPicker ?? DEFAULT_CONFIG.showColorPicker,
     showThemeToggle: windowConfig.showThemeToggle ?? DEFAULT_CONFIG.showThemeToggle,
     showLanguageSelector: windowConfig.showLanguageSelector ?? DEFAULT_CONFIG.showLanguageSelector,
@@ -88,19 +84,12 @@ export function applyBrandingConfig(): void {
   
   // Debug logging
   console.log('[BentoPDF Config] Applying branding config:', config);
-  console.log('[BentoPDF Config] showHeader:', config.showHeader);
-  console.log('[BentoPDF Config] showHero:', config.showHero);
+  console.log('[BentoPDF Config] simpleMode:', config.simpleMode);
 
-  // Hide header completely if configured
-  if (!config.showHeader) {
-    console.log('[BentoPDF Config] Hiding header...');
-    hideHeader();
-  }
-
-  // Hide hero section if configured
-  if (!config.showHero) {
-    console.log('[BentoPDF Config] Hiding hero section...');
-    hideHeroSection();
+  // Apply simple mode - hides hero, header, and non-essential sections
+  if (config.simpleMode) {
+    console.log('[BentoPDF Config] Enabling simple mode...');
+    applySimpleMode();
   }
 
   // Apply app name to header and footer
@@ -213,32 +202,17 @@ function hideElement(id: string): void {
 }
 
 /**
- * Hide the navigation header completely
+ * Apply simple mode - shows only the search bar and tools grid
+ * Hides hero, features, header elements, and non-essential sections
  */
-function hideHeader(): void {
-  // Hide all nav elements
-  const allNavs = document.querySelectorAll('nav');
-  allNavs.forEach(nav => {
-    (nav as HTMLElement).style.display = 'none';
-  });
-  
-  // Also hide donation ribbon if present
-  const donationRibbon = document.getElementById('donation-ribbon');
-  if (donationRibbon) {
-    donationRibbon.style.display = 'none';
-  }
-}
-
-/**
- * Hide the hero section on the main page
- */
-function hideHeroSection(): void {
+function applySimpleMode(): void {
   // Add a class to body for CSS-based hiding (more reliable)
   document.body.classList.add('simple-mode');
   
-  // Also directly hide elements for immediate effect
+  // Sections to hide in simple mode
   const sectionsToHide = [
     'hero-section',
+    'tools-header',        // "Starten Sie mit Werkzeugen" header
     'features-section', 
     'security-compliance-section',
     'faq-accordion',
@@ -254,6 +228,12 @@ function hideHeroSection(): void {
     } else {
       console.log('[BentoPDF Config] Section not found:', id);
     }
+  });
+  
+  // Also hide all section dividers
+  const dividers = document.querySelectorAll('.section-divider');
+  dividers.forEach(divider => {
+    (divider as HTMLElement).style.display = 'none';
   });
   
   // Reduce top padding on app container

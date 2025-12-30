@@ -24,14 +24,14 @@ window.PDFTOOLS_CONFIG = {
   forceAccentColor: false,         // If true, locks accent color and hides the color picker
 
   // ===== SIMPLE MODE / MINIMAL VIEW =====
-  // Set showHero to false for a minimal interface showing only
+  // Set simpleMode to true for a minimal interface showing only
   // the search bar and tool grid (no hero, features, FAQ, etc.)
-  showHeader: true,                // Show/hide the entire navigation header
-                                   // Set to false to completely hide the top navbar
-  showHero: true,                  // *** SIMPLE MODE TOGGLE ***
-                                   // Set to false to hide: hero section, features,
-                                   // security, FAQ, testimonials, support sections
-                                   // This creates a minimal view with just tools
+  simpleMode: false,               // *** SIMPLE MODE TOGGLE ***
+                                   // Set to true to hide: hero section, tools header,
+                                   // features, security, FAQ, testimonials, support sections
+                                   // Creates a minimal view showing only the tool grid
+
+  // UI feature toggles
   showColorPicker: true,           // Show/hide the accent color picker in navbar
   showThemeToggle: true,           // Show/hide the dark/light theme toggle
   showLanguageSelector: true,      // Show/hide the language selector
