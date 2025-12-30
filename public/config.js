@@ -40,4 +40,16 @@ window.PDFTOOLS_CONFIG = {
   // Default language (en, de, zh, vi)
   defaultLanguage: null,           // null = use browser preference
                                    // or set 'en', 'de', 'zh', 'vi' to force a language
+
+  // ===== IFRAME EMBEDDING =====
+  // Configure which external domains can embed this application in an iframe.
+  // By default, only same-origin embedding is allowed (SAMEORIGIN).
+  // To allow external domains, add them to this array.
+  // 
+  // IMPORTANT: After changing this, run: ./generate-serve-config.sh
+  // Then restart the service: sudo systemctl restart pdf-tools
+  //
+  // Example: ['https://dash.example.com', 'https://portal.example.com']
+  allowedFrameOrigins: [],         // Empty = same-origin only (default)
+                                   // Add domains like: ['https://dash-neu.sms-group.at']
 };
