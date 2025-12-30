@@ -12,7 +12,18 @@
     <link rel="alternate" hreflang="de" href="/de/pdf-to-webp.html" />
     <link rel="alternate" hreflang="vi" href="/vi/pdf-to-webp.html" />
     <link rel="alternate" hreflang="x-default" href="/en/pdf-to-webp.html" />
-    <link href="/src/css/styles.css" rel="stylesheet" />
+    <!-- Critical CSS for simpleMode to prevent flash of unstyled content -->
+  <style>
+    html.simple-mode nav, html.simple-mode footer, html.simple-mode #hero-section,
+    html.simple-mode #tools-header, html.simple-mode #features-section,
+    html.simple-mode #security-compliance-section, html.simple-mode #faq-accordion,
+    html.simple-mode #testimonials-section, html.simple-mode #support-section,
+    html.simple-mode #donation-ribbon, html.simple-mode .section-divider {
+      display: none !important;
+    }
+    html.simple-mode #app { padding-top: 1rem; }
+  </style>
+  <link href="/src/css/styles.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
 <script src="/config.js"></script>
   <!-- Immediately apply simpleMode class to prevent flash of unstyled content -->

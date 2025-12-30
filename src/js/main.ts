@@ -486,8 +486,9 @@ const init = async () => {
   createIcons({ icons });
   console.log('Please share our tool and share the love!');
 
-  // Start background WASM preloading on all pages
-  startBackgroundPreload();
+  // DISABLED: Background WASM preloading - engines load on-demand when user opens a tool
+  // This prevents main thread blocking and improves initial page load performance
+  // startBackgroundPreload();
 
 
   const githubStarsElements = [

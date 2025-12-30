@@ -8,6 +8,17 @@
   <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link rel="apple-touch-icon" href="/images/favicon.png" />
+  <!-- Critical CSS for simpleMode - must be inline to prevent flash of unstyled content -->
+  <style>
+    html.simple-mode nav, html.simple-mode footer, html.simple-mode #hero-section,
+    html.simple-mode #tools-header, html.simple-mode #features-section,
+    html.simple-mode #security-compliance-section, html.simple-mode #faq-accordion,
+    html.simple-mode #testimonials-section, html.simple-mode #support-section,
+    html.simple-mode #donation-ribbon, html.simple-mode .section-divider {
+      display: none !important;
+    }
+    html.simple-mode #app { padding-top: 1rem; }
+  </style>
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="alternate" hreflang="en" href="/en/contact.html" />
   <link rel="alternate" hreflang="de" href="/de/contact.html" />
