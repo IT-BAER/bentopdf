@@ -85,14 +85,21 @@ export function getConfig(): PDFToolsConfig {
  */
 export function applyBrandingConfig(): void {
   const config = getConfig();
+  
+  // Debug logging
+  console.log('[BentoPDF Config] Applying branding config:', config);
+  console.log('[BentoPDF Config] showHeader:', config.showHeader);
+  console.log('[BentoPDF Config] showHero:', config.showHero);
 
   // Hide header completely if configured
   if (!config.showHeader) {
+    console.log('[BentoPDF Config] Hiding header...');
     hideHeader();
   }
 
   // Hide hero section if configured
   if (!config.showHero) {
+    console.log('[BentoPDF Config] Hiding hero section...');
     hideHeroSection();
   }
 
@@ -226,41 +233,28 @@ function hideHeader(): void {
  * Hide the hero section on the main page
  */
 function hideHeroSection(): void {
-  // Hide hero section
-  const heroSection = document.getElementById('hero-section');
-  if (heroSection) {
-    heroSection.style.display = 'none';
-  }
+  // Add a class to body for CSS-based hiding (more reliable)
+  document.body.classList.add('simple-mode');
   
-  // Hide features section
-  const featuresSection = document.getElementById('features-section');
-  if (featuresSection) {
-    featuresSection.style.display = 'none';
-  }
+  // Also directly hide elements for immediate effect
+  const sectionsToHide = [
+    'hero-section',
+    'features-section', 
+    'security-compliance-section',
+    'faq-accordion',
+    'testimonials-section',
+    'support-section'
+  ];
   
-  // Hide security compliance section
-  const securitySection = document.getElementById('security-compliance-section');
-  if (securitySection) {
-    securitySection.style.display = 'none';
-  }
-  
-  // Hide FAQ section
-  const faqSection = document.getElementById('faq-accordion');
-  if (faqSection) {
-    faqSection.style.display = 'none';
-  }
-  
-  // Hide testimonials section
-  const testimonialsSection = document.getElementById('testimonials-section');
-  if (testimonialsSection) {
-    testimonialsSection.style.display = 'none';
-  }
-  
-  // Hide support section
-  const supportSection = document.getElementById('support-section');
-  if (supportSection) {
-    supportSection.style.display = 'none';
-  }
+  sectionsToHide.forEach(id => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.style.display = 'none';
+      console.log('[BentoPDF Config] Hidden section:', id);
+    } else {
+      console.log('[BentoPDF Config] Section not found:', id);
+    }
+  });
   
   // Reduce top padding on app container
   const appContainer = document.getElementById('app');

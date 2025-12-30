@@ -64,6 +64,21 @@
   --gradient-end: #f1f5f9;
 }
 
+/* Simple mode - hide hero and marketing sections via config.js showHero: false */
+body.simple-mode #hero-section,
+body.simple-mode #features-section,
+body.simple-mode #security-compliance-section,
+body.simple-mode #faq-accordion,
+body.simple-mode #testimonials-section,
+body.simple-mode #support-section,
+body.simple-mode .hide-section {
+  display: none !important;
+}
+
+body.simple-mode #app {
+  padding-top: 1rem;
+}
+
 @theme {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-dancing: 'Dancing Script', cursive;
