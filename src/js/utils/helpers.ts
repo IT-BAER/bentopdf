@@ -69,7 +69,68 @@ export const formatBytes = (bytes: any, decimals = 1) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
-export const downloadFile = (blob: Blob, filename: string): void => {
+/**
+ * Get MIME type configuration for File System Access API
+ */
+const getMimeTypeConfig = (filename: string): { description: string; mimeType: string; extensions: string[] } => {
+  const ext = filename.split('.').pop()?.toLowerCase() || '';
+  
+  const mimeTypes: Record<string, { description: string; mimeType: string; extensions: string[] }> = {
+    'pdf': { description: 'PDF Document', mimeType: 'application/pdf', extensions: ['.pdf'] },
+    'zip': { description: 'ZIP Archive', mimeType: 'application/zip', extensions: ['.zip'] },
+    'jpg': { description: 'JPEG Image', mimeType: 'image/jpeg', extensions: ['.jpg', '.jpeg'] },
+    'jpeg': { description: 'JPEG Image', mimeType: 'image/jpeg', extensions: ['.jpg', '.jpeg'] },
+    'png': { description: 'PNG Image', mimeType: 'image/png', extensions: ['.png'] },
+    'webp': { description: 'WebP Image', mimeType: 'image/webp', extensions: ['.webp'] },
+    'svg': { description: 'SVG Image', mimeType: 'image/svg+xml', extensions: ['.svg'] },
+    'bmp': { description: 'BMP Image', mimeType: 'image/bmp', extensions: ['.bmp'] },
+    'tiff': { description: 'TIFF Image', mimeType: 'image/tiff', extensions: ['.tiff', '.tif'] },
+    'tif': { description: 'TIFF Image', mimeType: 'image/tiff', extensions: ['.tiff', '.tif'] },
+    'txt': { description: 'Text File', mimeType: 'text/plain', extensions: ['.txt'] },
+    'csv': { description: 'CSV File', mimeType: 'text/csv', extensions: ['.csv'] },
+    'json': { description: 'JSON File', mimeType: 'application/json', extensions: ['.json'] },
+    'docx': { description: 'Word Document', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', extensions: ['.docx'] },
+    'xlsx': { description: 'Excel Spreadsheet', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', extensions: ['.xlsx'] },
+    'md': { description: 'Markdown File', mimeType: 'text/markdown', extensions: ['.md'] },
+  };
+  
+  return mimeTypes[ext] || { description: 'File', mimeType: 'application/octet-stream', extensions: [`.${ext}`] };
+};
+
+/**
+ * Download a file with optional "Save As" dialog
+ * Uses File System Access API on supported browsers (Chrome, Edge, Opera)
+ * Falls back to traditional download on unsupported browsers (Firefox, Safari)
+ */
+export const downloadFile = async (blob: Blob, filename: string): Promise<void> => {
+  // Check if File System Access API is available
+  if ('showSaveFilePicker' in window) {
+    try {
+      const config = getMimeTypeConfig(filename);
+      
+      const handle = await (window as any).showSaveFilePicker({
+        suggestedName: filename,
+        types: [{
+          description: config.description,
+          accept: { [config.mimeType]: config.extensions }
+        }]
+      });
+      
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      return;
+    } catch (err: any) {
+      // User cancelled the save dialog - don't fall back to automatic download
+      if (err.name === 'AbortError') {
+        return;
+      }
+      // For other errors, fall back to traditional download
+      console.warn('File System Access API failed, falling back to traditional download:', err);
+    }
+  }
+  
+  // Fallback for browsers that don't support File System Access API
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;

@@ -8,6 +8,10 @@
         "openMainMenu": "Hauptmenü öffnen",
         "language": "Sprache"
     },
+    "donation": {
+        "message": "Gefällt Ihnen BentoPDF? Helfen Sie uns, es kostenlos und Open Source zu halten!",
+        "button": "Spenden"
+    },
     "hero": {
         "title": "Das",
         "pdfToolkit": "PDF-Toolkit",
@@ -62,7 +66,11 @@
         "pdfOrImages": "PDFs oder Bilder",
         "filesNeverLeave": "Ihre Dateien verlassen nie Ihr Gerät.",
         "addMore": "Weitere Dateien hinzufügen",
-        "clearAll": "Alle löschen"
+        "clearAll": "Alle löschen",
+        "fileHint": "Eine oder mehrere Dateien",
+        "pdfOnly": "Nur PDF-Dateien",
+        "onePdfFile": "Eine PDF-Datei",
+        "oneOrMorePdfFiles": "Eine oder mehrere PDF-Dateien"
     },
     "loader": {
         "processing": "Verarbeitung..."
@@ -186,6 +194,7 @@
         "faqLink": "FAQ",
         "contactUs": "Kontakt",
         "legal": "Rechtliches",
+        "licensing": "Lizenzierung",
         "termsAndConditions": "Nutzungsbedingungen",
         "privacyPolicy": "Datenschutzrichtlinie",
         "followUs": "Folgen Sie uns"

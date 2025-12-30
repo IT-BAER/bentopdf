@@ -488,5 +488,33 @@
         "subtitle": "Text aus PDF-Dateien extrahieren und als Textdatei (.txt) speichern. Unterstützt mehrere Dateien.",
         "note": "Dieses Tool funktioniert NUR mit digital erstellten PDFs. Für gescannte Dokumente oder bildbasierte PDFs verwenden Sie stattdessen unser OCR PDF-Tool.",
         "convertButton": "Text extrahieren"
+    },
+    "pdfToWord": {
+        "name": "PDF zu Word",
+        "subtitle": "PDF-Dateien in bearbeitbare Word-Dokumente (DOCX) konvertieren."
+    },
+    "extractImages": {
+        "name": "Bilder extrahieren",
+        "subtitle": "Alle eingebetteten Bilder aus Ihren PDF-Dateien extrahieren."
+    },
+    "pdfToMarkdown": {
+        "name": "PDF zu Markdown",
+        "subtitle": "PDF-Text und Tabellen in Markdown-Format konvertieren."
+    },
+    "preparePdfForAi": {
+        "name": "PDF für KI vorbereiten",
+        "subtitle": "PDF-Inhalt als LlamaIndex JSON für RAG/LLM-Pipelines extrahieren."
+    },
+    "pdfOcg": {
+        "name": "PDF OCG (Ebenen)",
+        "subtitle": "OCG-Ebenen in Ihrer PDF anzeigen, umschalten, hinzufügen und löschen."
+    },
+    "pdfToPdfa": {
+        "name": "PDF zu PDF/A",
+        "subtitle": "PDF in PDF/A für Langzeitarchivierung konvertieren."
+    },
+    "rasterizePdf": {
+        "name": "PDF rastern",
+        "subtitle": "PDF in bildbasiertes PDF konvertieren. Ebenen reduzieren und auswählbaren Text entfernen."
     }
 }

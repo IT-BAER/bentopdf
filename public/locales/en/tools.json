@@ -488,5 +488,33 @@
         "subtitle": "Extract text from PDF files and save as plain text (.txt). Supports multiple files.",
         "note": "This tool works ONLY with digitally created PDFs. For scanned documents or image-based PDFs, use our OCR PDF tool instead.",
         "convertButton": "Extract Text"
+    },
+    "pdfToWord": {
+        "name": "PDF to Word",
+        "subtitle": "Convert PDF files to editable Word documents (DOCX)."
+    },
+    "extractImages": {
+        "name": "Extract Images",
+        "subtitle": "Extract all embedded images from your PDF files."
+    },
+    "pdfToMarkdown": {
+        "name": "PDF to Markdown",
+        "subtitle": "Convert PDF text and tables to Markdown format."
+    },
+    "preparePdfForAi": {
+        "name": "Prepare PDF for AI",
+        "subtitle": "Extract PDF content as LlamaIndex JSON for RAG/LLM pipelines."
+    },
+    "pdfOcg": {
+        "name": "PDF OCG (Layers)",
+        "subtitle": "View, toggle, add, and delete OCG layers in your PDF."
+    },
+    "pdfToPdfa": {
+        "name": "PDF to PDF/A",
+        "subtitle": "Convert PDF to PDF/A for long-term archiving."
+    },
+    "rasterizePdf": {
+        "name": "Rasterize PDF",
+        "subtitle": "Convert PDF to image-based PDF. Flatten layers and remove selectable text."
     }
 }
