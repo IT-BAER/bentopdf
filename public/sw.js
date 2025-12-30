@@ -4,8 +4,15 @@
  * Version: 1.0.1
  */
 
-const CACHE_VERSION = 'bentopdf-v6';
+const CACHE_VERSION = 'bentopdf-v7';
 const CACHE_NAME = `${CACHE_VERSION}-static`;
+
+// Files that should NEVER be cached by the service worker
+// config.js needs to always be fetched fresh to allow runtime configuration changes
+const NEVER_CACHE = [
+    '/config.js',
+    'config.js'
+];
 
 
 const getBasePath = () => {
@@ -87,6 +94,12 @@ self.addEventListener('fetch', (event) => {
 
     if (url.origin !== location.origin) {
         return;
+    }
+
+    // NEVER cache config.js - it should always be fetched fresh for runtime configuration
+    if (NEVER_CACHE.some(path => url.pathname.endsWith(path))) {
+        console.log('⚙️ [Config] Always fetch fresh:', url.pathname);
+        return; // Let browser handle normally (no caching)
     }
 
     if (url.searchParams.has('t') || url.searchParams.has('import') || url.searchParams.has('direct')) {
