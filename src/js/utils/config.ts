@@ -19,6 +19,7 @@ declare global {
 
       // Feature toggles
       showHeader?: boolean;
+      showHero?: boolean;
       showColorPicker?: boolean;
       showThemeToggle?: boolean;
       showLanguageSelector?: boolean;
@@ -36,6 +37,7 @@ export interface PDFToolsConfig {
   defaultAccentColor: string;
   forceAccentColor: boolean;
   showHeader: boolean;
+  showHero: boolean;
   showColorPicker: boolean;
   showThemeToggle: boolean;
   showLanguageSelector: boolean;
@@ -49,6 +51,7 @@ const DEFAULT_CONFIG: PDFToolsConfig = {
   defaultAccentColor: '#6366f1',
   forceAccentColor: false,
   showHeader: true,
+  showHero: true,
   showColorPicker: true,
   showThemeToggle: true,
   showLanguageSelector: true,
@@ -68,6 +71,7 @@ export function getConfig(): PDFToolsConfig {
     defaultAccentColor: windowConfig.defaultAccentColor ?? DEFAULT_CONFIG.defaultAccentColor,
     forceAccentColor: windowConfig.forceAccentColor ?? DEFAULT_CONFIG.forceAccentColor,
     showHeader: windowConfig.showHeader ?? DEFAULT_CONFIG.showHeader,
+    showHero: windowConfig.showHero ?? DEFAULT_CONFIG.showHero,
     showColorPicker: windowConfig.showColorPicker ?? DEFAULT_CONFIG.showColorPicker,
     showThemeToggle: windowConfig.showThemeToggle ?? DEFAULT_CONFIG.showThemeToggle,
     showLanguageSelector: windowConfig.showLanguageSelector ?? DEFAULT_CONFIG.showLanguageSelector,
@@ -85,6 +89,11 @@ export function applyBrandingConfig(): void {
   // Hide header completely if configured
   if (!config.showHeader) {
     hideHeader();
+  }
+
+  // Hide hero section if configured
+  if (!config.showHero) {
+    hideHeroSection();
   }
 
   // Apply app name to header and footer
@@ -200,19 +209,64 @@ function hideElement(id: string): void {
  * Hide the navigation header completely
  */
 function hideHeader(): void {
-  // Hide navbar on main page
-  const navbar = document.querySelector('nav.navbar-glass') as HTMLElement | null;
-  if (navbar) {
-    navbar.style.display = 'none';
-  }
-
-  // Also hide any other nav elements that might be headers
+  // Hide all nav elements
   const allNavs = document.querySelectorAll('nav');
   allNavs.forEach(nav => {
-    if (nav.classList.contains('navbar-glass') || nav.classList.contains('sticky')) {
-      (nav as HTMLElement).style.display = 'none';
-    }
+    (nav as HTMLElement).style.display = 'none';
   });
+  
+  // Also hide donation ribbon if present
+  const donationRibbon = document.getElementById('donation-ribbon');
+  if (donationRibbon) {
+    donationRibbon.style.display = 'none';
+  }
+}
+
+/**
+ * Hide the hero section on the main page
+ */
+function hideHeroSection(): void {
+  // Hide hero section
+  const heroSection = document.getElementById('hero-section');
+  if (heroSection) {
+    heroSection.style.display = 'none';
+  }
+  
+  // Hide features section
+  const featuresSection = document.getElementById('features-section');
+  if (featuresSection) {
+    featuresSection.style.display = 'none';
+  }
+  
+  // Hide security compliance section
+  const securitySection = document.getElementById('security-compliance-section');
+  if (securitySection) {
+    securitySection.style.display = 'none';
+  }
+  
+  // Hide FAQ section
+  const faqSection = document.getElementById('faq-accordion');
+  if (faqSection) {
+    faqSection.style.display = 'none';
+  }
+  
+  // Hide testimonials section
+  const testimonialsSection = document.getElementById('testimonials-section');
+  if (testimonialsSection) {
+    testimonialsSection.style.display = 'none';
+  }
+  
+  // Hide support section
+  const supportSection = document.getElementById('support-section');
+  if (supportSection) {
+    supportSection.style.display = 'none';
+  }
+  
+  // Reduce top padding on app container
+  const appContainer = document.getElementById('app');
+  if (appContainer) {
+    appContainer.style.paddingTop = '1rem';
+  }
 }
 
 /**

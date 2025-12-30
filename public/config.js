@@ -23,11 +23,13 @@ window.PDFTOOLS_CONFIG = {
   // Feature toggles
   showHeader: true,                // Show/hide the entire navigation header
                                    // Set to false to completely hide the top navbar
+  showHero: true,                  // Show/hide the hero section on main page
+                                   // Set to false to hide hero, features, FAQ, testimonials
   showColorPicker: true,           // Show/hide the accent color picker in navbar
   showThemeToggle: true,           // Show/hide the dark/light theme toggle
   showLanguageSelector: true,      // Show/hide the language selector
 
-  // Default language (en, de)
+  // Default language (en, de, zh, vi)
   defaultLanguage: null,           // null = use browser preference
-                                   // or set 'en' or 'de' to force a language
+                                   // or set 'en', 'de', 'zh', 'vi' to force a language
 };
