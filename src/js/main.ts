@@ -8,14 +8,20 @@ import * as pdfjsLib from 'pdfjs-dist';
 import '../css/styles.css';
 import { formatShortcutDisplay, formatStars } from './utils/helpers.js';
 import { APP_VERSION, injectVersion } from '../version.js';
-import { initI18n, applyTranslations, rewriteLinks, injectLanguageSwitcher, createLanguageSwitcher, t } from './i18n/index.js';
+import { initI18n, applyTranslations, rewriteLinks, injectLanguageSwitcher, injectNavbarControls, createLanguageSwitcher, redirectToBrowserLanguage, t } from './i18n/index.js';
 import { startBackgroundPreload } from './utils/wasm-preloader.js';
 import { initTheme, accentColors, setAccentColor, getAccentColor, findClosestAccent, createAccentFromHex, applyAccentColorOnly, toggleThemeMode } from './theme/index.js';
 import { applyBrandingConfig, getConfig } from './utils/config.js';
 
 const init = async () => {
+  // Redirect to browser language on first visit (before i18n init to avoid double load)
+  if (redirectToBrowserLanguage()) {
+    return; // Page will reload with new language
+  }
+
   await initI18n();
   injectLanguageSwitcher();
+  injectNavbarControls(); // Add theme toggle, accent picker, language selector to navbar
   applyTranslations();
   
   // Initialize theme (accent colors, dark/light mode)

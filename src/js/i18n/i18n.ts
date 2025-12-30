@@ -24,7 +24,35 @@ export const getLanguageFromUrl = (): SupportedLanguage => {
         return storedLang as SupportedLanguage;
     }
 
+    // Detect browser language on first visit
+    const browserLang = navigator.language.split('-')[0] as SupportedLanguage;
+    if (supportedLanguages.includes(browserLang)) {
+        return browserLang;
+    }
+
     return 'en';
+};
+
+/**
+ * Redirect to browser language on first visit if not already on a language path
+ */
+export const redirectToBrowserLanguage = (): boolean => {
+    const path = window.location.pathname;
+    const hasLangInPath = path.match(/^\/(en|de|zh|vi)(?:\/|$)/);
+    const hasStoredLang = localStorage.getItem('i18nextLng');
+    
+    // Only redirect if no language in URL and no stored preference (first visit)
+    if (!hasLangInPath && !hasStoredLang) {
+        const browserLang = navigator.language.split('-')[0] as SupportedLanguage;
+        if (supportedLanguages.includes(browserLang) && browserLang !== 'en') {
+            // Redirect to browser language
+            const newPath = `/${browserLang}${path === '/' ? '' : path}`;
+            localStorage.setItem('i18nextLng', browserLang);
+            window.location.href = newPath + window.location.search + window.location.hash;
+            return true;
+        }
+    }
+    return false;
 };
 
 let initialized = false;
