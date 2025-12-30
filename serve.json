@@ -11,6 +11,23 @@
   ],
   "headers": [
     {
+      "source": "config.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, no-cache, must-revalidate"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        }
+      ]
+    },
+    {
       "source": "**/*",
       "headers": [
         {
