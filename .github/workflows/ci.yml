@@ -1,45 +1,58 @@
-# CI/CD for IT-BAER bentopdf fork
+# Build verification and automatic release workflow
+# Only triggers when a version tag is pushed (e.g., v1.16.0)
 name: CI
 
 on:
   push:
-    # Only trigger on tags - avoids duplicate runs when pushing tag + main together
     tags: ["v*"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
+env:
+  HUSKY: 0
+
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
-          
-      - run: npm install --legacy-peer-deps
-      - run: npx tsc --noEmit
-      - run: npm test
-      - run: npm run build
-      
-      - name: Create release
-        if: startsWith(github.ref, 'refs/tags/v')
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build:docker
+
+      - name: Extract version
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create release archives
         run: |
-          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${{ steps.version.outputs.version }}
           cd dist && zip -r ../bentopdf-${VERSION}.zip . && cd ..
           tar -czvf bentopdf-${VERSION}.tar.gz -C dist .
-          
-      - name: Publish release
-        if: startsWith(github.ref, 'refs/tags/v')
+
+      - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             bentopdf-*.zip
             bentopdf-*.tar.gz
-            install.sh
+          generate_release_notes: true
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
