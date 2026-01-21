@@ -1,66 +1,41 @@
 import { categories } from './config/tools.js';
-import { dom, switchView, hideAlert, showLoader, hideLoader, showAlert } from './ui.js';
-import { state, resetState } from './state.js';
+import { dom, switchView, hideAlert } from './ui.js';
 import { ShortcutsManager } from './logic/shortcuts.js';
 import { createIcons, icons } from 'lucide';
 import '@phosphor-icons/web/regular';
 import * as pdfjsLib from 'pdfjs-dist';
 import '../css/styles.css';
 import { formatShortcutDisplay, formatStars } from './utils/helpers.js';
-import { APP_VERSION, injectVersion } from '../version.js';
-import { initI18n, applyTranslations, rewriteLinks, injectLanguageSwitcher, injectNavbarControls, createLanguageSwitcher, redirectToBrowserLanguage, t } from './i18n/index.js';
+import { APP_VERSION } from '../version.js';
+import {
+  initI18n,
+  applyTranslations,
+  rewriteLinks,
+  injectLanguageSwitcher,
+  createLanguageSwitcher,
+  t,
+} from './i18n/index.js';
 import { startBackgroundPreload } from './utils/wasm-preloader.js';
-import { initTheme, accentColors, setAccentColor, getAccentColor, findClosestAccent, createAccentFromHex, applyAccentColorOnly, toggleThemeMode } from './theme/index.js';
-import { applyBrandingConfig, getConfig } from './utils/config.js';
 
 const init = async () => {
-  // Redirect to browser language on first visit (before i18n init to avoid double load)
-  if (redirectToBrowserLanguage()) {
-    return; // Page will reload with new language
-  }
-
   await initI18n();
   injectLanguageSwitcher();
-  injectNavbarControls(); // Add theme toggle, accent picker, language selector to navbar
   applyTranslations();
-  
-  // Initialize theme (accent colors, dark/light mode)
-  initTheme();
-  
-  // Apply branding configuration from config.js
-  applyBrandingConfig();
 
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url
+  ).toString();
   if (__SIMPLE_MODE__) {
     const hideBrandingSections = () => {
-      const nav = document.querySelector('nav');
-      if (nav) {
-        nav.style.display = 'none';
-
-        const simpleNav = document.createElement('nav');
-        simpleNav.className =
-          'bg-gray-800 border-b border-gray-700 sticky top-0 z-30';
-        simpleNav.innerHTML = `
-          <div class="container mx-auto px-4">
-            <div class="flex justify-start items-center h-16">
-              <div class="flex-shrink-0 flex items-center cursor-pointer" id="home-logo">
-                <img src="/images/favicon.svg" alt="Bento PDF Logo" class="h-8 w-8">
-                <span class="text-white font-bold text-xl ml-2">
-                  <a href="index.html">BentoPDF</a>
-                </span>
-              </div>
-            </div>
-          </div>
-        `;
-        document.body.insertBefore(simpleNav, document.body.firstChild);
-      }
-
       const heroSection = document.getElementById('hero-section');
       if (heroSection) {
         heroSection.style.display = 'none';
       }
 
-      const githubLink = document.querySelector('a[href*="github.com/alam00000/bentopdf"]');
+      const githubLink = document.querySelector(
+        'a[href*="github.com/alam00000/bentopdf"]'
+      );
       if (githubLink) {
         (githubLink as HTMLElement).style.display = 'none';
       }
@@ -95,49 +70,11 @@ const init = async () => {
       }
 
       // Hide "Used by companies" section
-      const usedBySection = document.querySelector('.hide-section') as HTMLElement;
+      const usedBySection = document.querySelector(
+        '.hide-section'
+      ) as HTMLElement;
       if (usedBySection) {
         usedBySection.style.display = 'none';
-      }
-
-      const footer = document.querySelector('footer');
-      if (footer && !document.querySelector('[data-simple-footer]')) {
-        footer.style.display = 'none';
-
-        const simpleFooter = document.createElement('footer');
-        simpleFooter.className = 'mt-16 border-t-2 border-gray-700 py-8';
-        simpleFooter.setAttribute('data-simple-footer', 'true');
-        simpleFooter.innerHTML = `
-          <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <div class="flex items-center mb-2">
-                  <img src="/images/favicon.svg" alt="Bento PDF Logo" class="h-8 w-8 mr-2">
-                  <span class="text-white font-bold text-lg">BentoPDF</span>
-                </div>
-                <p class="text-gray-400 text-sm">
-                  &copy; 2025 BentoPDF. All rights reserved.
-                </p>
-                <p class="text-gray-500 text-xs mt-2">
-                  Version <span id="app-version-simple">${APP_VERSION}</span>
-                </p>
-              </div>
-              <div id="simple-mode-lang-switcher" class="flex-shrink-0"></div>
-            </div>
-          </div>
-        `;
-        document.body.appendChild(simpleFooter);
-
-        const langContainer = simpleFooter.querySelector('#simple-mode-lang-switcher');
-        if (langContainer) {
-          const switcher = createLanguageSwitcher();
-          const dropdown = switcher.querySelector('div[role="menu"]');
-          if (dropdown) {
-            dropdown.classList.remove('mt-2');
-            dropdown.classList.add('bottom-full', 'mb-2');
-          }
-          langContainer.appendChild(switcher);
-        }
       }
 
       const sectionDividers = document.querySelectorAll('.section-divider');
@@ -181,12 +118,13 @@ const init = async () => {
     if (shortcutSettingsBtn) shortcutSettingsBtn.style.display = 'none';
   } else {
     if (keyboardShortcutBtn) {
-      keyboardShortcutBtn.textContent = navigator.userAgent.toUpperCase().includes('MAC')
+      keyboardShortcutBtn.textContent = navigator.userAgent
+        .toUpperCase()
+        .includes('MAC')
         ? '⌘ + K'
         : 'Ctrl + K';
     }
   }
-
 
   const categoryTranslationKeys: Record<string, string> = {
     'Popular Tools': 'tools:categories.popularTools',
@@ -232,58 +170,25 @@ const init = async () => {
     'TIFF to PDF': 'tools:tiffToPdf',
     'Text to PDF': 'tools:textToPdf',
     'JSON to PDF': 'tools:jsonToPdf',
-    'Markdown to PDF': 'tools:markdownToPdf',
-    'ODT to PDF': 'tools:odtToPdf',
-    'CSV to PDF': 'tools:csvToPdf',
-    'RTF to PDF': 'tools:rtfToPdf',
-    'Word to PDF': 'tools:wordToPdf',
-    'Excel to PDF': 'tools:excelToPdf',
-    'PowerPoint to PDF': 'tools:powerpointToPdf',
-    'XPS to PDF': 'tools:xpsToPdf',
-    'MOBI to PDF': 'tools:mobiToPdf',
-    'EPUB to PDF': 'tools:epubToPdf',
-    'FB2 to PDF': 'tools:fb2ToPdf',
-    'CBZ to PDF': 'tools:cbzToPdf',
-    'WPD to PDF': 'tools:wpdToPdf',
-    'WPS to PDF': 'tools:wpsToPdf',
-    'XML to PDF': 'tools:xmlToPdf',
-    'Pages to PDF': 'tools:pagesToPdf',
-    'ODG to PDF': 'tools:odgToPdf',
-    'ODS to PDF': 'tools:odsToPdf',
-    'ODP to PDF': 'tools:odpToPdf',
-    'PUB to PDF': 'tools:pubToPdf',
-    'VSD to PDF': 'tools:vsdToPdf',
-    'PSD to PDF': 'tools:psdToPdf',
     'PDF to JPG': 'tools:pdfToJpg',
     'PDF to PNG': 'tools:pdfToPng',
     'PDF to WebP': 'tools:pdfToWebp',
     'PDF to BMP': 'tools:pdfToBmp',
     'PDF to TIFF': 'tools:pdfToTiff',
-    'PDF to SVG': 'tools:pdfToSvg',
-    'PDF to CSV': 'tools:pdfToCsv',
-    'PDF to Excel': 'tools:pdfToExcel',
     'PDF to Greyscale': 'tools:pdfToGreyscale',
     'PDF to JSON': 'tools:pdfToJson',
-    'PDF to Word': 'tools:pdfToWord',
-    'Extract Images': 'tools:extractImages',
-    'PDF to Markdown': 'tools:pdfToMarkdown',
-    'Prepare PDF for AI': 'tools:preparePdfForAi',
-    'PDF to Text': 'tools:pdfToText',
     'OCR PDF': 'tools:ocrPdf',
     'Alternate & Mix Pages': 'tools:alternateMix',
     'Organize & Duplicate': 'tools:duplicateOrganize',
     'Add Attachments': 'tools:addAttachments',
     'Extract Attachments': 'tools:extractAttachments',
     'Edit Attachments': 'tools:editAttachments',
-    'PDF OCG': 'tools:pdfOcg',
-    'Extract Tables': 'tools:extractTables',
     'Divide Pages': 'tools:dividePages',
     'Add Blank Page': 'tools:addBlankPage',
     'Reverse Pages': 'tools:reversePages',
     'Rotate PDF': 'tools:rotatePdf',
     'Rotate by Custom Degrees': 'tools:rotateCustom',
     'N-Up PDF': 'tools:nUpPdf',
-    'PDF Booklet': 'tools:pdfBooklet',
     'Combine to Single Page': 'tools:combineToSinglePage',
     'View Metadata': 'tools:viewMetadata',
     'Edit Metadata': 'tools:editMetadata',
@@ -295,14 +200,17 @@ const init = async () => {
     'Page Dimensions': 'tools:pageDimensions',
     'Remove Restrictions': 'tools:removeRestrictions',
     'Repair PDF': 'tools:repairPdf',
-    'PDF to PDF/A': 'tools:pdfToPdfa',
-    'Rasterize PDF': 'tools:rasterizePdf',
     'Encrypt PDF': 'tools:encryptPdf',
     'Sanitize PDF': 'tools:sanitizePdf',
     'Decrypt PDF': 'tools:decryptPdf',
     'Flatten PDF': 'tools:flattenPdf',
     'Remove Metadata': 'tools:removeMetadata',
     'Change Permissions': 'tools:changePermissions',
+    'Email to PDF': 'tools:emailToPdf',
+    'Font to Outline': 'tools:fontToOutline',
+    'Deskew PDF': 'tools:deskewPdf',
+    'Digital Signature': 'tools:digitalSignPdf',
+    'Validate Signature': 'tools:validateSignaturePdf',
   };
 
   // Homepage-only tool grid rendering (not used on individual tool pages)
@@ -314,7 +222,8 @@ const init = async () => {
       categoryGroup.className = 'category-group col-span-full';
 
       const title = document.createElement('h2');
-      title.className = 'text-xl font-bold text-indigo-400 mb-4 mt-8 first:mt-0 text-white';
+      title.className =
+        'text-xl font-bold text-indigo-400 mb-4 mt-8 first:mt-0 text-white';
       const categoryKey = categoryTranslationKeys[category.name];
       title.textContent = categoryKey ? t(categoryKey) : category.name;
 
@@ -356,7 +265,9 @@ const init = async () => {
         if (tool.subtitle) {
           const toolSubtitle = document.createElement('p');
           toolSubtitle.className = 'text-xs text-gray-400 mt-1 px-2';
-          toolSubtitle.textContent = toolKey ? t(`${toolKey}.subtitle`) : tool.subtitle;
+          toolSubtitle.textContent = toolKey
+            ? t(`${toolKey}.subtitle`)
+            : tool.subtitle;
           toolCard.appendChild(toolSubtitle);
         }
 
@@ -370,107 +281,73 @@ const init = async () => {
     const searchBar = document.getElementById('search-bar');
     const categoryGroups = dom.toolGrid.querySelectorAll('.category-group');
 
-    const fuzzyMatchWithScore = (searchTerm: string, targetText: string): number => {
-      if (!searchTerm) return 100;
-
-      const search = searchTerm.toLowerCase();
-      const target = targetText.toLowerCase();
-
-      if (target === search) return 100;
-
-      if (target.includes(search)) {
-        if (target.startsWith(search)) return 95;
-        if (target.includes(' ' + search)) return 90;
-        return 85;
-      }
-
-      const words = target.split(/\s+/);
-      const searchWords = search.split(/\s+/);
-
-      let wordBoundaryScore = 0;
-      let matchedWords = 0;
-
-      for (const searchWord of searchWords) {
-        for (const targetWord of words) {
-          if (targetWord.startsWith(searchWord)) {
-            matchedWords++;
-            wordBoundaryScore += 20;
-            break;
-          }
-        }
-      }
-
-      if (matchedWords === searchWords.length) {
-        return Math.min(80, wordBoundaryScore);
-      }
-
-      let searchIndex = 0;
-      let targetIndex = 0;
-      let consecutiveMatches = 0;
-      let maxConsecutive = 0;
-      let totalMatches = 0;
-
-      while (searchIndex < search.length && targetIndex < target.length) {
-        if (search[searchIndex] === target[targetIndex]) {
-          searchIndex++;
-          totalMatches++;
-          consecutiveMatches++;
-          maxConsecutive = Math.max(maxConsecutive, consecutiveMatches);
-        } else {
-          consecutiveMatches = 0;
-        }
-        targetIndex++;
-      }
-
-      if (searchIndex !== search.length) return 0;
-      const matchRatio = totalMatches / search.length;
-      const consecutiveBonus = (maxConsecutive / search.length) * 20;
-      const lengthPenalty = Math.max(0, (target.length - search.length) / target.length) * 10;
-
-      const score = Math.max(0, Math.min(75,
-        (matchRatio * 50) + consecutiveBonus - lengthPenalty
-      ));
-
-      return score;
-    };
+    const searchResultsContainer = document.createElement('div');
+    searchResultsContainer.id = 'search-results';
+    searchResultsContainer.className =
+      'hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 col-span-full';
+    dom.toolGrid.insertBefore(searchResultsContainer, dom.toolGrid.firstChild);
 
     searchBar.addEventListener('input', () => {
       // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'HTMLEleme... Remove this comment to see the full error message
       const searchTerm = searchBar.value.toLowerCase().trim();
 
+      if (!searchTerm) {
+        searchResultsContainer.classList.add('hidden');
+        searchResultsContainer.innerHTML = '';
+        categoryGroups.forEach((group) => {
+          (group as HTMLElement).style.display = '';
+          const toolCards = group.querySelectorAll('.tool-card');
+          toolCards.forEach((card) => {
+            (card as HTMLElement).style.display = '';
+          });
+        });
+        return;
+      }
+
+      categoryGroups.forEach((group) => {
+        (group as HTMLElement).style.display = 'none';
+      });
+
+      searchResultsContainer.innerHTML = '';
+      searchResultsContainer.classList.remove('hidden');
+
+      const seenToolIds = new Set<string>();
+      const allTools: HTMLElement[] = [];
+
       categoryGroups.forEach((group) => {
         const toolCards = Array.from(group.querySelectorAll('.tool-card'));
 
-        const scoredCards = toolCards.map((card) => {
-          const toolName = card.querySelector('h3')?.textContent || '';
-          const toolSubtitle = card.querySelector('p')?.textContent || '';
+        toolCards.forEach((card) => {
+          const toolName = (
+            card.querySelector('h3')?.textContent || ''
+          ).toLowerCase();
+          const toolSubtitle = (
+            card.querySelector('p')?.textContent || ''
+          ).toLowerCase();
+          const toolHref =
+            (card as HTMLAnchorElement).href ||
+            (card as HTMLElement).dataset.toolId ||
+            '';
 
-          const nameScore = fuzzyMatchWithScore(searchTerm, toolName);
-          const subtitleScore = fuzzyMatchWithScore(searchTerm, toolSubtitle);
+          const toolId =
+            toolHref.split('/').pop()?.replace('.html', '') || toolName;
 
-          const score = Math.max(nameScore, subtitleScore) +
-            (nameScore > 0 && subtitleScore > 0 ? 5 : 0);
+          const isMatch =
+            toolName.includes(searchTerm) || toolSubtitle.includes(searchTerm);
+          const isDuplicate = seenToolIds.has(toolId);
 
-          return { card, score };
-        });
-
-        scoredCards.sort((a, b) => b.score - a.score);
-
-        let visibleToolsInCategory = 0;
-        const threshold = 10;
-
-        scoredCards.forEach(({ card, score }, index) => {
-          const isMatch = score >= threshold;
-          card.classList.toggle('hidden', !isMatch);
-
-          if (isMatch) {
-            visibleToolsInCategory++;
-            (card as HTMLElement).style.order = index.toString();
+          if (isMatch && !isDuplicate) {
+            seenToolIds.add(toolId);
+            allTools.push(card.cloneNode(true) as HTMLElement);
           }
         });
-
-        group.classList.toggle('hidden', visibleToolsInCategory === 0);
       });
+
+      allTools.forEach((tool) => {
+        searchResultsContainer.appendChild(tool);
+      });
+
+      createIcons({ icons });
     });
 
     window.addEventListener('keydown', function (e) {
@@ -521,34 +398,31 @@ const init = async () => {
   createIcons({ icons });
   console.log('Please share our tool and share the love!');
 
-  // DISABLED: Background WASM preloading - engines load on-demand when user opens a tool
-  // This prevents main thread blocking and improves initial page load performance
-  // startBackgroundPreload();
-
+  // Start background WASM preloading on all pages
+  startBackgroundPreload();
 
   const githubStarsElements = [
     document.getElementById('github-stars-desktop'),
-    document.getElementById('github-stars-mobile')
+    document.getElementById('github-stars-mobile'),
   ];
 
-  if (githubStarsElements.some(el => el) && !__SIMPLE_MODE__) {
+  if (githubStarsElements.some((el) => el) && !__SIMPLE_MODE__) {
     fetch('https://api.github.com/repos/alam00000/bentopdf')
       .then((response) => response.json())
       .then((data) => {
         if (data.stargazers_count !== undefined) {
           const formattedStars = formatStars(data.stargazers_count);
-          githubStarsElements.forEach(el => {
+          githubStarsElements.forEach((el) => {
             if (el) el.textContent = formattedStars;
           });
         }
       })
       .catch(() => {
-        githubStarsElements.forEach(el => {
+        githubStarsElements.forEach((el) => {
           if (el) el.textContent = '-';
         });
       });
   }
-
 
   // Initialize Shortcuts System
   ShortcutsManager.init();
@@ -557,9 +431,13 @@ const init = async () => {
   const shortcutsTabBtn = document.getElementById('shortcuts-tab-btn');
   const preferencesTabBtn = document.getElementById('preferences-tab-btn');
   const shortcutsTabContent = document.getElementById('shortcuts-tab-content');
-  const preferencesTabContent = document.getElementById('preferences-tab-content');
+  const preferencesTabContent = document.getElementById(
+    'preferences-tab-content'
+  );
   const shortcutsTabFooter = document.getElementById('shortcuts-tab-footer');
-  const preferencesTabFooter = document.getElementById('preferences-tab-footer');
+  const preferencesTabFooter = document.getElementById(
+    'preferences-tab-footer'
+  );
   const resetShortcutsBtn = document.getElementById('reset-shortcuts-btn');
 
   if (shortcutsTabBtn && preferencesTabBtn) {
@@ -589,11 +467,12 @@ const init = async () => {
   }
 
   // Full-width toggle functionality
-  const fullWidthToggle = document.getElementById('full-width-toggle') as HTMLInputElement;
+  const fullWidthToggle = document.getElementById(
+    'full-width-toggle'
+  ) as HTMLInputElement;
   const toolInterface = document.getElementById('tool-interface');
 
-  // Load saved preference
-  const savedFullWidth = localStorage.getItem('fullWidthMode') === 'true';
+  const savedFullWidth = localStorage.getItem('fullWidthMode') !== 'false';
   if (fullWidthToggle) {
     fullWidthToggle.checked = savedFullWidth;
     applyFullWidthMode(savedFullWidth);
@@ -615,7 +494,10 @@ const init = async () => {
         uploader.classList.remove('max-w-2xl', 'max-w-5xl');
       } else {
         // Restore original max-width (most are max-w-2xl, add-stamps is max-w-5xl)
-        if (!uploader.classList.contains('max-w-2xl') && !uploader.classList.contains('max-w-5xl')) {
+        if (
+          !uploader.classList.contains('max-w-2xl') &&
+          !uploader.classList.contains('max-w-5xl')
+        ) {
           uploader.classList.add('max-w-2xl');
         }
       }
@@ -736,26 +618,36 @@ const init = async () => {
   }
 
   // Reserved shortcuts that commonly conflict with browser/OS functions
-  const RESERVED_SHORTCUTS: Record<string, { mac?: string; windows?: string }> = {
-    'mod+w': { mac: 'Closes tab', windows: 'Closes tab' },
-    'mod+t': { mac: 'Opens new tab', windows: 'Opens new tab' },
-    'mod+n': { mac: 'Opens new window', windows: 'Opens new window' },
-    'mod+shift+n': { mac: 'Opens incognito window', windows: 'Opens incognito window' },
-    'mod+q': { mac: 'Quits application (cannot be overridden)' },
-    'mod+m': { mac: 'Minimizes window' },
-    'mod+h': { mac: 'Hides window' },
-    'mod+r': { mac: 'Reloads page', windows: 'Reloads page' },
-    'mod+shift+r': { mac: 'Hard reloads page', windows: 'Hard reloads page' },
-    'mod+l': { mac: 'Focuses address bar', windows: 'Focuses address bar' },
-    'mod+d': { mac: 'Bookmarks page', windows: 'Bookmarks page' },
-    'mod+shift+t': { mac: 'Reopens closed tab', windows: 'Reopens closed tab' },
-    'mod+shift+w': { mac: 'Closes window', windows: 'Closes window' },
-    'mod+tab': { mac: 'Switches tabs', windows: 'Switches apps' },
-    'alt+f4': { windows: 'Closes window' },
-    'ctrl+tab': { mac: 'Switches tabs', windows: 'Switches tabs' },
-  };
+  const RESERVED_SHORTCUTS: Record<string, { mac?: string; windows?: string }> =
+    {
+      'mod+w': { mac: 'Closes tab', windows: 'Closes tab' },
+      'mod+t': { mac: 'Opens new tab', windows: 'Opens new tab' },
+      'mod+n': { mac: 'Opens new window', windows: 'Opens new window' },
+      'mod+shift+n': {
+        mac: 'Opens incognito window',
+        windows: 'Opens incognito window',
+      },
+      'mod+q': { mac: 'Quits application (cannot be overridden)' },
+      'mod+m': { mac: 'Minimizes window' },
+      'mod+h': { mac: 'Hides window' },
+      'mod+r': { mac: 'Reloads page', windows: 'Reloads page' },
+      'mod+shift+r': { mac: 'Hard reloads page', windows: 'Hard reloads page' },
+      'mod+l': { mac: 'Focuses address bar', windows: 'Focuses address bar' },
+      'mod+d': { mac: 'Bookmarks page', windows: 'Bookmarks page' },
+      'mod+shift+t': {
+        mac: 'Reopens closed tab',
+        windows: 'Reopens closed tab',
+      },
+      'mod+shift+w': { mac: 'Closes window', windows: 'Closes window' },
+      'mod+tab': { mac: 'Switches tabs', windows: 'Switches apps' },
+      'alt+f4': { windows: 'Closes window' },
+      'ctrl+tab': { mac: 'Switches tabs', windows: 'Switches tabs' },
+    };
 
-  function getReservedShortcutWarning(combo: string, isMac: boolean): string | null {
+  function getReservedShortcutWarning(
+    combo: string,
+    isMac: boolean
+  ): string | null {
     const reserved = RESERVED_SHORTCUTS[combo];
     if (!reserved) return null;
 
@@ -765,9 +657,19 @@ const init = async () => {
     return description;
   }
 
-  function showWarningModal(title: string, message: string, confirmMode: boolean = true): Promise<boolean> {
+  function showWarningModal(
+    title: string,
+    message: string,
+    confirmMode: boolean = true
+  ): Promise<boolean> {
     return new Promise((resolve) => {
-      if (!dom.warningModal || !dom.warningTitle || !dom.warningMessage || !dom.warningCancelBtn || !dom.warningConfirmBtn) {
+      if (
+        !dom.warningModal ||
+        !dom.warningTitle ||
+        !dom.warningMessage ||
+        !dom.warningCancelBtn ||
+        !dom.warningConfirmBtn
+      ) {
         resolve(confirmMode ? confirm(message) : (alert(message), true));
         return;
       }
@@ -806,15 +708,19 @@ const init = async () => {
       dom.warningCancelBtn.addEventListener('click', handleCancel);
 
       // Close on backdrop click
-      dom.warningModal.addEventListener('click', (e) => {
-        if (e.target === dom.warningModal) {
-          if (confirmMode) {
-            handleCancel();
-          } else {
-            handleConfirm();
+      dom.warningModal.addEventListener(
+        'click',
+        (e) => {
+          if (e.target === dom.warningModal) {
+            if (confirmMode) {
+              handleCancel();
+            } else {
+              handleConfirm();
+            }
           }
-        }
-      }, { once: true });
+        },
+        { once: true }
+      );
     });
   }
 
@@ -833,14 +739,15 @@ const init = async () => {
 
     const allShortcuts = ShortcutsManager.getAllShortcuts();
     const isMac = navigator.userAgent.toUpperCase().includes('MAC');
-    const allTools = categories.flatMap(c => c.tools);
+    const allTools = categories.flatMap((c) => c.tools);
 
-    categories.forEach(category => {
+    categories.forEach((category) => {
       const section = document.createElement('div');
       section.className = 'category-section mb-6 last:mb-0';
 
       const header = document.createElement('h3');
-      header.className = 'text-gray-400 text-xs font-bold uppercase tracking-wider mb-3 pl-1';
+      header.className =
+        'text-gray-400 text-xs font-bold uppercase tracking-wider mb-3 pl-1';
       // Translate category name
       const categoryKey = categoryTranslationKeys[category.name];
       header.textContent = categoryKey ? t(categoryKey) : category.name;
@@ -852,13 +759,14 @@ const init = async () => {
 
       let hasTools = false;
 
-      category.tools.forEach(tool => {
+      category.tools.forEach((tool) => {
         hasTools = true;
         const toolId = getToolId(tool);
         const currentShortcut = allShortcuts.get(toolId) || '';
 
         const item = document.createElement('div');
-        item.className = 'shortcut-item flex items-center justify-between p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 transition-colors';
+        item.className =
+          'shortcut-item flex items-center justify-between p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 transition-colors';
 
         const left = document.createElement('div');
         left.className = 'flex items-center gap-3';
@@ -879,13 +787,15 @@ const init = async () => {
 
         const input = document.createElement('input');
         input.type = 'text';
-        input.className = 'shortcut-input w-32 bg-gray-800 border border-gray-600 text-white text-center text-sm rounded px-2 py-1 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all';
+        input.className =
+          'shortcut-input w-32 bg-gray-800 border border-gray-600 text-white text-center text-sm rounded px-2 py-1 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all';
         input.placeholder = t('settings.clickToSet');
         input.value = formatShortcutDisplay(currentShortcut, isMac);
         input.readOnly = true;
 
         const clearBtn = document.createElement('button');
-        clearBtn.className = 'absolute -right-2 -top-2 bg-gray-700 hover:bg-red-600 text-white rounded-full p-0.5 hidden group-hover:block shadow-sm';
+        clearBtn.className =
+          'absolute -right-2 -top-2 bg-gray-700 hover:bg-red-600 text-white rounded-full p-0.5 hidden group-hover:block shadow-sm';
         clearBtn.innerHTML = '<i data-lucide="x" class="w-3 h-3"></i>';
         if (currentShortcut) {
           right.classList.add('group');
@@ -934,7 +844,10 @@ const init = async () => {
 
           // Ignore dead keys (used for accented characters on Mac with Option key)
           if (isDeadKey) {
-            input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
+            input.value = formatShortcutDisplay(
+              ShortcutsManager.getShortcut(toolId) || '',
+              isMac
+            );
             return;
           }
 
@@ -950,22 +863,31 @@ const init = async () => {
             const existingToolId = ShortcutsManager.findToolByShortcut(combo);
 
             if (existingToolId && existingToolId !== toolId) {
-              const existingTool = allTools.find(t => getToolId(t) === existingToolId);
+              const existingTool = allTools.find(
+                (t) => getToolId(t) === existingToolId
+              );
               const existingToolName = existingTool?.name || existingToolId;
               const displayCombo = formatShortcutDisplay(combo, isMac);
 
-              const existingToolKey = existingTool ? toolTranslationKeys[existingTool.name] : null;
-              const translatedToolName = existingToolKey ? t(`${existingToolKey}.name`) : existingToolName;
+              const existingToolKey = existingTool
+                ? toolTranslationKeys[existingTool.name]
+                : null;
+              const translatedToolName = existingToolKey
+                ? t(`${existingToolKey}.name`)
+                : existingToolName;
 
               await showWarningModal(
                 t('settings.warnings.alreadyInUse'),
                 `<strong>${displayCombo}</strong> ${t('settings.warnings.assignedTo')}<br><br>` +
-                `<em>"${translatedToolName}"</em><br><br>` +
-                t('settings.warnings.chooseDifferent'),
+                  `<em>"${translatedToolName}"</em><br><br>` +
+                  t('settings.warnings.chooseDifferent'),
                 false
               );
 
-              input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
+              input.value = formatShortcutDisplay(
+                ShortcutsManager.getShortcut(toolId) || '',
+                isMac
+              );
               input.classList.remove('border-indigo-500', 'text-indigo-400');
               input.blur();
               return;
@@ -977,14 +899,17 @@ const init = async () => {
               const shouldProceed = await showWarningModal(
                 t('settings.warnings.reserved'),
                 `<strong>${displayCombo}</strong> ${t('settings.warnings.commonlyUsed')}<br><br>` +
-                `"<em>${reservedWarning}</em>"<br><br>` +
-                `${t('settings.warnings.unreliable')}<br><br>` +
-                t('settings.warnings.useAnyway')
+                  `"<em>${reservedWarning}</em>"<br><br>` +
+                  `${t('settings.warnings.unreliable')}<br><br>` +
+                  t('settings.warnings.useAnyway')
               );
 
               if (!shouldProceed) {
                 // Revert display
-                input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
+                input.value = formatShortcutDisplay(
+                  ShortcutsManager.getShortcut(toolId) || '',
+                  isMac
+                );
                 input.classList.remove('border-indigo-500', 'text-indigo-400');
                 input.blur();
                 return;
@@ -1011,7 +936,10 @@ const init = async () => {
         };
 
         input.onblur = () => {
-          input.value = formatShortcutDisplay(ShortcutsManager.getShortcut(toolId) || '', isMac);
+          input.value = formatShortcutDisplay(
+            ShortcutsManager.getShortcut(toolId) || '',
+            isMac
+          );
           input.classList.remove('border-indigo-500', 'text-indigo-400');
         };
 
@@ -1050,7 +978,7 @@ const init = async () => {
     scrollToTopBtn.addEventListener('click', () => {
       window.scrollTo({
         top: 0,
-        behavior: 'instant'
+        behavior: 'instant',
       });
     });
   }

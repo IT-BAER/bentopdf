@@ -2,8 +2,9 @@ import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { downloadFile, readFileAsArrayBuffer, formatBytes, getPDFDocument } from '../utils/helpers.js';
 import { createIcons, icons } from 'lucide';
 import { PyMuPDF } from '@bentopdf/pymupdf-wasm';
+import { getWasmBaseUrl } from '../config/wasm-cdn-config.js';
 
-const pymupdf = new PyMuPDF(import.meta.env.BASE_URL + 'pymupdf-wasm/');
+const pymupdf = new PyMuPDF(getWasmBaseUrl('pymupdf'));
 
 interface LayerData {
     number: number;
@@ -18,7 +19,7 @@ interface LayerData {
 
 let currentFile: File | null = null;
 let currentDoc: any = null;
-let layersMap = new Map<number, LayerData>();
+const layersMap = new Map<number, LayerData>();
 let nextDisplayOrder = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -270,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            showLoader('Loading PyMuPDF...');
+            showLoader('Loading engine...');
             await pymupdf.load();
 
             showLoader(`Loading layers from ${currentFile.name}...`);

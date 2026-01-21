@@ -46,5 +46,17 @@
         }
       ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/{lang}/**",
+      "destination": "/{lang}/index.html"
+    },
+    {
+      "source": "**",
+      "destination": "/index.html"
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }

@@ -3,8 +3,9 @@ import { downloadFile, readFileAsArrayBuffer, formatBytes, getPDFDocument } from
 import { state } from '../state.js';
 import { createIcons, icons } from 'lucide';
 import { PyMuPDF } from '@bentopdf/pymupdf-wasm';
+import { getWasmBaseUrl } from '../config/wasm-cdn-config.js';
 
-const pymupdf = new PyMuPDF(import.meta.env.BASE_URL + 'pymupdf-wasm/');
+const pymupdf = new PyMuPDF(getWasmBaseUrl('pymupdf'));
 
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -93,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            showLoader('Loading PyMuPDF...');
+            showLoader('Loading engine...');
             await pymupdf.load();
 
             const total = state.files.length;
