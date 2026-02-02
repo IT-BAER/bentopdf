@@ -33,7 +33,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Build
-        run: npm run build:docker
+        run: npm run build
 
       - name: Extract version
         id: version

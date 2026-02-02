@@ -192,7 +192,7 @@ if [ "$UPDATE_MODE" = true ]; then
 
     # Restore config - prioritize user config from public folder
     if [ -f "$APP_DIR/public/config.js" ]; then
-        # Copy user config from public to dist (where serve looks for it)
+        # Copy user config from public into dist (serve reads dist)
         cp "$APP_DIR/public/config.js" "$APP_DIR/dist/config.js"
         echo -e "${GREEN}✓ Applied user config from public/config.js${NC}"
     elif [ -n "$CONFIG_BACKUP" ] && [ -f "$CONFIG_BACKUP" ]; then
@@ -279,6 +279,12 @@ curl -sL "$DOWNLOAD_URL" | tar -xz -C "$APP_DIR/dist"
 if [ ! -f "$APP_DIR/public/config.js" ]; then
     cp "$APP_DIR/dist/config.js" "$APP_DIR/public/config.js"
     echo -e "${GREEN}✓ Created public/config.js for customizations${NC}"
+fi
+
+# Always copy public config into dist so edits are applied on update
+if [ -f "$APP_DIR/public/config.js" ]; then
+    cp "$APP_DIR/public/config.js" "$APP_DIR/dist/config.js"
+    echo -e "${GREEN}✓ Synced dist/config.js from public/config.js${NC}"
 fi
 
 # Save version
