@@ -46,9 +46,9 @@ const DEFAULT_CONFIG: PDFToolsConfig = {
   appName: 'BentoPDF',
   logoUrl: null,
   faviconUrl: null,
-  defaultAccentColor: '#6366f1',
+  defaultAccentColor: '#f97316',
   forceAccentColor: false,
-  simpleMode: false,
+  simpleMode: true,
   showColorPicker: true,
   showThemeToggle: true,
   showLanguageSelector: true,
@@ -65,13 +65,19 @@ export function getConfig(): PDFToolsConfig {
     appName: windowConfig.appName ?? DEFAULT_CONFIG.appName,
     logoUrl: windowConfig.logoUrl ?? DEFAULT_CONFIG.logoUrl,
     faviconUrl: windowConfig.faviconUrl ?? DEFAULT_CONFIG.faviconUrl,
-    defaultAccentColor: windowConfig.defaultAccentColor ?? DEFAULT_CONFIG.defaultAccentColor,
-    forceAccentColor: windowConfig.forceAccentColor ?? DEFAULT_CONFIG.forceAccentColor,
+    defaultAccentColor:
+      windowConfig.defaultAccentColor ?? DEFAULT_CONFIG.defaultAccentColor,
+    forceAccentColor:
+      windowConfig.forceAccentColor ?? DEFAULT_CONFIG.forceAccentColor,
     simpleMode: windowConfig.simpleMode ?? DEFAULT_CONFIG.simpleMode,
-    showColorPicker: windowConfig.showColorPicker ?? DEFAULT_CONFIG.showColorPicker,
-    showThemeToggle: windowConfig.showThemeToggle ?? DEFAULT_CONFIG.showThemeToggle,
-    showLanguageSelector: windowConfig.showLanguageSelector ?? DEFAULT_CONFIG.showLanguageSelector,
-    defaultLanguage: windowConfig.defaultLanguage ?? DEFAULT_CONFIG.defaultLanguage,
+    showColorPicker:
+      windowConfig.showColorPicker ?? DEFAULT_CONFIG.showColorPicker,
+    showThemeToggle:
+      windowConfig.showThemeToggle ?? DEFAULT_CONFIG.showThemeToggle,
+    showLanguageSelector:
+      windowConfig.showLanguageSelector ?? DEFAULT_CONFIG.showLanguageSelector,
+    defaultLanguage:
+      windowConfig.defaultLanguage ?? DEFAULT_CONFIG.defaultLanguage,
   };
 }
 
@@ -81,7 +87,7 @@ export function getConfig(): PDFToolsConfig {
  */
 export function applyBrandingConfig(): void {
   const config = getConfig();
-  
+
   // Debug logging
   console.log('[BentoPDF Config] Applying branding config:', config);
   console.log('[BentoPDF Config] simpleMode:', config.simpleMode);
@@ -126,27 +132,44 @@ export function applyBrandingConfig(): void {
  */
 function applyAppName(appName: string): void {
   // Update header logo text
-  const headerLogoLinks = document.querySelectorAll('#home-logo a, .navbar-glass a[href="index.html"]');
-  headerLogoLinks.forEach(link => {
-    if (link.textContent?.trim() === 'BentoPDF' || link.textContent?.trim() === 'PDF-Tools') {
+  const headerLogoLinks = document.querySelectorAll(
+    '#home-logo a, .navbar-glass a[href="index.html"]'
+  );
+  headerLogoLinks.forEach((link) => {
+    if (
+      link.textContent?.trim() === 'BentoPDF' ||
+      link.textContent?.trim() === 'PDF-Tools'
+    ) {
       link.textContent = appName;
     }
   });
 
   // Update header span (for pages without links)
   const headerSpans = document.querySelectorAll('#home-logo span');
-  headerSpans.forEach(span => {
+  headerSpans.forEach((span) => {
     const link = span.querySelector('a');
-    if (link && (link.textContent?.trim() === 'BentoPDF' || link.textContent?.trim() === 'PDF-Tools')) {
+    if (
+      link &&
+      (link.textContent?.trim() === 'BentoPDF' ||
+        link.textContent?.trim() === 'PDF-Tools')
+    ) {
       link.textContent = appName;
-    } else if (!link && (span.textContent?.trim() === 'BentoPDF' || span.textContent?.trim() === 'PDF-Tools')) {
+    } else if (
+      !link &&
+      (span.textContent?.trim() === 'BentoPDF' ||
+        span.textContent?.trim() === 'PDF-Tools')
+    ) {
       span.textContent = appName;
     }
   });
 
   // Update footer brand name
   const footerBrand = document.querySelector('footer .text-white.font-bold');
-  if (footerBrand && (footerBrand.textContent?.trim() === 'BentoPDF' || footerBrand.textContent?.trim() === 'PDF-Tools')) {
+  if (
+    footerBrand &&
+    (footerBrand.textContent?.trim() === 'BentoPDF' ||
+      footerBrand.textContent?.trim() === 'PDF-Tools')
+  ) {
     footerBrand.textContent = appName;
   }
 
@@ -163,13 +186,17 @@ function applyAppName(appName: string): void {
  */
 function applyLogo(logoUrl: string): void {
   // Update header logo
-  const headerLogo = document.querySelector('#home-logo img, .navbar-glass img[alt*="Logo"]') as HTMLImageElement | null;
+  const headerLogo = document.querySelector(
+    '#home-logo img, .navbar-glass img[alt*="Logo"]'
+  ) as HTMLImageElement | null;
   if (headerLogo) {
     headerLogo.src = logoUrl;
   }
 
   // Update footer logo
-  const footerLogo = document.querySelector('footer img[alt*="Logo"]') as HTMLImageElement | null;
+  const footerLogo = document.querySelector(
+    'footer img[alt*="Logo"]'
+  ) as HTMLImageElement | null;
   if (footerLogo) {
     footerLogo.src = logoUrl;
   }
@@ -179,7 +206,9 @@ function applyLogo(logoUrl: string): void {
  * Apply custom favicon
  */
 function applyFavicon(faviconUrl: string): void {
-  const existingFavicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null;
+  const existingFavicon = document.querySelector(
+    'link[rel="icon"]'
+  ) as HTMLLinkElement | null;
 
   if (existingFavicon) {
     existingFavicon.href = faviconUrl;
@@ -208,20 +237,20 @@ function hideElement(id: string): void {
 function applySimpleMode(): void {
   // Add a class to body for CSS-based hiding (more reliable)
   document.body.classList.add('simple-mode');
-  
+
   // Sections to hide in simple mode
   const sectionsToHide = [
     'hero-section',
-    'tools-header',        // "Starten Sie mit Werkzeugen" header
-    'features-section', 
+    'tools-header', // "Starten Sie mit Werkzeugen" header
+    'features-section',
     'security-compliance-section',
     'faq-accordion',
     'testimonials-section',
     'support-section',
-    'donation-ribbon'      // Donation ribbon if present
+    'donation-ribbon', // Donation ribbon if present
   ];
-  
-  sectionsToHide.forEach(id => {
+
+  sectionsToHide.forEach((id) => {
     const section = document.getElementById(id);
     if (section) {
       section.style.display = 'none';
@@ -230,27 +259,27 @@ function applySimpleMode(): void {
       console.log('[BentoPDF Config] Section not found:', id);
     }
   });
-  
+
   // Hide navigation header
   const allNavs = document.querySelectorAll('nav');
-  allNavs.forEach(nav => {
+  allNavs.forEach((nav) => {
     (nav as HTMLElement).style.display = 'none';
     console.log('[BentoPDF Config] Hidden nav element');
   });
-  
+
   // Hide footer
   const allFooters = document.querySelectorAll('footer');
-  allFooters.forEach(footer => {
+  allFooters.forEach((footer) => {
     (footer as HTMLElement).style.display = 'none';
     console.log('[BentoPDF Config] Hidden footer element');
   });
-  
+
   // Also hide all section dividers
   const dividers = document.querySelectorAll('.section-divider');
-  dividers.forEach(divider => {
+  dividers.forEach((divider) => {
     (divider as HTMLElement).style.display = 'none';
   });
-  
+
   // Reduce top padding on app container
   const appContainer = document.getElementById('app');
   if (appContainer) {

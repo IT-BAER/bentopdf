@@ -19,16 +19,16 @@
 
 :root {
   /* Accent colors */
-  --accent-color: #6366f1;
-  --accent-hover: #4f46e5;
-  --accent-ring: #4338ca;
-  --accent-text: #a5b4fc;
-  --accent-bg-light: rgba(99, 102, 241, 0.1);
-  --accent-bg-medium: rgba(99, 102, 241, 0.15);
-  --accent-color-muted: rgba(99, 102, 241, 0.3);
-  --accent-color-soft: rgba(99, 102, 241, 0.5);
-  --accent-btn-text: #ffffff;
-  
+  --accent-color: #f97316;
+  --accent-hover: #ea580c;
+  --accent-ring: #c2410c;
+  --accent-text: #fdba74;
+  --accent-bg-light: rgba(249, 115, 22, 0.1);
+  --accent-bg-medium: rgba(249, 115, 22, 0.15);
+  --accent-color-muted: rgba(249, 115, 22, 0.3);
+  --accent-color-soft: rgba(249, 115, 22, 0.5);
+  --accent-btn-text: #1f2937;
+
   /* Dark mode colors (default) */
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
@@ -39,7 +39,7 @@
   --border-color: rgba(255, 255, 255, 0.1);
   --card-bg: rgba(30, 41, 59, 0.8);
   --navbar-bg: rgba(17, 24, 39, 0.7);
-  
+
   /* Gradient colors for background */
   --gradient-start: #0c0f18;
   --gradient-mid: #111827;
@@ -48,7 +48,7 @@
 }
 
 /* Light mode */
-[data-theme="light"] {
+[data-theme='light'] {
   --bg-primary: #f8fafc;
   --bg-secondary: #f1f5f9;
   --bg-tertiary: #e2e8f0;
@@ -58,7 +58,7 @@
   --border-color: rgba(0, 0, 0, 0.1);
   --card-bg: rgba(255, 255, 255, 0.9);
   --navbar-bg: rgba(248, 250, 252, 0.85);
-  
+
   --gradient-start: #f8fafc;
   --gradient-mid: #e0e7ff;
   --gradient-end: #f1f5f9;
@@ -131,15 +131,34 @@ html {
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: 
-    radial-gradient(ellipse at 20% 0%, color-mix(in srgb, var(--gradient-accent) 8%, transparent) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, color-mix(in srgb, var(--gradient-accent) 6%, transparent) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--gradient-accent) 3%, transparent) 0%, transparent 60%),
-    linear-gradient(180deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
+  background:
+    radial-gradient(
+      ellipse at 20% 0%,
+      color-mix(in srgb, var(--gradient-accent) 8%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 100%,
+      color-mix(in srgb, var(--gradient-accent) 6%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 50% 50%,
+      color-mix(in srgb, var(--gradient-accent) 3%, transparent) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      var(--gradient-start) 0%,
+      var(--gradient-mid) 50%,
+      var(--gradient-end) 100%
+    );
   background-attachment: fixed;
   min-height: 100vh;
   color: var(--text-secondary);
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Frosted glass navbar */
@@ -149,7 +168,9 @@ body {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Ensure backdrop-filter works in Firefox - use @supports for cross-browser compatibility */
@@ -160,52 +181,52 @@ body {
 }
 
 /* Light mode specific overrides */
-[data-theme="light"] .text-white {
+[data-theme='light'] .text-white {
   color: var(--text-primary);
 }
 
-[data-theme="light"] .text-gray-300,
-[data-theme="light"] .text-gray-400 {
+[data-theme='light'] .text-gray-300,
+[data-theme='light'] .text-gray-400 {
   color: var(--text-secondary);
 }
 
-[data-theme="light"] .text-gray-500 {
+[data-theme='light'] .text-gray-500 {
   color: var(--text-muted);
 }
 
-[data-theme="light"] .bg-gray-800,
-[data-theme="light"] .bg-gray-900 {
+[data-theme='light'] .bg-gray-800,
+[data-theme='light'] .bg-gray-900 {
   background-color: var(--bg-secondary);
 }
 
-[data-theme="light"] .bg-gray-700 {
+[data-theme='light'] .bg-gray-700 {
   background-color: var(--bg-tertiary);
 }
 
-[data-theme="light"] .bg-gray-700\/50 {
+[data-theme='light'] .bg-gray-700\/50 {
   background-color: rgba(226, 232, 240, 0.5);
 }
 
-[data-theme="light"] .border-gray-700,
-[data-theme="light"] .border-gray-600 {
+[data-theme='light'] .border-gray-700,
+[data-theme='light'] .border-gray-600 {
   border-color: var(--border-color);
 }
 
-[data-theme="light"] .hover\:bg-gray-600:hover {
+[data-theme='light'] .hover\:bg-gray-600:hover {
   background-color: #cbd5e1;
 }
 
-[data-theme="light"] .hover\:bg-gray-700:hover {
+[data-theme='light'] .hover\:bg-gray-700:hover {
   background-color: #e2e8f0;
 }
 
 /* Light mode tool cards */
-[data-theme="light"] .tool-card {
+[data-theme='light'] .tool-card {
   background: var(--card-bg);
   border-color: rgba(0, 0, 0, 0.08);
 }
 
-[data-theme="light"] .tool-card:hover {
+[data-theme='light'] .tool-card:hover {
   background: rgba(255, 255, 255, 0.95);
   border-color: var(--accent-color);
 }
@@ -310,7 +331,11 @@ body {
 }
 
 .border-indigo-500\/30 {
-  border-color: color-mix(in srgb, var(--accent-color) 30%, transparent) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--accent-color) 30%,
+    transparent
+  ) !important;
 }
 
 .bg-indigo-900\/20 {
@@ -407,7 +432,7 @@ input[type='file']::file-selector-button {
   border: 2px dashed #ef7d00;
 }
 
-#embed-pdf-container>div {
+#embed-pdf-container > div {
   width: 100%;
   height: 100%;
 }
@@ -417,7 +442,7 @@ input[type='file']::file-selector-button {
 }
 
 .page-thumbnail,
-#file-list>li {
+#file-list > li {
   cursor: grab;
 }
 
@@ -555,8 +580,6 @@ footer a {
   z-index: -1;
 }
 
-
-
 .section-divider {
   height: 1px;
   background: linear-gradient(to right, transparent, #4d44f7, transparent);
@@ -575,7 +598,11 @@ footer a {
   gap: 0.5rem;
   padding: 0.875rem 2rem;
   border-radius: 0.75rem;
-  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-color) 0%,
+    var(--accent-hover) 100%
+  );
   color: var(--accent-btn-text, #ffffff);
   font-weight: 600;
   font-size: 0.95rem;
@@ -592,7 +619,11 @@ footer a {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -610,8 +641,7 @@ footer a {
 
 .btn-gradient:active {
   transform: translateY(0);
-  box-shadow:
-    0 4px 12px -2px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
+  box-shadow: 0 4px 12px -2px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
 }
 
 .btn-gradient:focus {
@@ -1117,19 +1147,19 @@ footer a {
   color: rgb(165 180 252);
 }
 
-details>summary {
+details > summary {
   list-style: none;
 }
 
-details>summary::-webkit-details-marker {
+details > summary::-webkit-details-marker {
   display: none;
 }
 
-details>summary .icon {
+details > summary .icon {
   transition: transform 0.2s ease-in-out;
 }
 
-details[open]>summary .icon {
+details[open] > summary .icon {
   transform: rotate(45deg);
 }
 
@@ -1153,7 +1183,9 @@ button:disabled,
   height: 1.5rem;
   padding: 0 0.25rem;
   font-size: 0.75rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   line-height: 1;
   color: #e5e7eb;
   background-color: #374151;
@@ -1163,7 +1195,9 @@ button:disabled,
 }
 
 .shortcut-input {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   letter-spacing: 0.05em;
 }
 
@@ -1221,6 +1255,10 @@ button:disabled,
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    black 40%,
+    transparent 80%
+  );
   pointer-events: none;
 }

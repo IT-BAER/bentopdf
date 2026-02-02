@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend from 'i18next-http-backend';
+import { getDefaultLanguage } from '../utils/config';
 
 // Supported languages
 export const supportedLanguages = [
@@ -32,6 +33,24 @@ export const languageNames: Record<SupportedLanguage, string> = {
   pt: 'Português',
 };
 
+function resolveSupportedLanguage(
+  language: string | null | undefined
+): SupportedLanguage | null {
+  if (!language) return null;
+
+  const normalized = language.replace('_', '-');
+  const exact = supportedLanguages.find(
+    (lang) => lang.toLowerCase() === normalized.toLowerCase()
+  );
+  if (exact) return exact;
+
+  const base = normalized.split('-')[0];
+  const baseMatch = supportedLanguages.find(
+    (lang) => lang.toLowerCase() === base.toLowerCase()
+  );
+  return baseMatch ?? null;
+}
+
 export const getLanguageFromUrl = (): SupportedLanguage => {
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
   let path = window.location.pathname;
@@ -54,12 +73,23 @@ export const getLanguageFromUrl = (): SupportedLanguage => {
     return langMatch[1] as SupportedLanguage;
   }
 
+  const defaultLang = resolveSupportedLanguage(getDefaultLanguage());
+  if (defaultLang) {
+    return defaultLang;
+  }
+
   const storedLang = localStorage.getItem('i18nextLng');
-  if (
-    storedLang &&
-    supportedLanguages.includes(storedLang as SupportedLanguage)
-  ) {
-    return storedLang as SupportedLanguage;
+  const storedMatch = resolveSupportedLanguage(storedLang);
+  if (storedMatch) {
+    return storedMatch;
+  }
+
+  if (typeof navigator !== 'undefined') {
+    const navigatorLanguages = navigator.languages || [navigator.language];
+    for (const lang of navigatorLanguages) {
+      const match = resolveSupportedLanguage(lang);
+      if (match) return match;
+    }
   }
 
   return 'en';

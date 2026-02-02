@@ -16,11 +16,87 @@ import {
   t,
 } from './i18n/index.js';
 import { startBackgroundPreload } from './utils/wasm-preloader.js';
+import { initTheme } from './theme/index.js';
+import { applyBrandingConfig } from './utils/config.js';
+
+const ensureConfigLoaded = async (): Promise<void> => {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  if (window.PDFTOOLS_CONFIG) return;
+
+  const existingScript = document.querySelector(
+    'script[src$="/config.js"], script[src$="config.js"]'
+  ) as HTMLScriptElement | null;
+
+  if (existingScript) {
+    await new Promise<void>((resolve) => {
+      if (window.PDFTOOLS_CONFIG) {
+        resolve();
+        return;
+      }
+
+      existingScript.addEventListener('load', () => resolve(), { once: true });
+      existingScript.addEventListener('error', () => resolve(), { once: true });
+    });
+    return;
+  }
+
+  await new Promise<void>((resolve) => {
+    const script = document.createElement('script');
+    const baseUrl = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+    script.src = `${baseUrl}config.js`;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => resolve();
+    document.head.appendChild(script);
+  });
+};
 
 const init = async () => {
+  await ensureConfigLoaded();
+  initTheme();
+  applyBrandingConfig();
+
   await initI18n();
   injectLanguageSwitcher();
   applyTranslations();
+
+  const shouldHideSecondarySections =
+    document.documentElement.classList.contains('simple-mode') ||
+    document.body.classList.contains('simple-mode');
+
+  if (shouldHideSecondarySections) {
+    const sectionHeadings = [
+      'how it works',
+      'related pdf tools',
+      'related tools',
+      'frequently asked questions',
+      'faq',
+    ];
+
+    document.querySelectorAll('section').forEach((section) => {
+      const heading = section.querySelector('h2, h3');
+      const text = heading?.textContent?.trim().toLowerCase();
+      if (!text) return;
+
+      if (sectionHeadings.some((label) => text.startsWith(label))) {
+        section.remove();
+      }
+    });
+
+    document
+      .querySelectorAll('script[type="application/ld+json"]')
+      .forEach((script) => {
+        const content = script.textContent || '';
+        if (
+          content.includes('"@type": "HowTo"') ||
+          content.includes('"@type":"HowTo"') ||
+          content.includes('"@type": "FAQPage"') ||
+          content.includes('"@type":"FAQPage"')
+        ) {
+          script.remove();
+        }
+      });
+  }
 
   pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -398,8 +474,10 @@ const init = async () => {
   createIcons({ icons });
   console.log('Please share our tool and share the love!');
 
-  // Start background WASM preloading on all pages
-  startBackgroundPreload();
+  // Start background WASM preloading only on tool pages
+  if (document.getElementById('tool-uploader')) {
+    startBackgroundPreload();
+  }
 
   const githubStarsElements = [
     document.getElementById('github-stars-desktop'),
