@@ -73,7 +73,7 @@
   },
   "alert": {
     "title": "Hinweis",
-    "ok": "OK"
+    "ok": "Alles klar"
   },
   "preview": {
     "title": "Dokumentvorschau",
@@ -184,10 +184,10 @@
   },
   "footer": {
     "copyright": "© 2026 BentoPDF. Alle Rechte vorbehalten.",
-    "version": "Version",
+    "version": "App-Version",
     "company": "Unternehmen",
     "aboutUs": "Über uns",
-    "faqLink": "FAQ",
+    "faqLink": "Häufige Fragen",
     "contactUs": "Kontakt",
     "legal": "Rechtliches",
     "termsAndConditions": "Nutzungsbedingungen",
@@ -296,7 +296,7 @@
     "split": "Teilen",
     "clear": "Löschen:",
     "delete": "Entfernen",
-    "download": "Download:",
+    "download": "Herunterladen:",
     "downloadSelected": "Auswahl herunterladen",
     "exportPdf": "PDF exportieren",
     "uploadPdfFiles": "PDF-Dateien auswählen",

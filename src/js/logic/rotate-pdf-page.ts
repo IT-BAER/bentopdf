@@ -74,7 +74,7 @@ function createPageWrapper(
 
   const canvasWrapper = document.createElement('div');
   canvasWrapper.className =
-    'thumbnail-wrapper flex items-center justify-center p-3 h-56 sm:h-60 md:h-64';
+    'thumbnail-wrapper flex items-center justify-center p-3 h-80 sm:h-96 md:h-[28rem]';
   canvasWrapper.style.transition = 'transform 0.3s ease';
   // Apply initial rotation if it exists
   const initialRotation = pageState.rotations[pageIndex] || 0;
@@ -149,6 +149,8 @@ async function renderThumbnails() {
       useLazyLoading: true,
       lazyLoadMargin: '200px',
       eagerLoadBatches: 2,
+      scale: 1.1,
+      lazyScale: 0.95,
       onBatchComplete: function () {
         createIcons({ icons });
       },
