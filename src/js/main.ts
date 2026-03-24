@@ -287,6 +287,103 @@ const init = async () => {
     'Deskew PDF': 'tools:deskewPdf',
     'Digital Signature': 'tools:digitalSignPdf',
     'Validate Signature': 'tools:validateSignaturePdf',
+    'Word to PDF': 'tools:wordToPdf',
+    'Excel to PDF': 'tools:excelToPdf',
+    'PowerPoint to PDF': 'tools:powerpointToPdf',
+    'Markdown to PDF': 'tools:markdownToPdf',
+    'CSV to PDF': 'tools:csvToPdf',
+    'ODT to PDF': 'tools:odtToPdf',
+    'ODS to PDF': 'tools:odsToPdf',
+    'ODP to PDF': 'tools:odpToPdf',
+    'ODG to PDF': 'tools:odgToPdf',
+    'RTF to PDF': 'tools:rtfToPdf',
+    'EPUB to PDF': 'tools:epubToPdf',
+    'MOBI to PDF': 'tools:mobiToPdf',
+    'CBZ to PDF': 'tools:cbzToPdf',
+    'FB2 to PDF': 'tools:fb2ToPdf',
+    'PSD to PDF': 'tools:psdToPdf',
+    'XPS to PDF': 'tools:xpsToPdf',
+    'Pages to PDF': 'tools:pagesToPdf',
+    'PUB to PDF': 'tools:pubToPdf',
+    'VSD to PDF': 'tools:vsdToPdf',
+    'WPD to PDF': 'tools:wpdToPdf',
+    'WPS to PDF': 'tools:wpsToPdf',
+    'XML to PDF': 'tools:xmlToPdf',
+    'PDF to Word': 'tools:pdfToDocx',
+    'PDF to Excel': 'tools:pdfToExcel',
+    'PDF to Text': 'tools:pdfToText',
+    'PDF to Markdown': 'tools:pdfToMarkdown',
+    'PDF to CSV': 'tools:pdfToCsv',
+    'PDF to SVG': 'tools:pdfToSvg',
+    'PDF to PDF/A': 'tools:pdfToPdfa',
+    'PDF OCG': 'tools:pdfLayers',
+    'Extract Images': 'tools:extractImages',
+    'Extract Tables': 'tools:extractTables',
+    'PDF Booklet': 'tools:pdfBooklet',
+    'Prepare PDF for AI': 'tools:preparePdfForAi',
+    'Rasterize PDF': 'tools:rasterizePdf',
+  };
+
+  const slugTranslationKeys: Record<string, string> = {};
+  categories.forEach((category) => {
+    category.tools.forEach((tool) => {
+      if (!tool.href) return;
+      const translationKey = toolTranslationKeys[tool.name];
+      if (!translationKey) return;
+      const slugMatch = tool.href.match(/([^/]+)\.html$/);
+      if (slugMatch) {
+        slugTranslationKeys[slugMatch[1]] = translationKey;
+      }
+    });
+  });
+
+  const getToolTranslationKey = (tool: any): string | null => {
+    const keyByName = tool?.name ? toolTranslationKeys[tool.name] : null;
+    if (keyByName) return keyByName;
+
+    if (tool?.href) {
+      const slugMatch = tool.href.match(/([^/]+)\.html$/);
+      if (slugMatch && slugTranslationKeys[slugMatch[1]]) {
+        return slugTranslationKeys[slugMatch[1]];
+      }
+    }
+
+    return null;
+  };
+
+  const localizeStaticToolCards = () => {
+    const toolCards =
+      document.querySelectorAll<HTMLAnchorElement>('a.tool-card[href]');
+
+    toolCards.forEach((card) => {
+      const href = card.getAttribute('href');
+      if (!href) return;
+
+      const slugMatch = href.match(/([^/]+)\.html$/);
+      if (!slugMatch) return;
+
+      const toolKey = slugTranslationKeys[slugMatch[1]];
+      if (!toolKey) return;
+
+      const nameEl = card.querySelector<HTMLElement>('h3');
+      if (nameEl) {
+        const translatedName = t(`${toolKey}.name`);
+        if (translatedName && translatedName !== `${toolKey}.name`) {
+          nameEl.textContent = translatedName;
+        }
+      }
+
+      const subtitleEl = card.querySelector<HTMLElement>('p');
+      if (subtitleEl) {
+        const translatedSubtitle = t(`${toolKey}.subtitle`);
+        if (
+          translatedSubtitle &&
+          translatedSubtitle !== `${toolKey}.subtitle`
+        ) {
+          subtitleEl.textContent = translatedSubtitle;
+        }
+      }
+    });
   };
 
   // Homepage-only tool grid rendering (not used on individual tool pages)
@@ -333,7 +430,7 @@ const init = async () => {
 
         const toolName = document.createElement('h3');
         toolName.className = 'font-semibold text-white';
-        const toolKey = toolTranslationKeys[tool.name];
+        const toolKey = getToolTranslationKey(tool);
         toolName.textContent = toolKey ? t(`${toolKey}.name`) : tool.name;
 
         toolCard.append(icon, toolName);
@@ -446,6 +543,9 @@ const init = async () => {
   if (dom.backToGridBtn) {
     dom.backToGridBtn.addEventListener('click', () => switchView('grid'));
   }
+
+  // Category/marketing pages use static tool-card markup; localize them too.
+  localizeStaticToolCards();
 
   if (dom.alertOkBtn) {
     dom.alertOkBtn.addEventListener('click', hideAlert);
@@ -855,7 +955,7 @@ const init = async () => {
 
         const name = document.createElement('span');
         name.className = 'text-gray-200 font-medium';
-        const toolKey = toolTranslationKeys[tool.name];
+        const toolKey = getToolTranslationKey(tool);
         name.textContent = toolKey ? t(`${toolKey}.name`) : tool.name;
 
         left.append(icon, name);
@@ -948,7 +1048,7 @@ const init = async () => {
               const displayCombo = formatShortcutDisplay(combo, isMac);
 
               const existingToolKey = existingTool
-                ? toolTranslationKeys[existingTool.name]
+                ? getToolTranslationKey(existingTool)
                 : null;
               const translatedToolName = existingToolKey
                 ? t(`${existingToolKey}.name`)

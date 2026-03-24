@@ -162,6 +162,48 @@
     <script type="module" src="/src/js/utils/lucide-init.ts"></script>
     <script type="module" src="/src/version.ts"></script>
     <script type="module">
+      import {
+        initI18n,
+        injectLanguageSwitcher,
+        applyTranslations,
+        rewriteLinks,
+        t,
+      } from '/src/js/i18n/index.ts';
+
+      await initI18n();
+      injectLanguageSwitcher();
+      applyTranslations();
+
+      const toolKeyOverrides = {
+        'organize-pdf': 'duplicateOrganize',
+        'alternate-merge': 'alternateMix',
+        bookmark: 'editBookmarks',
+        'combine-single-page': 'combineToSinglePage',
+        'form-creator': 'createPdfForm',
+        'form-filler': 'pdfFormFiller',
+        'image-to-pdf': 'imageToPdf',
+        'pdf-to-docx': 'pdfToDocx',
+        'text-color': 'changeTextColor',
+        'pdf-to-zip': 'pdfsToZip',
+        'pdf-layers': 'pdfLayers',
+      };
+
+      function getToolTranslationKey(slug) {
+        if (toolKeyOverrides[slug]) return `tools:${toolKeyOverrides[slug]}`;
+        const camelKey = slug.replace(/-([a-z0-9])/g, (_, c) =>
+          c.toUpperCase()
+        );
+        return `tools:${camelKey}`;
+      }
+
+      function getLocalizedToolTitle(tool) {
+        const key = getToolTranslationKey(tool.name);
+        const translatedTitle = t(`${key}.name`);
+        return translatedTitle && translatedTitle !== `${key}.name`
+          ? translatedTitle
+          : tool.title;
+      }
+
       const tools = [
         // Converters
         {
@@ -800,10 +842,11 @@
         const noResults = document.getElementById('no-results');
 
         const filtered = tools.filter((tool) => {
+          const localizedTitle = getLocalizedToolTitle(tool);
           const matchesCategory =
             currentCategory === 'all' || tool.category === currentCategory;
           const matchesSearch =
-            tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            localizedTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
             tool.name.toLowerCase().includes(searchQuery.toLowerCase());
           return matchesCategory && matchesSearch;
         });
@@ -819,14 +862,15 @@
         noResults.classList.add('hidden');
 
         grid.innerHTML = filtered
-          .map(
-            (tool) => `
+          .map((tool) => {
+            const localizedTitle = getLocalizedToolTitle(tool);
+            return `
                 <a href="/src/pages/${tool.name}.html" class="tool-card">
                     <i class="ph ph-${tool.icon} text-4xl text-indigo-400 mb-2"></i>
-                    <h3 class="font-semibold text-white text-sm">${tool.title}</h3>
+                    <h3 class="font-semibold text-white text-sm">${localizedTitle}</h3>
                 </a>
-            `
-          )
+            `;
+          })
           .join('');
 
         document.getElementById('results-count').textContent = filtered.length;
@@ -849,6 +893,7 @@
       });
 
       renderTools();
+      rewriteLinks();
     </script>
 
     <style>

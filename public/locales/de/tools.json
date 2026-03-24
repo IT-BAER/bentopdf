@@ -194,7 +194,7 @@
     "subtitle": "PDF-Dateien in JSON-Format konvertieren."
   },
   "ocrPdf": {
-    "name": "OCR PDF",
+    "name": "OCR-PDF",
     "subtitle": "Eine PDF durchsuchbar und kopierbar machen."
   },
   "alternateMix": {
@@ -234,7 +234,7 @@
     "subtitle": "Seiten um einen beliebigen Winkel drehen."
   },
   "nUpPdf": {
-    "name": "N-Up PDF",
+    "name": "N-Up-PDF",
     "subtitle": "Mehrere Seiten auf einem einzigen Blatt anordnen."
   },
   "combineToSinglePage": {
@@ -344,7 +344,7 @@
   "markdownToPdf": {
     "name": "Markdown zu PDF",
     "subtitle": "Schreiben oder fügen Sie Markdown ein und exportieren Sie es als schön formatiertes PDF.",
-    "paneMarkdown": "Markdown",
+    "paneMarkdown": "Markdown-Editor",
     "panePreview": "Vorschau",
     "btnUpload": "Hochladen",
     "btnSyncScroll": "Sync-Scrollen",
@@ -529,5 +529,33 @@
   "deskewPdf": {
     "name": "PDF entzerren",
     "subtitle": "Automatisch schiefe gescannte Seiten mit OpenCV begradigen."
+  },
+  "extractImages": {
+    "name": "Bilder extrahieren",
+    "subtitle": "Alle eingebetteten Bilder aus PDF-Dateien extrahieren. Einzeln oder als ZIP-Archiv herunterladen."
+  },
+  "pdfLayers": {
+    "name": "PDF-Ebenen",
+    "subtitle": "Optional Content Groups (OCG) in Ihrer PDF verwalten. Sichtbarkeit umschalten, neue Ebenen hinzufügen oder bestehende löschen."
+  },
+  "pdfToDocx": {
+    "name": "PDF zu DOCX",
+    "subtitle": "PDF-Dateien in bearbeitbare Word-Dokumente konvertieren. Text, Formatierung und Layout bleiben erhalten."
+  },
+  "pdfToMarkdown": {
+    "name": "PDF zu Markdown",
+    "subtitle": "PDF-Dateien in das Markdown-Format konvertieren. Bewahrt die Textstruktur mit optionaler Bildeinbettung."
+  },
+  "pdfToPdfa": {
+    "name": "PDF zu PDF/A",
+    "subtitle": "Ihre PDF-Dokumente für die Langzeitarchivierung in das PDF/A-Format konvertieren."
+  },
+  "preparePdfForAi": {
+    "name": "PDF für KI vorbereiten",
+    "subtitle": "PDF-Inhalte als LlamaIndex-kompatible JSON-Dokumente extrahieren. Ideal für RAG-Pipelines, LangChain und andere LLM-Frameworks."
+  },
+  "rasterizePdf": {
+    "name": "PDF rastern",
+    "subtitle": "Vektorgrafiken und Text in Bilder umwandeln. Ideal zum Reduzieren von Ebenen, Entfernen auswählbaren Texts oder für druckfertige Dateien."
   }
 }

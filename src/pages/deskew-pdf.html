@@ -102,10 +102,13 @@
           <span class="cursor-pointer">Back to Tools</span>
         </button>
 
-        <h1 class="text-2xl font-bold text-white mb-2">
+        <h1
+          class="text-2xl font-bold text-white mb-2"
+          data-i18n="tools:deskewPdf.name"
+        >
           Deskew PDF Free Online - Straighten Tilted Scans
         </h1>
-        <p class="text-gray-400 mb-6">
+        <p data-i18n="tools:deskewPdf.subtitle" class="text-gray-400 mb-6">
           Automatically detect and correct skewed pages in scanned PDFs. Uses
           advanced image processing to straighten tilted documents.
         </p>
@@ -120,8 +123,10 @@
               class="w-10 h-10 mb-3 text-gray-400"
             ></i>
             <p class="mb-2 text-sm text-gray-400">
-              <span class="font-semibold">Click to select files</span> or drag
-              and drop
+              <span class="font-semibold" data-i18n="upload.clickToSelect"
+                >Click to select files</span
+              >
+              or drag and drop
             </p>
             <p class="text-xs text-gray-500">One or more PDF files</p>
             <p class="text-xs text-gray-500">
@@ -247,139 +252,6 @@
         </button>
       </div>
     </div>
-
-    <section class="max-w-4xl mx-auto px-4 py-12">
-      <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 text-center">
-        How It Works
-      </h2>
-      <div class="space-y-6">
-        <div class="flex items-start gap-4">
-          <div
-            class="flex-shrink-0 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold"
-          >
-            1
-          </div>
-          <div class="flex-1">
-            <h3 class="text-lg font-semibold text-white mb-1">Upload PDF</h3>
-            <p class="text-gray-400">
-              Select your scanned PDF with tilted pages
-            </p>
-          </div>
-        </div>
-        <div class="flex items-start gap-4">
-          <div
-            class="flex-shrink-0 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold"
-          >
-            2
-          </div>
-          <div class="flex-1">
-            <h3 class="text-lg font-semibold text-white mb-1">Auto-Detect</h3>
-            <p class="text-gray-400">OpenCV analyzes and detects skew angles</p>
-          </div>
-        </div>
-        <div class="flex items-start gap-4">
-          <div
-            class="flex-shrink-0 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold"
-          >
-            3
-          </div>
-          <div class="flex-1">
-            <h3 class="text-lg font-semibold text-white mb-1">Download</h3>
-            <p class="text-gray-400">Get your straightened PDF instantly</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="max-w-6xl mx-auto px-4 py-12">
-      <h2 class="text-2xl md:text-3xl font-bold text-white mb-6 text-center">
-        Related PDF Tools
-      </h2>
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <a
-          href="rasterize-pdf.html"
-          class="block bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700"
-        >
-          <h3 class="text-white font-semibold mb-1">Rasterize PDF</h3>
-          <p class="text-gray-400 text-sm">Convert to image-based PDF</p>
-        </a>
-        <a
-          href="compress-pdf.html"
-          class="block bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700"
-        >
-          <h3 class="text-white font-semibold mb-1">Compress PDF</h3>
-          <p class="text-gray-400 text-sm">Reduce PDF file size</p>
-        </a>
-        <a
-          href="repair-pdf.html"
-          class="block bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700"
-        >
-          <h3 class="text-white font-semibold mb-1">Repair PDF</h3>
-          <p class="text-gray-400 text-sm">Fix corrupted PDF files</p>
-        </a>
-        <a
-          href="rotate-pdf.html"
-          class="block bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700"
-        >
-          <h3 class="text-white font-semibold mb-1">Rotate PDF</h3>
-          <p class="text-gray-400 text-sm">Rotate PDF pages</p>
-        </a>
-        <a
-          href="ocr-pdf.html"
-          class="block bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700"
-        >
-          <h3 class="text-white font-semibold mb-1">OCR PDF</h3>
-          <p class="text-gray-400 text-sm">Make PDF searchable</p>
-        </a>
-      </div>
-    </section>
-
-    <section class="max-w-4xl mx-auto px-4 py-12">
-      <h2 class="text-2xl md:text-3xl font-bold text-white mb-6 text-center">
-        Frequently Asked Questions
-      </h2>
-      <div class="space-y-4">
-        <details class="bg-gray-800 p-5 rounded-lg border border-gray-700">
-          <summary
-            class="cursor-pointer font-semibold text-white flex items-center justify-between"
-          >
-            What is PDF deskewing?
-            <i data-lucide="chevron-down" class="w-5 h-5"></i>
-          </summary>
-          <p class="mt-3 text-gray-400">
-            Deskewing is the process of correcting tilted or rotated pages in
-            scanned documents. When you scan a document, it's common for pages
-            to be slightly skewed. This tool automatically detects and corrects
-            that skew.
-          </p>
-        </details>
-        <details class="bg-gray-800 p-5 rounded-lg border border-gray-700">
-          <summary
-            class="cursor-pointer font-semibold text-white flex items-center justify-between"
-          >
-            How accurate is the skew detection?
-            <i data-lucide="chevron-down" class="w-5 h-5"></i>
-          </summary>
-          <p class="mt-3 text-gray-400">
-            Our tool uses OpenCV's advanced image processing algorithms to
-            detect skew angles with high precision. It works best on documents
-            with clear text content.
-          </p>
-        </details>
-        <details class="bg-gray-800 p-5 rounded-lg border border-gray-700">
-          <summary
-            class="cursor-pointer font-semibold text-white flex items-center justify-between"
-          >
-            Are my files private?
-            <i data-lucide="chevron-down" class="w-5 h-5"></i>
-          </summary>
-          <p class="mt-3 text-gray-400">
-            Yes! All processing happens entirely in your browser using
-            WebAssembly. Your files never leave your device.
-          </p>
-        </details>
-      </div>
-    </section>
 
     {{> footer }}
     <script type="module" src="/src/js/utils/lucide-init.ts"></script>

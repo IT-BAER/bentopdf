@@ -254,9 +254,11 @@ function applySimpleMode(): void {
     const section = document.getElementById(id);
     if (section) {
       section.style.display = 'none';
-      console.log('[BentoPDF Config] Hidden section:', id);
-    } else {
-      console.log('[BentoPDF Config] Section not found:', id);
+      if (import.meta.env.DEV) {
+        console.debug('[BentoPDF Config] Hidden section:', id);
+      }
+    } else if (import.meta.env.DEV) {
+      console.debug('[BentoPDF Config] Section not found:', id);
     }
   });
 
@@ -264,14 +266,18 @@ function applySimpleMode(): void {
   const allNavs = document.querySelectorAll('nav');
   allNavs.forEach((nav) => {
     (nav as HTMLElement).style.display = 'none';
-    console.log('[BentoPDF Config] Hidden nav element');
+    if (import.meta.env.DEV) {
+      console.debug('[BentoPDF Config] Hidden nav element');
+    }
   });
 
   // Hide footer
   const allFooters = document.querySelectorAll('footer');
   allFooters.forEach((footer) => {
     (footer as HTMLElement).style.display = 'none';
-    console.log('[BentoPDF Config] Hidden footer element');
+    if (import.meta.env.DEV) {
+      console.debug('[BentoPDF Config] Hidden footer element');
+    }
   });
 
   // Also hide all section dividers
