@@ -1,10 +1,10 @@
 import { resetState } from './state.js';
 import { formatBytes, getPDFDocument } from './utils/helpers.js';
-import { tesseractLanguages } from './config/tesseract-languages.js';
 import {
   renderPagesProgressively,
   cleanupLazyRendering,
 } from './utils/render-utils.js';
+import { initPagePreview } from './utils/page-preview.js';
 import { icons, createIcons } from 'lucide';
 import Sortable from 'sortablejs';
 import {
@@ -13,6 +13,7 @@ import {
 } from './utils/rotation-state.js';
 import * as pdfjsLib from 'pdfjs-dist';
 import { t } from './i18n/i18n';
+import type { FileInputOptions } from '@/types';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -111,8 +112,8 @@ export const hideLoader = () => {
 };
 
 export const showAlert = (
-  title: any,
-  message: any,
+  title: string,
+  message: string,
   type: string = 'error',
   callback?: () => void
 ) => {
@@ -136,7 +137,7 @@ export const hideAlert = () => {
   if (dom.alertModal) dom.alertModal.classList.add('hidden');
 };
 
-export const switchView = (view: any) => {
+export const switchView = (view: string) => {
   if (view === 'grid') {
     dom.gridView.classList.remove('hidden');
     dom.toolInterface.classList.add('hidden');
@@ -169,11 +170,13 @@ export const switchView = (view: any) => {
   }
 };
 
-const thumbnailState = {
+const thumbnailState: {
+  sortableInstances: Record<string, Sortable>;
+} = {
   sortableInstances: {},
 };
 
-function initializeOrganizeSortable(containerId: any) {
+function initializeOrganizeSortable(containerId: string) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
@@ -188,10 +191,10 @@ function initializeOrganizeSortable(containerId: any) {
     dragClass: 'sortable-drag',
     filter: '.delete-page-btn',
     preventOnFilter: true,
-    onStart: function (evt: any) {
+    onStart: function (evt: Sortable.SortableEvent) {
       evt.item.style.opacity = '0.5';
     },
-    onEnd: function (evt: any) {
+    onEnd: function (evt: Sortable.SortableEvent) {
       evt.item.style.opacity = '1';
     },
   });
@@ -202,7 +205,10 @@ function initializeOrganizeSortable(containerId: any) {
  * @param {string} toolId The ID of the active tool.
  * @param {object} pdfDoc The loaded pdf-lib document instance.
  */
-export const renderPageThumbnails = async (toolId: any, pdfDoc: any) => {
+export const renderPageThumbnails = async (
+  toolId: string,
+  pdfDoc: { save: () => Promise<Uint8Array> }
+) => {
   const containerId =
     toolId === 'organize'
       ? 'page-organizer'
@@ -228,31 +234,32 @@ export const renderPageThumbnails = async (toolId: any, pdfDoc: any) => {
   // Function to create wrapper element for each page
   const createWrapper = (canvas: HTMLCanvasElement, pageNumber: number) => {
     const wrapper = document.createElement('div');
-    // @ts-expect-error TS(2322) FIXME: Type 'number' is not assignable to type 'string'.
-    wrapper.dataset.pageIndex = pageNumber - 1;
+    wrapper.dataset.pageIndex = String(pageNumber - 1);
 
     const imgContainer = document.createElement('div');
-    imgContainer.className =
-      'w-full h-80 sm:h-96 md:h-[28rem] bg-gray-900 rounded-lg flex items-center justify-center overflow-hidden border-2 border-gray-600';
+    imgContainer.className = 'relative';
 
     const img = document.createElement('img');
     img.src = canvas.toDataURL();
-    img.className = 'max-w-full max-h-full object-contain';
+    img.className = 'rounded-md shadow-md max-w-full h-auto';
 
     imgContainer.appendChild(img);
 
-    if (toolId === 'organize') {
-      wrapper.className = 'page-thumbnail relative group';
-      wrapper.appendChild(imgContainer);
+    const pageNumSpan = document.createElement('div');
+    pageNumSpan.className =
+      'absolute top-1 left-1 bg-indigo-600 text-white text-xs px-2 py-1 rounded-md font-semibold shadow-lg z-10 pointer-events-none';
+    pageNumSpan.textContent = pageNumber.toString();
 
-      const pageNumSpan = document.createElement('span');
-      pageNumSpan.className =
-        'absolute top-1 left-1 bg-gray-900 bg-opacity-75 text-white text-xs rounded-full px-2 py-1';
-      pageNumSpan.textContent = pageNumber.toString();
+    if (toolId === 'organize') {
+      wrapper.className =
+        'page-thumbnail relative cursor-move flex flex-col items-center gap-1 p-2 border-2 border-gray-600 hover:border-indigo-500 rounded-lg bg-gray-700 transition-colors group';
+
+      imgContainer.appendChild(pageNumSpan);
+      wrapper.appendChild(imgContainer);
 
       const deleteBtn = document.createElement('button');
       deleteBtn.className =
-        'delete-page-btn absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center';
+        'delete-page-btn absolute top-1 right-1 bg-red-600 hover:bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center z-10';
       deleteBtn.innerHTML = '&times;';
       deleteBtn.addEventListener('click', (e) => {
         (e.currentTarget as HTMLElement).parentElement.remove();
@@ -260,7 +267,7 @@ export const renderPageThumbnails = async (toolId: any, pdfDoc: any) => {
         // Renumber remaining pages
         const pages = container.querySelectorAll('.page-thumbnail');
         pages.forEach((page, index) => {
-          const numSpan = page.querySelector('span');
+          const numSpan = page.querySelector('.bg-indigo-600');
           if (numSpan) {
             numSpan.textContent = (index + 1).toString();
           }
@@ -269,10 +276,10 @@ export const renderPageThumbnails = async (toolId: any, pdfDoc: any) => {
         initializeOrganizeSortable(containerId);
       });
 
-      wrapper.append(pageNumSpan, deleteBtn);
+      wrapper.appendChild(deleteBtn);
     } else if (toolId === 'rotate') {
       wrapper.className =
-        'page-rotator-item flex flex-col items-center gap-2 relative group';
+        'page-rotator-item flex flex-col items-center gap-2 p-2 border-2 border-gray-600 hover:border-indigo-500 rounded-lg bg-gray-700 transition-colors relative group';
 
       // Read rotation from state (handles "Rotate All" on lazy-loaded pages)
       const rotationStateArray = getRotationState();
@@ -287,14 +294,8 @@ export const renderPageThumbnails = async (toolId: any, pdfDoc: any) => {
         img.style.transform = `rotate(${initialRotation}deg)`;
       }
 
+      imgContainer.appendChild(pageNumSpan);
       wrapper.appendChild(imgContainer);
-
-      // Page Number Overlay (Top Left)
-      const pageNumSpan = document.createElement('span');
-      pageNumSpan.className =
-        'absolute top-2 left-2 bg-gray-900 bg-opacity-75 text-white text-xs font-medium rounded-md px-2 py-1 shadow-sm z-10 pointer-events-none';
-      pageNumSpan.textContent = pageNumber.toString();
-      wrapper.appendChild(pageNumSpan);
 
       const controlsDiv = document.createElement('div');
       controlsDiv.className =
@@ -374,20 +375,11 @@ export const renderPageThumbnails = async (toolId: any, pdfDoc: any) => {
       wrapper.appendChild(controlsDiv);
     } else if (toolId === 'delete-pages') {
       wrapper.className =
-        'page-thumbnail relative group cursor-pointer transition-all duration-200';
+        'page-thumbnail relative cursor-pointer flex flex-col items-center gap-1 p-2 border-2 border-gray-600 hover:border-indigo-500 rounded-lg bg-gray-700 transition-colors group';
       wrapper.dataset.pageNumber = pageNumber.toString();
 
-      const innerContainer = document.createElement('div');
-      innerContainer.className =
-        'relative w-full h-80 sm:h-96 md:h-[28rem] bg-gray-900 rounded-lg flex items-center justify-center overflow-hidden border-2 border-gray-600 transition-colors duration-200';
-      innerContainer.appendChild(img);
-      wrapper.appendChild(innerContainer);
-
-      const pageNumSpan = document.createElement('span');
-      pageNumSpan.className =
-        'absolute top-2 left-2 bg-gray-900 bg-opacity-75 text-white text-xs font-medium rounded-md px-2 py-1 shadow-sm z-10 pointer-events-none';
-      pageNumSpan.textContent = pageNumber.toString();
-      wrapper.appendChild(pageNumSpan);
+      imgContainer.appendChild(pageNumSpan);
+      wrapper.appendChild(imgContainer);
 
       wrapper.addEventListener('click', () => {
         const input = document.getElementById(
@@ -448,6 +440,9 @@ export const renderPageThumbnails = async (toolId: any, pdfDoc: any) => {
 
     // Reinitialize lucide icons for dynamically added elements
     createIcons({ icons });
+
+    // Attach Quick Look page preview
+    initPagePreview(container, pdf);
   } catch (error) {
     console.error('Error rendering page thumbnails:', error);
     showAlert(t('multiTool.error'), t('multiTool.errorRendering'));
@@ -461,10 +456,10 @@ export const renderPageThumbnails = async (toolId: any, pdfDoc: any) => {
  * @param {HTMLElement} container The DOM element to render the list into.
  * @param {File[]} files The array of file objects.
  */
-export const renderFileDisplay = (container: any, files: any) => {
+export const renderFileDisplay = (container: HTMLElement, files: File[]) => {
   container.textContent = '';
   if (files.length > 0) {
-    files.forEach((file: any) => {
+    files.forEach((file: File) => {
       const fileDiv = document.createElement('div');
       fileDiv.className =
         'flex items-center justify-between bg-gray-700 p-3 rounded-lg text-sm';
@@ -483,13 +478,10 @@ export const renderFileDisplay = (container: any, files: any) => {
   }
 };
 
-const createFileInputHTML = (options = {}) => {
-  // @ts-expect-error TS(2339) FIXME: Property 'multiple' does not exist on type '{}'.
+const createFileInputHTML = (options: FileInputOptions = {}) => {
   const multiple = options.multiple ? 'multiple' : '';
-  // @ts-expect-error TS(2339) FIXME: Property 'accept' does not exist on type '{}'.
   const acceptedFiles = options.accept || 'application/pdf';
-  // @ts-expect-error TS(2339) FIXME: Property 'showControls' does not exist on type '{}... Remove this comment to see the full error message
-  const showControls = options.showControls || false; // NEW: Add this parameter
+  const showControls = options.showControls || false;
 
   return `
         <div id="drop-zone" class="relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer bg-gray-900 hover:bg-gray-700 transition-colors duration-300">

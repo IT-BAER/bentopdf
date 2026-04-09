@@ -86,9 +86,73 @@
     "name": "Page Numbers",
     "subtitle": "Insert page numbers into your document."
   },
+  "addPageLabels": {
+    "name": "Add Page Labels",
+    "subtitle": "Apply PDF page labels with Roman numerals, prefixes, and custom starts.",
+    "uploadHint": "PDF file",
+    "howLabelsWorkTitle": "How labels work",
+    "howLabelsWorkStep1": "Leave Page Range empty to label all pages.",
+    "howLabelsWorkStep2": "Use styles like Roman numerals for front matter and decimal numbering for the main body.",
+    "howLabelsWorkStep3": "Use Prefix with Start Value 0 to create labels such as A-0, A-1, A-2.",
+    "howLabelsWorkStep4": "Enable progress when one rule uses a disjoint range such as 1-9,30-40 or odd.",
+    "labelRulesTitle": "Label Rules",
+    "addRule": "Add Rule",
+    "removeExistingLabels": "Remove existing page labels before applying these rules",
+    "cpdfNote": "This tool uses CoherentPDF in your browser. If CoherentPDF is not configured, you will be prompted to set it up in WASM Settings.",
+    "processButton": "Add Page Labels",
+    "howItWorksUploadTitle": "Upload File",
+    "howItWorksUploadDescription": "Choose the PDF you want to relabel.",
+    "howItWorksDefineTitle": "Define Rules",
+    "howItWorksDefineDescription": "Set one or more page label rules with page ranges, styles, prefixes, and starting values.",
+    "howItWorksDownloadTitle": "Download",
+    "howItWorksDownloadDescription": "Save the updated PDF with its new page labels.",
+    "relatedToolsTitle": "Related PDF Tools",
+    "faqWhatIsQuestion": "What is a page label?",
+    "faqWhatIsAnswer": "A page label is the numbering shown by PDF readers in thumbnails, page navigation, and print dialogs. It does not print new text onto the page itself.",
+    "faqMixQuestion": "Can I mix Roman numerals and normal numbers?",
+    "faqMixAnswer": "Yes. Add multiple rules, such as 1-4 with LowercaseRoman and 5-20 with DecimalArabic.",
+    "faqPrivacyQuestion": "Do my files stay private?",
+    "faqPrivacyAnswer": "Yes. The processing happens in your browser using CoherentPDF WASM. Your PDF does not leave your device.",
+    "invalidFileTitle": "Invalid File",
+    "invalidFileMessage": "Please upload a valid PDF file.",
+    "loadingPdf": "Loading PDF...",
+    "protectedPdfTitle": "Protected PDF",
+    "protectedPdfMessage": "This PDF is password-protected. Please use the Decrypt or Change Permissions tool first.",
+    "loadErrorMessage": "Failed to load PDF file. The file may be invalid, corrupted, or password-protected.",
+    "fileMeta": "{{size}} • {{count}} pages",
+    "ruleTitle": "Label Rule {{number}}",
+    "pageRangeLabel": "Page Range",
+    "pageRangePlaceholder": "All pages, or e.g. 1-4, 7, odd",
+    "labelStyleLabel": "Label Style",
+    "labelPrefixLabel": "Label Prefix",
+    "labelPrefixPlaceholder": "Optional prefix, e.g. A-",
+    "startValueLabel": "Start Value",
+    "continueNumbering": "Continue numbering across disjoint ranges",
+    "examplesNote": "Examples: 1-4 for Roman front matter, 15-20 with prefix A- and start value 0, or odd with progress enabled.",
+    "uploadFirstMessage": "Please upload a PDF file first.",
+    "applyingLabels": "Applying page labels...",
+    "invalidRangeMessage": "Rule {{number}} has an invalid page range: {{range}}",
+    "allPages": "all pages",
+    "emptyOutputMessage": "CoherentPDF produced an empty file.",
+    "successMessage": "Page labels added successfully!",
+    "processErrorMessage": "Could not add page labels.",
+    "styleOptions": {
+      "DecimalArabic": "Decimal Arabic",
+      "LowercaseRoman": "Lowercase Roman",
+      "UppercaseRoman": "Uppercase Roman",
+      "LowercaseLetters": "Lowercase Letters",
+      "UppercaseLetters": "Uppercase Letters",
+      "NoLabelPrefixOnly": "No Label Prefix Only"
+    }
+  },
+  "batesNumbering": {
+    "name": "Bates Numbering",
+    "subtitle": "Add sequential Bates numbers across one or more PDF files."
+  },
   "addWatermark": {
     "name": "Add Watermark",
-    "subtitle": "Stamp text or an image over your PDF pages."
+    "subtitle": "Stamp text or an image over your PDF pages.",
+    "applyToAllPages": "Apply to all pages"
   },
   "headerFooter": {
     "name": "Header & Footer",
@@ -97,6 +161,37 @@
   "invertColors": {
     "name": "Invert Colors",
     "subtitle": "Create a \"dark mode\" version of your PDF."
+  },
+  "scannerEffect": {
+    "name": "Scanner Effect",
+    "subtitle": "Make your PDF look like a scanned document.",
+    "scanSettings": "Scan Settings",
+    "colorspace": "Colorspace",
+    "gray": "Gray",
+    "border": "Border",
+    "rotate": "Rotate",
+    "rotateVariance": "Rotate Variance",
+    "brightness": "Brightness",
+    "contrast": "Contrast",
+    "blur": "Blur",
+    "noise": "Noise",
+    "yellowish": "Yellowish",
+    "resolution": "Resolution",
+    "processButton": "Apply Scanner Effect"
+  },
+  "adjustColors": {
+    "name": "Adjust Colors",
+    "subtitle": "Fine-tune brightness, contrast, saturation and more in your PDF.",
+    "colorSettings": "Color Settings",
+    "brightness": "Brightness",
+    "contrast": "Contrast",
+    "saturation": "Saturation",
+    "hueShift": "Hue Shift",
+    "temperature": "Temperature",
+    "tint": "Tint",
+    "gamma": "Gamma",
+    "sepia": "Sepia",
+    "processButton": "Apply Color Adjustments"
   },
   "backgroundColor": {
     "name": "Background Color",
@@ -127,7 +222,8 @@
   },
   "removeBlankPages": {
     "name": "Remove Blank Pages",
-    "subtitle": "Automatically detect and delete blank pages."
+    "subtitle": "Automatically detect and delete blank pages.",
+    "sensitivityHint": "Higher = stricter, only purely blank pages. Lower = allows pages with some content."
   },
   "imageToPdf": {
     "name": "Images to PDF",
@@ -167,23 +263,119 @@
   },
   "pdfToJpg": {
     "name": "PDF to JPG",
-    "subtitle": "Convert each PDF page into a JPG image."
+    "subtitle": "Convert each PDF page into a JPG image.",
+    "imageQuality": "Image Quality",
+    "imageQualityExplanation": "Higher quality = larger file size",
+    "alert": {
+      "invalidFile": "Invalid File",
+      "invalidFileExplanation": "Please upload a PDF file.",
+      "noFile": "No File",
+      "noFileExplanation": "Please upload a PDF file first.",
+      "conversionSuccess": "PDF converted to JPGs successfully!",
+      "conversionError": "Failed to convert PDF to JPG. The file might be corrupted."
+    },
+    "loader": {
+      "converting": "Converting to JPG..."
+    }
   },
   "pdfToPng": {
     "name": "PDF to PNG",
-    "subtitle": "Convert each PDF page into a PNG image."
+    "subtitle": "Convert each PDF page into a PNG image.",
+    "imageScale": "Image Scale",
+    "imageScaleExplanation": "Higher scale = better quality but larger file size",
+    "alert": {
+      "invalidFile": "Invalid File",
+      "invalidFileExplanation": "Please upload a PDF file.",
+      "noFile": "No File",
+      "noFileExplanation": "Please upload a PDF file first.",
+      "conversionSuccess": "PDF converted to PNGs successfully!",
+      "conversionError": "Failed to convert PDF to PNG. The file might be corrupted."
+    },
+    "loader": {
+      "converting": "Converting to PNG..."
+    }
   },
   "pdfToWebp": {
     "name": "PDF to WebP",
-    "subtitle": "Convert each PDF page into a WebP image."
+    "subtitle": "Convert each PDF page into a WebP image.",
+    "imageQuality": "Image Quality",
+    "imageQualityExplanation": "Higher quality = larger file size",
+    "alert": {
+      "invalidFile": "Invalid File",
+      "invalidFileExplanation": "Please upload a PDF file.",
+      "noFile": "No File",
+      "noFileExplanation": "Please upload a PDF file first.",
+      "conversionSuccess": "PDF converted to WebPs successfully!",
+      "conversionError": "Failed to convert PDF to WebP. The file might be corrupted."
+    },
+    "loader": {
+      "converting": "Converting to WebP..."
+    }
   },
   "pdfToBmp": {
     "name": "PDF to BMP",
-    "subtitle": "Convert each PDF page into a BMP image."
+    "subtitle": "Convert each PDF page into a BMP image.",
+    "alert": {
+      "invalidFile": "Invalid File",
+      "invalidFileExplanation": "Please upload a PDF file.",
+      "noFile": "No File",
+      "noFileExplanation": "Please upload a PDF file first.",
+      "conversionSuccess": "PDF converted to BMPs successfully!",
+      "conversionError": "Failed to convert PDF to BMP. The file might be corrupted."
+    },
+    "loader": {
+      "converting": "Converting to BMP..."
+    }
   },
   "pdfToTiff": {
     "name": "PDF to TIFF",
-    "subtitle": "Convert each PDF page into a TIFF image."
+    "subtitle": "Convert each PDF page into a TIFF image.",
+    "dpi": "DPI (Resolution)",
+    "dpiExplanation": "Higher DPI = better quality for printing, larger file size",
+    "compression": "Compression",
+    "compressionExplanation": "LZW and Deflate are lossless. CCITT Group 4 is best for B&W scanned documents.",
+    "colorMode": "Color Mode",
+    "multiPage": "Save as multi-page TIFF (single file)",
+    "loadingVips": "Loading image processor...",
+    "converting": "Converting to TIFF...",
+    "alert": {
+      "invalidFile": "Invalid File",
+      "invalidFileExplanation": "Please upload a PDF file.",
+      "noFile": "No File",
+      "noFileExplanation": "Please upload a PDF file first.",
+      "conversionSuccess": "PDF converted to TIFFs successfully!",
+      "conversionError": "Failed to convert PDF to TIFF. The file might be corrupted."
+    }
+  },
+  "pdfToCbz": {
+    "name": "PDF to CBZ",
+    "subtitle": "Convert a PDF into a CBZ (Comic Book Archive) file for comic readers.",
+    "imageFormat": "Image Format",
+    "quality": "Image Quality",
+    "qualityExplanation": "Higher quality = larger file size",
+    "scale": "Scale",
+    "scaleExplanation": "Higher scale = better quality for high-res screens",
+    "grayscale": "Convert to grayscale",
+    "manga": "Manga mode (right-to-left)",
+    "includeMetadata": "Include ComicInfo.xml metadata",
+    "titleLabel": "Title",
+    "seriesLabel": "Series",
+    "authorLabel": "Author(s)",
+    "numberLabel": "#",
+    "volumeLabel": "Vol.",
+    "publisherLabel": "Publisher",
+    "tagsLabel": "Tags / Genre",
+    "yearLabel": "Published Year",
+    "ratingLabel": "Rating (0-5)",
+    "converting": "Converting to CBZ...",
+    "alert": {
+      "invalidFile": "Invalid File",
+      "invalidFileExplanation": "Please upload a PDF file.",
+      "noFile": "No File",
+      "noFileExplanation": "Please upload a PDF file first.",
+      "conversionSuccess": "PDF converted to CBZ successfully!",
+      "conversionError": "Failed to convert PDF to CBZ. The file might be corrupted."
+    }
   },
   "pdfToGreyscale": {
     "name": "PDF to Greyscale",
@@ -255,7 +447,47 @@
   },
   "comparePdfs": {
     "name": "Compare PDFs",
-    "subtitle": "Compare two PDFs side by side."
+    "subtitle": "Compare two PDFs side by side.",
+    "firstPdf": "First PDF",
+    "secondPdf": "Second PDF",
+    "clickOrDrop": "Click or drop",
+    "page": "Page",
+    "overlay": "Overlay",
+    "sideBySide": "Side-by-Side",
+    "flicker": "Flicker",
+    "syncScroll": "Sync scroll",
+    "export": "Export",
+    "exportAsPdf": "Export as PDF",
+    "splitView": "Split view",
+    "alternating": "Alternating",
+    "leftDocument": "Left Document",
+    "rightDocument": "Right Document",
+    "original": "Original",
+    "modified": "Modified",
+    "searchChanges": "Search changes...",
+    "deleted": "Deleted",
+    "added": "Added",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "prevChange": "Previous change",
+    "nextChange": "Next change",
+    "uploadTwoPdfs": "Upload two PDFs to see differences.",
+    "noDifferences": "No differences detected on this page.",
+    "noMatchingChanges": "No changes match the current filter.",
+    "pageNotExist": "Page {{page}} does not exist in this PDF.",
+    "noPairedPage": "No paired page for this side.",
+    "buildingModel": "Building page pairing model...",
+    "indexingPdf": "Indexing PDF {{num}} page {{page}} of {{total}}...",
+    "loadingComparison": "Loading comparison {{current}} of {{total}}...",
+    "runningOcr": "Running OCR on page {{page}}...",
+    "preparingExport": "Preparing PDF export...",
+    "renderingPage": "Rendering page {{current}} of {{total}}...",
+    "exportError": "Export Error",
+    "exportFailed": "Could not export comparison PDF.",
+    "loadingFile": "Loading {{name}}...",
+    "invalidFile": "Invalid File",
+    "invalidFileMsg": "Please select a valid PDF file.",
+    "loadError": "Could not load PDF. It may be corrupt or password-protected."
   },
   "posterizePdf": {
     "name": "Posterize PDF",
@@ -516,6 +748,15 @@
     "pageTitle": "Validate PDF Signature - Verify Digital Signatures | BentoPDF",
     "subtitle": "Verify digital signatures in your PDF files. Check certificate validity, view signer details, and confirm document integrity. All processing happens in your browser."
   },
+  "timestampPdf": {
+    "name": "Timestamp PDF",
+    "pageTitle": "Timestamp PDF Online Free - RFC 3161 Document Timestamp | BentoPDF",
+    "subtitle": "Add an RFC 3161 document timestamp to your PDF using a trusted Time Stamp Authority (TSA) server. Proves your document existed at a specific point in time. No certificate required.",
+    "tsaSectionTitle": "Timestamp Server (TSA)",
+    "selectTsa": "Select a TSA server",
+    "applyTimestamp": "Apply Timestamp",
+    "successMessage": "PDF timestamped successfully! The timestamp can be verified in Adobe Acrobat and other PDF readers."
+  },
   "emailToPdf": {
     "name": "Email to PDF",
     "subtitle": "Convert email files (EML, MSG) to PDF format. Supports Outlook exports and standard email formats.",
@@ -530,32 +771,92 @@
     "name": "Deskew PDF",
     "subtitle": "Automatically straighten tilted scanned pages using OpenCV."
   },
+  "pdfToWord": {
+    "name": "PDF to Word",
+    "subtitle": "Convert PDF files to editable Word documents."
+  },
   "extractImages": {
     "name": "Extract Images",
-    "subtitle": "Extract all embedded images from PDF files. Download individually or as a ZIP archive."
-  },
-  "pdfLayers": {
-    "name": "PDF Layers",
-    "subtitle": "Manage Optional Content Groups (OCG) in your PDF. View, toggle visibility, add new layers, or delete existing ones."
-  },
-  "pdfToDocx": {
-    "name": "PDF to DOCX",
-    "subtitle": "Convert PDF files to editable Word documents. Preserves text, formatting, and layout."
+    "subtitle": "Extract all embedded images from your PDF files."
   },
   "pdfToMarkdown": {
     "name": "PDF to Markdown",
-    "subtitle": "Convert PDF files to Markdown format. Preserves text structure with optional image embedding."
-  },
-  "pdfToPdfa": {
-    "name": "PDF to PDF/A",
-    "subtitle": "Convert your PDF documents to PDF/A format for long-term archiving and preservation."
+    "subtitle": "Convert PDF text and tables to Markdown format."
   },
   "preparePdfForAi": {
     "name": "Prepare PDF for AI",
-    "subtitle": "Extract PDF content as LlamaIndex-compatible JSON documents. Perfect for RAG pipelines, LangChain, and other LLM frameworks."
+    "subtitle": "Extract PDF content as LlamaIndex JSON for RAG/LLM pipelines."
+  },
+  "pdfOcg": {
+    "name": "PDF OCG",
+    "subtitle": "View, toggle, add, and delete OCG layers in your PDF."
+  },
+  "pdfToPdfa": {
+    "name": "PDF to PDF/A",
+    "subtitle": "Convert PDF to PDF/A for long-term archiving."
   },
   "rasterizePdf": {
     "name": "Rasterize PDF",
-    "subtitle": "Convert vector graphics and text to images. Useful for flattening layers, removing selectable text, or creating print-ready files."
+    "subtitle": "Convert PDF to image-based PDF. Flatten layers and remove selectable text."
+  },
+  "pdfWorkflow": {
+    "name": "PDF Workflow Builder",
+    "subtitle": "Build custom PDF processing pipelines with a visual node editor.",
+    "nodes": "Nodes",
+    "searchNodes": "Search nodes...",
+    "run": "Run",
+    "clear": "Clear",
+    "save": "Save",
+    "load": "Load",
+    "export": "Export",
+    "import": "Import",
+    "ready": "Ready",
+    "settings": "Settings",
+    "processing": "Processing...",
+    "saveTemplate": "Save Template",
+    "templateName": "Template Name",
+    "templatePlaceholder": "e.g. Invoice Workflow",
+    "cancel": "Cancel",
+    "loadTemplate": "Load Template",
+    "noTemplates": "No saved templates yet.",
+    "ok": "OK",
+    "workflowCompleted": "Workflow completed",
+    "errorDuringExecution": "Error during execution",
+    "addNodeError": "Add at least one node to run the workflow.",
+    "needInputOutput": "Your workflow needs at least one input node and one output node to run.",
+    "enterName": "Please enter a name.",
+    "templateExists": "A template with this name already exists.",
+    "templateSaved": "Template \"{{name}}\" saved.",
+    "templateLoaded": "Template \"{{name}}\" loaded.",
+    "failedLoadTemplate": "Failed to load template.",
+    "noSettings": "No configurable settings for this node.",
+    "advancedSettings": "Advanced Settings"
+  },
+  "pdfOverlay": {
+    "name": "PDF Overlay",
+    "subtitle": "Overlay or underlay pages from one PDF onto another.",
+    "basePdfLabel": "Base PDF",
+    "uploadBasePdf": "Upload base PDF",
+    "overlayPdfLabel": "Overlay / Underlay PDF",
+    "uploadOverlayPdf": "Upload overlay/underlay PDF",
+    "modeLabel": "Mode",
+    "overlayOption": "Overlay (on top of pages)",
+    "underlayOption": "Underlay (behind pages)",
+    "pageRangeLabel": "Apply to pages (optional)",
+    "pageRangeHint": "Use \"z\" for the last page. Leave empty to apply to all pages.",
+    "repeatLabel": "Loop overlay/underlay pages if base is longer",
+    "processButton": "Apply Overlay / Underlay",
+    "howItWorksUploadTitle": "Upload Two PDFs",
+    "howItWorksUploadDescription": "Upload your base PDF and the PDF you want to overlay or underlay.",
+    "howItWorksModeTitle": "Choose Mode",
+    "howItWorksModeDescription": "Select overlay (on top) or underlay (behind). Optionally set a page range and repeat.",
+    "howItWorksDownloadTitle": "Download",
+    "howItWorksDownloadDescription": "Download your PDF with the overlay or underlay applied.",
+    "faqDifferenceQuestion": "What is the difference between overlay and underlay?",
+    "faqDifferenceAnswer": "Overlay places pages on top of your base PDF (like a watermark). Underlay places pages behind your base PDF (like a letterhead or background).",
+    "faqSinglePageQuestion": "Can I use a single-page PDF as overlay for all pages?",
+    "faqSinglePageAnswer": "Yes! Enable the \"Loop\" option and your overlay PDF pages will repeat across all base pages. A single-page watermark will apply to every page.",
+    "faqPrivacyQuestion": "Are my files private and secure?",
+    "faqPrivacyAnswer": "Absolutely! All processing happens in your browser. Your files never leave your device, ensuring complete privacy."
   }
 }

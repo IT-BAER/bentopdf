@@ -86,9 +86,73 @@
     "name": "页码",
     "subtitle": "将页码插入到您的文档中。"
   },
+  "addPageLabels": {
+    "name": "添加页面标签",
+    "subtitle": "使用罗马数字、前缀和自定义起始值应用 PDF 页面标签。",
+    "uploadHint": "PDF 文件",
+    "howLabelsWorkTitle": "页面标签的工作方式",
+    "howLabelsWorkStep1": "将页面范围留空即可为所有页面添加标签。",
+    "howLabelsWorkStep2": "前置页可使用罗马数字，正文部分可使用十进制编号等样式。",
+    "howLabelsWorkStep3": "将前缀与起始值 0 结合使用，可创建 A-0、A-1、A-2 之类的标签。",
+    "howLabelsWorkStep4": "当某条规则使用 1-9,30-40 或奇数页之类的不连续范围时，请启用连续编号。",
+    "labelRulesTitle": "标签规则",
+    "addRule": "添加规则",
+    "removeExistingLabels": "应用这些规则前先移除现有页面标签",
+    "cpdfNote": "此工具会在您的浏览器中使用 CoherentPDF。如果尚未配置 CoherentPDF，系统会提示您在 WASM 设置中完成配置。",
+    "processButton": "添加页面标签",
+    "howItWorksUploadTitle": "上传文件",
+    "howItWorksUploadDescription": "选择您想重新标记的 PDF 文件。",
+    "howItWorksDefineTitle": "定义规则",
+    "howItWorksDefineDescription": "设置一条或多条页面标签规则，包括页面范围、样式、前缀和起始值。",
+    "howItWorksDownloadTitle": "下载",
+    "howItWorksDownloadDescription": "保存带有新页面标签的更新后 PDF。",
+    "relatedToolsTitle": "相关 PDF 工具",
+    "faqWhatIsQuestion": "什么是页面标签？",
+    "faqWhatIsAnswer": "页面标签是 PDF 阅读器在缩略图、页面导航和打印对话框中显示的编号。它不会在页面上额外打印新文字。",
+    "faqMixQuestion": "我可以混用罗马数字和普通数字吗？",
+    "faqMixAnswer": "可以。您可以添加多条规则，例如 1-4 使用 LowercaseRoman，5-20 使用 DecimalArabic。",
+    "faqPrivacyQuestion": "我的文件会保持私密吗？",
+    "faqPrivacyAnswer": "会。处理过程在您的浏览器中使用 CoherentPDF WASM 完成，您的 PDF 不会离开您的设备。",
+    "invalidFileTitle": "无效文件",
+    "invalidFileMessage": "请上传有效的 PDF 文件。",
+    "loadingPdf": "正在加载 PDF...",
+    "protectedPdfTitle": "受保护的 PDF",
+    "protectedPdfMessage": "此 PDF 受密码保护。请先使用解密或更改权限工具。",
+    "loadErrorMessage": "无法加载 PDF 文件。该文件可能无效、损坏或受密码保护。",
+    "fileMeta": "{{size}} • {{count}} 页",
+    "ruleTitle": "标签规则 {{number}}",
+    "pageRangeLabel": "页面范围",
+    "pageRangePlaceholder": "所有页面，或例如 1-4、7、奇数页",
+    "labelStyleLabel": "标签样式",
+    "labelPrefixLabel": "标签前缀",
+    "labelPrefixPlaceholder": "可选前缀，例如 A-",
+    "startValueLabel": "起始值",
+    "continueNumbering": "在不连续范围中继续编号",
+    "examplesNote": "示例：1-4 用于罗马数字前言部分，15-20 使用前缀 A- 且起始值为 0，或者启用连续编号的奇数页。",
+    "uploadFirstMessage": "请先上传 PDF 文件。",
+    "applyingLabels": "正在应用页面标签...",
+    "invalidRangeMessage": "规则 {{number}} 的页面范围无效：{{range}}",
+    "allPages": "所有页面",
+    "emptyOutputMessage": "CoherentPDF 生成了一个空文件。",
+    "successMessage": "页面标签添加成功！",
+    "processErrorMessage": "无法添加页面标签。",
+    "styleOptions": {
+      "DecimalArabic": "十进制数字",
+      "LowercaseRoman": "小写罗马数字",
+      "UppercaseRoman": "大写罗马数字",
+      "LowercaseLetters": "小写字母",
+      "UppercaseLetters": "大写字母",
+      "NoLabelPrefixOnly": "仅前缀，无编号"
+    }
+  },
+  "batesNumbering": {
+    "name": "Bates编号",
+    "subtitle": "在一个或多个PDF文件中添加连续的Bates编号。"
+  },
   "addWatermark": {
     "name": "添加水印",
-    "subtitle": "在您的 PDF 页面上添加文字或图片水印。"
+    "subtitle": "在您的 PDF 页面上添加文字或图片水印。",
+    "applyToAllPages": "应用到所有页面"
   },
   "headerFooter": {
     "name": "页眉和页脚",
@@ -97,6 +161,37 @@
   "invertColors": {
     "name": "反转颜色",
     "subtitle": "创建您的 PDF 的“暗黑模式”版本。"
+  },
+  "scannerEffect": {
+    "name": "扫描效果",
+    "subtitle": "让您的 PDF 看起来像扫描文件。",
+    "scanSettings": "扫描设置",
+    "colorspace": "色彩空间",
+    "gray": "灰度",
+    "border": "边框",
+    "rotate": "旋转",
+    "rotateVariance": "旋转偏差",
+    "brightness": "亮度",
+    "contrast": "对比度",
+    "blur": "模糊",
+    "noise": "噪点",
+    "yellowish": "泛黄",
+    "resolution": "分辨率",
+    "processButton": "应用扫描效果"
+  },
+  "adjustColors": {
+    "name": "调整颜色",
+    "subtitle": "微调 PDF 的亮度、对比度、饱和度等。",
+    "colorSettings": "颜色设置",
+    "brightness": "亮度",
+    "contrast": "对比度",
+    "saturation": "饱和度",
+    "hueShift": "色相偏移",
+    "temperature": "色温",
+    "tint": "色调",
+    "gamma": "Gamma",
+    "sepia": "复古色",
+    "processButton": "应用颜色调整"
   },
   "backgroundColor": {
     "name": "背景颜色",
@@ -108,7 +203,10 @@
   },
   "addStamps": {
     "name": "添加印章",
-    "subtitle": "使用注释工具栏向您的 PDF 添加图片印章。"
+    "subtitle": "使用注释工具栏向您的 PDF 添加图片印章。",
+    "usernameLabel": "印章用户名",
+    "usernamePlaceholder": "输入您的姓名（用于印章）",
+    "usernameHint": "此名称将显示在您创建的印章上。"
   },
   "removeAnnotations": {
     "name": "移除注释",
@@ -124,7 +222,8 @@
   },
   "removeBlankPages": {
     "name": "移除空白页",
-    "subtitle": "自动检测并删除空白页。"
+    "subtitle": "自动检测并删除空白页。",
+    "sensitivityHint": "越高 = 越严格，仅检测纯空白页。越低 = 允许包含少量内容的页面。"
   },
   "imageToPdf": {
     "name": "图片转 PDF",
@@ -180,7 +279,45 @@
   },
   "pdfToTiff": {
     "name": "PDF 转 TIFF",
-    "subtitle": "将每一页 PDF 转换为 TIFF 图片。"
+    "subtitle": "将每一页 PDF 转换为 TIFF 图片。",
+    "dpi": "DPI (分辨率)",
+    "dpiExplanation": "DPI 越高 = 打印质量越好，文件越大",
+    "compression": "压缩方式",
+    "compressionExplanation": "LZW 和 Deflate 为无损压缩。CCITT Group 4 最适合黑白扫描文档。",
+    "colorMode": "色彩模式",
+    "multiPage": "保存为多页 TIFF (单个文件)",
+    "loadingVips": "正在加载图像处理器...",
+    "converting": "正在转换为 TIFF..."
+  },
+  "pdfToCbz": {
+    "name": "PDF 转 CBZ",
+    "subtitle": "将 PDF 转换为 CBZ (漫画书归档) 文件，适用于漫画阅读器。",
+    "imageFormat": "图像格式",
+    "quality": "图像质量",
+    "qualityExplanation": "质量越高 = 文件越大",
+    "scale": "缩放",
+    "scaleExplanation": "缩放越高 = 高分辨率屏幕上质量越好",
+    "grayscale": "转换为灰度",
+    "manga": "漫画模式 (从右到左)",
+    "includeMetadata": "包含 ComicInfo.xml 元数据",
+    "titleLabel": "标题",
+    "seriesLabel": "系列",
+    "authorLabel": "作者",
+    "numberLabel": "#",
+    "volumeLabel": "卷",
+    "publisherLabel": "出版社",
+    "tagsLabel": "标签 / 类型",
+    "yearLabel": "出版年份",
+    "ratingLabel": "评分 (0-5)",
+    "converting": "正在转换为 CBZ...",
+    "alert": {
+      "invalidFile": "无效文件",
+      "invalidFileExplanation": "请上传 PDF 文件。",
+      "noFile": "没有文件",
+      "noFileExplanation": "请先上传 PDF 文件。",
+      "conversionSuccess": "PDF 已成功转换为 CBZ!",
+      "conversionError": "无法将 PDF 转换为 CBZ。文件可能已损坏。"
+    }
   },
   "pdfToGreyscale": {
     "name": "PDF 转 灰度",
@@ -252,7 +389,47 @@
   },
   "comparePdfs": {
     "name": "比较 PDF",
-    "subtitle": "并排比较两个 PDF。"
+    "subtitle": "并排比较两个 PDF。",
+    "firstPdf": "第一个 PDF",
+    "secondPdf": "第二个 PDF",
+    "clickOrDrop": "点击或拖放",
+    "page": "页面",
+    "overlay": "叠加",
+    "sideBySide": "并排",
+    "flicker": "闪烁",
+    "syncScroll": "同步滚动",
+    "export": "导出",
+    "exportAsPdf": "导出为 PDF",
+    "splitView": "分屏视图",
+    "alternating": "交替",
+    "leftDocument": "左侧文档",
+    "rightDocument": "右侧文档",
+    "original": "原始",
+    "modified": "修改后",
+    "searchChanges": "搜索更改...",
+    "deleted": "已删除",
+    "added": "已添加",
+    "prevPage": "上一页",
+    "nextPage": "下一页",
+    "prevChange": "上一处更改",
+    "nextChange": "下一处更改",
+    "uploadTwoPdfs": "上传两个 PDF 以查看差异。",
+    "noDifferences": "此页面未检测到差异。",
+    "noMatchingChanges": "没有与当前筛选条件匹配的更改。",
+    "pageNotExist": "此 PDF 中不存在第 {{page}} 页。",
+    "noPairedPage": "此侧没有配对页面。",
+    "buildingModel": "正在构建页面配对模型...",
+    "indexingPdf": "正在索引 PDF {{num}}，第 {{page}} / {{total}} 页...",
+    "loadingComparison": "正在加载比较 {{current}} / {{total}}...",
+    "runningOcr": "正在对第 {{page}} 页运行 OCR...",
+    "preparingExport": "正在准备 PDF 导出...",
+    "renderingPage": "正在渲染第 {{current}} / {{total}} 页...",
+    "exportError": "导出错误",
+    "exportFailed": "无法导出比较 PDF。",
+    "loadingFile": "正在加载 {{name}}...",
+    "invalidFile": "无效文件",
+    "invalidFileMsg": "请选择有效的 PDF 文件。",
+    "loadError": "无法加载 PDF。文件可能已损坏或受密码保护。"
   },
   "posterizePdf": {
     "name": "海报化 PDF",
@@ -513,6 +690,15 @@
     "pageTitle": "验证 PDF 签名 - 验证数字签名 | BentoPDF",
     "subtitle": "验证您的 PDF 文件中的数字签名。检查证书有效性、查看签名者详情并确认文档完整性。所有处理都在您的浏览器中进行。"
   },
+  "timestampPdf": {
+    "name": "PDF 时间戳",
+    "pageTitle": "免费在线 PDF 时间戳 - RFC 3161 文档时间戳 | BentoPDF",
+    "subtitle": "通过可信的 TSA 服务器为您的 PDF 添加 RFC 3161 时间戳。证明您的文档在特定时间点存在。无需证书。",
+    "tsaSectionTitle": "时间戳服务器 (TSA)",
+    "selectTsa": "选择 TSA 服务器",
+    "applyTimestamp": "应用时间戳",
+    "successMessage": "PDF 时间戳添加成功！时间戳可在 Adobe Acrobat 和其他 PDF 阅读器中验证。"
+  },
   "emailToPdf": {
     "name": "邮件转 PDF",
     "subtitle": "将电子邮件文件 (EML, MSG) 转换为 PDF 格式。支持 Outlook 导出和标准邮件格式。",
@@ -526,5 +712,93 @@
   "deskewPdf": {
     "name": "校正 PDF",
     "subtitle": "使用 OpenCV 自动校正倾斜的扫描页面。"
+  },
+  "pdfToWord": {
+    "name": "PDF 转 Word",
+    "subtitle": "将 PDF 文件转换为可编辑的 Word 文档。"
+  },
+  "extractImages": {
+    "name": "提取图片",
+    "subtitle": "从 PDF 文件中提取所有嵌入的图片。"
+  },
+  "pdfToMarkdown": {
+    "name": "PDF 转 Markdown",
+    "subtitle": "将 PDF 文本和表格转换为 Markdown 格式。"
+  },
+  "preparePdfForAi": {
+    "name": "为 AI 准备 PDF",
+    "subtitle": "将 PDF 内容提取为 LlamaIndex JSON，用于 RAG/LLM 管道。"
+  },
+  "pdfOcg": {
+    "name": "PDF 图层 (OCG)",
+    "subtitle": "查看、切换、添加和删除 PDF 中的 OCG 图层。"
+  },
+  "pdfToPdfa": {
+    "name": "PDF 转 PDF/A",
+    "subtitle": "将 PDF 转换为 PDF/A 格式以进行长期存档。"
+  },
+  "rasterizePdf": {
+    "name": "栅格化 PDF",
+    "subtitle": "将 PDF 转换为基于图像的 PDF。展平图层并移除可选择的文本。"
+  },
+  "pdfWorkflow": {
+    "name": "PDF 工作流构建器",
+    "subtitle": "使用可视化节点编辑器构建自定义 PDF 处理流水线。",
+    "nodes": "节点",
+    "searchNodes": "搜索节点...",
+    "run": "运行",
+    "clear": "清除",
+    "save": "保存",
+    "load": "加载",
+    "export": "导出",
+    "import": "导入",
+    "ready": "就绪",
+    "settings": "设置",
+    "processing": "处理中...",
+    "saveTemplate": "保存模板",
+    "templateName": "模板名称",
+    "templatePlaceholder": "例如：发票处理工作流",
+    "cancel": "取消",
+    "loadTemplate": "加载模板",
+    "noTemplates": "暂无已保存的模板。",
+    "ok": "确定",
+    "workflowCompleted": "工作流已完成",
+    "errorDuringExecution": "执行过程中出错",
+    "addNodeError": "请至少添加一个节点以运行工作流。",
+    "needInputOutput": "工作流至少需要一个输入节点和一个输出节点才能运行。",
+    "enterName": "请输入名称。",
+    "templateExists": "已存在同名模板。",
+    "templateSaved": "模板「{{name}}」已保存。",
+    "templateLoaded": "模板「{{name}}」已加载。",
+    "failedLoadTemplate": "加载模板失败。",
+    "noSettings": "此节点没有可配置的设置。",
+    "advancedSettings": "高级设置"
+  },
+  "pdfOverlay": {
+    "name": "PDF 叠加",
+    "subtitle": "将一个 PDF 的页面叠加或衬垫到另一个 PDF 上。",
+    "basePdfLabel": "基础 PDF",
+    "uploadBasePdf": "上传基础 PDF",
+    "overlayPdfLabel": "叠加 / 衬底 PDF",
+    "uploadOverlayPdf": "上传叠加/衬底 PDF",
+    "modeLabel": "模式",
+    "overlayOption": "叠加（在页面上方）",
+    "underlayOption": "衬底（在页面下方）",
+    "pageRangeLabel": "应用到页面（可选）",
+    "pageRangeHint": "使用 \"z\" 表示最后一页。留空则应用到所有页面。",
+    "repeatLabel": "如果基础文件更长，则循环叠加/衬底页面",
+    "processButton": "应用叠加 / 衬底",
+    "howItWorksUploadTitle": "上传两个 PDF",
+    "howItWorksUploadDescription": "上传您的基础 PDF 和要叠加或衬底的 PDF。",
+    "howItWorksModeTitle": "选择模式",
+    "howItWorksModeDescription": "选择叠加（上方）或衬底（下方）。可选设置页面范围和重复。",
+    "howItWorksDownloadTitle": "下载",
+    "howItWorksDownloadDescription": "下载应用了叠加或衬底的 PDF。",
+    "faqDifferenceQuestion": "叠加和衬底有什么区别？",
+    "faqDifferenceAnswer": "叠加将页面放在基础 PDF 上方（如水印）。衬底将页面放在基础 PDF 下方（如信头或背景）。",
+    "faqSinglePageQuestion": "我可以使用单页 PDF 作为所有页面的叠加吗？",
+    "faqSinglePageAnswer": "可以！启用\"循环\"选项，叠加页面将在所有基础页面上重复。单页水印将应用到每一页。",
+    "faqPrivacyQuestion": "我的文件是否私密安全？",
+    "faqPrivacyAnswer": "当然！所有处理都在您的浏览器中进行。您的文件永远不会离开您的设备，确保完全隐私。"
   }
 }

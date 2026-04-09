@@ -86,9 +86,73 @@
     "name": "Numéros de page",
     "subtitle": "Insérer une numérotation dans le document."
   },
+  "addPageLabels": {
+    "name": "Ajouter des étiquettes de page",
+    "subtitle": "Appliquer des étiquettes de page PDF avec chiffres romains, préfixes et valeurs de départ personnalisées.",
+    "uploadHint": "Fichier PDF",
+    "howLabelsWorkTitle": "Comment fonctionnent les étiquettes",
+    "howLabelsWorkStep1": "Laissez la plage de pages vide pour étiqueter toutes les pages.",
+    "howLabelsWorkStep2": "Utilisez des styles comme les chiffres romains pour les pages liminaires et la numérotation décimale pour le corps principal.",
+    "howLabelsWorkStep3": "Utilisez un préfixe avec une valeur de départ de 0 pour créer des étiquettes comme A-0, A-1, A-2.",
+    "howLabelsWorkStep4": "Activez la progression lorsqu'une règle utilise une plage discontinue comme 1-9,30-40 ou les pages impaires.",
+    "labelRulesTitle": "Règles d'étiquetage",
+    "addRule": "Ajouter une règle",
+    "removeExistingLabels": "Supprimer les étiquettes de page existantes avant d'appliquer ces règles",
+    "cpdfNote": "Cet outil utilise CoherentPDF dans votre navigateur. Si CoherentPDF n'est pas configuré, il vous sera demandé de le configurer dans les paramètres WASM.",
+    "processButton": "Ajouter des étiquettes de page",
+    "howItWorksUploadTitle": "Téléverser le fichier",
+    "howItWorksUploadDescription": "Choisissez le PDF que vous voulez réétiqueter.",
+    "howItWorksDefineTitle": "Définir les règles",
+    "howItWorksDefineDescription": "Configurez une ou plusieurs règles d'étiquetage avec des plages de pages, des styles, des préfixes et des valeurs de départ.",
+    "howItWorksDownloadTitle": "Télécharger",
+    "howItWorksDownloadDescription": "Enregistrez le PDF mis à jour avec ses nouvelles étiquettes de page.",
+    "relatedToolsTitle": "Outils PDF associés",
+    "faqWhatIsQuestion": "Qu'est-ce qu'une étiquette de page ?",
+    "faqWhatIsAnswer": "Une étiquette de page est la numérotation affichée par les lecteurs PDF dans les miniatures, la navigation entre les pages et les boîtes de dialogue d'impression. Elle n'imprime pas de nouveau texte sur la page elle-même.",
+    "faqMixQuestion": "Puis-je mélanger chiffres romains et nombres classiques ?",
+    "faqMixAnswer": "Oui. Ajoutez plusieurs règles, par exemple 1-4 avec LowercaseRoman et 5-20 avec DecimalArabic.",
+    "faqPrivacyQuestion": "Mes fichiers restent-ils privés ?",
+    "faqPrivacyAnswer": "Oui. Le traitement s'effectue dans votre navigateur avec CoherentPDF WASM. Votre PDF ne quitte pas votre appareil.",
+    "invalidFileTitle": "Fichier invalide",
+    "invalidFileMessage": "Veuillez téléverser un fichier PDF valide.",
+    "loadingPdf": "Chargement du PDF...",
+    "protectedPdfTitle": "PDF protégé",
+    "protectedPdfMessage": "Ce PDF est protégé par mot de passe. Veuillez d'abord utiliser l'outil Déchiffrer ou Modifier les autorisations.",
+    "loadErrorMessage": "Impossible de charger le fichier PDF. Le fichier est peut-être invalide, corrompu ou protégé par mot de passe.",
+    "fileMeta": "{{size}} • {{count}} pages",
+    "ruleTitle": "Règle d'étiquetage {{number}}",
+    "pageRangeLabel": "Plage de pages",
+    "pageRangePlaceholder": "Toutes les pages, ou par ex. 1-4, 7, impaires",
+    "labelStyleLabel": "Style d'étiquette",
+    "labelPrefixLabel": "Préfixe d'étiquette",
+    "labelPrefixPlaceholder": "Préfixe facultatif, par ex. A-",
+    "startValueLabel": "Valeur de départ",
+    "continueNumbering": "Continuer la numérotation sur des plages discontinues",
+    "examplesNote": "Exemples : 1-4 pour un avant-propos en chiffres romains, 15-20 avec le préfixe A- et la valeur de départ 0, ou les pages impaires avec progression activée.",
+    "uploadFirstMessage": "Veuillez d'abord téléverser un fichier PDF.",
+    "applyingLabels": "Application des étiquettes de page...",
+    "invalidRangeMessage": "La règle {{number}} a une plage de pages invalide : {{range}}",
+    "allPages": "toutes les pages",
+    "emptyOutputMessage": "CoherentPDF a produit un fichier vide.",
+    "successMessage": "Les étiquettes de page ont été ajoutées avec succès !",
+    "processErrorMessage": "Impossible d'ajouter les étiquettes de page.",
+    "styleOptions": {
+      "DecimalArabic": "Nombres décimaux",
+      "LowercaseRoman": "Chiffres romains minuscules",
+      "UppercaseRoman": "Chiffres romains majuscules",
+      "LowercaseLetters": "Lettres minuscules",
+      "UppercaseLetters": "Lettres majuscules",
+      "NoLabelPrefixOnly": "Préfixe seul sans numérotation"
+    }
+  },
+  "batesNumbering": {
+    "name": "Numérotation Bates",
+    "subtitle": "Ajouter des numéros Bates séquentiels sur un ou plusieurs fichiers PDF."
+  },
   "addWatermark": {
     "name": "Ajouter un filigrane",
-    "subtitle": "Apposer un texte ou une image sur les pages du PDF."
+    "subtitle": "Apposer un texte ou une image sur les pages du PDF.",
+    "applyToAllPages": "Appliquer à toutes les pages"
   },
   "headerFooter": {
     "name": "En-tête et pied de page",
@@ -97,6 +161,37 @@
   "invertColors": {
     "name": "Inverser les couleurs",
     "subtitle": "Créer une version « mode sombre » du PDF."
+  },
+  "scannerEffect": {
+    "name": "Effet scanner",
+    "subtitle": "Donnez à votre PDF l'apparence d'un document scanné.",
+    "scanSettings": "Paramètres de numérisation",
+    "colorspace": "Espace colorimétrique",
+    "gray": "Gris",
+    "border": "Bordure",
+    "rotate": "Rotation",
+    "rotateVariance": "Variance de rotation",
+    "brightness": "Luminosité",
+    "contrast": "Contraste",
+    "blur": "Flou",
+    "noise": "Bruit",
+    "yellowish": "Jaunissement",
+    "resolution": "Résolution",
+    "processButton": "Appliquer l'effet scanner"
+  },
+  "adjustColors": {
+    "name": "Ajuster les couleurs",
+    "subtitle": "Affinez la luminosité, le contraste, la saturation et plus dans votre PDF.",
+    "colorSettings": "Paramètres de couleur",
+    "brightness": "Luminosité",
+    "contrast": "Contraste",
+    "saturation": "Saturation",
+    "hueShift": "Teinte",
+    "temperature": "Température",
+    "tint": "Nuance",
+    "gamma": "Gamma",
+    "sepia": "Sépia",
+    "processButton": "Appliquer les ajustements"
   },
   "backgroundColor": {
     "name": "Couleur de fond",
@@ -127,7 +222,8 @@
   },
   "removeBlankPages": {
     "name": "Supprimer les pages blanches",
-    "subtitle": "Détecter et supprimer automatiquement les pages vides."
+    "subtitle": "Détecter et supprimer automatiquement les pages vides.",
+    "sensitivityHint": "Plus élevé = plus strict, uniquement les pages vierges. Plus bas = autorise les pages avec du contenu."
   },
   "imageToPdf": {
     "name": "Images vers PDF",
@@ -183,7 +279,45 @@
   },
   "pdfToTiff": {
     "name": "PDF vers TIFF",
-    "subtitle": "Convertir chaque page du PDF en image TIFF."
+    "subtitle": "Convertir chaque page du PDF en image TIFF.",
+    "dpi": "PPP (Résolution)",
+    "dpiExplanation": "PPP plus élevé = meilleure qualité pour l'impression, taille de fichier plus grande",
+    "compression": "Compression",
+    "compressionExplanation": "LZW et Deflate sont sans perte. CCITT Groupe 4 est idéal pour les documents numérisés en N/B.",
+    "colorMode": "Mode couleur",
+    "multiPage": "Enregistrer en TIFF multipage (fichier unique)",
+    "loadingVips": "Chargement du processeur d'images...",
+    "converting": "Conversion en TIFF..."
+  },
+  "pdfToCbz": {
+    "name": "PDF en CBZ",
+    "subtitle": "Convertir un PDF en fichier CBZ (archive de bande dessinée) pour les lecteurs de comics.",
+    "imageFormat": "Format d'image",
+    "quality": "Qualité d'image",
+    "qualityExplanation": "Qualité supérieure = taille de fichier plus grande",
+    "scale": "Échelle",
+    "scaleExplanation": "Échelle supérieure = meilleure qualité pour les écrans haute résolution",
+    "grayscale": "Convertir en niveaux de gris",
+    "manga": "Mode manga (droite à gauche)",
+    "includeMetadata": "Inclure les métadonnées ComicInfo.xml",
+    "titleLabel": "Titre",
+    "seriesLabel": "Série",
+    "authorLabel": "Auteur(s)",
+    "numberLabel": "#",
+    "volumeLabel": "Vol.",
+    "publisherLabel": "Éditeur",
+    "tagsLabel": "Tags / Genre",
+    "yearLabel": "Année de publication",
+    "ratingLabel": "Note (0-5)",
+    "converting": "Conversion en CBZ...",
+    "alert": {
+      "invalidFile": "Fichier invalide",
+      "invalidFileExplanation": "Veuillez télécharger un fichier PDF.",
+      "noFile": "Aucun fichier",
+      "noFileExplanation": "Veuillez d'abord télécharger un fichier PDF.",
+      "conversionSuccess": "PDF converti en CBZ avec succès !",
+      "conversionError": "Échec de la conversion du PDF en CBZ. Le fichier est peut-être corrompu."
+    }
   },
   "pdfToGreyscale": {
     "name": "PDF en niveaux de gris",
@@ -255,7 +389,47 @@
   },
   "comparePdfs": {
     "name": "Comparer des PDF",
-    "subtitle": "Comparer deux PDF côte à côte."
+    "subtitle": "Comparer deux PDF côte à côte.",
+    "firstPdf": "Premier PDF",
+    "secondPdf": "Deuxième PDF",
+    "clickOrDrop": "Cliquer ou déposer",
+    "page": "Page",
+    "overlay": "Superposition",
+    "sideBySide": "Côte à côte",
+    "flicker": "Clignotement",
+    "syncScroll": "Synchroniser le défilement",
+    "export": "Exporter",
+    "exportAsPdf": "Exporter en PDF",
+    "splitView": "Vue divisée",
+    "alternating": "Alterné",
+    "leftDocument": "Document de gauche",
+    "rightDocument": "Document de droite",
+    "original": "Original",
+    "modified": "Modifié",
+    "searchChanges": "Rechercher des modifications...",
+    "deleted": "Supprimé",
+    "added": "Ajouté",
+    "prevPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "prevChange": "Modification précédente",
+    "nextChange": "Modification suivante",
+    "uploadTwoPdfs": "Téléversez deux PDF pour voir les différences.",
+    "noDifferences": "Aucune différence détectée sur cette page.",
+    "noMatchingChanges": "Aucune modification ne correspond au filtre actuel.",
+    "pageNotExist": "La page {{page}} n’existe pas dans ce PDF.",
+    "noPairedPage": "Aucune page associée pour ce côté.",
+    "buildingModel": "Création du modèle d’appariement des pages...",
+    "indexingPdf": "Indexation du PDF {{num}}, page {{page}} sur {{total}}...",
+    "loadingComparison": "Chargement de la comparaison {{current}} sur {{total}}...",
+    "runningOcr": "Exécution de l’OCR sur la page {{page}}...",
+    "preparingExport": "Préparation de l’export PDF...",
+    "renderingPage": "Rendu de la page {{current}} sur {{total}}...",
+    "exportError": "Erreur d’export",
+    "exportFailed": "Impossible d’exporter le PDF de comparaison.",
+    "loadingFile": "Chargement de {{name}}...",
+    "invalidFile": "Fichier invalide",
+    "invalidFileMsg": "Veuillez sélectionner un fichier PDF valide.",
+    "loadError": "Impossible de charger le PDF. Il est peut-être corrompu ou protégé par mot de passe."
   },
   "posterizePdf": {
     "name": "Posteriser un PDF",
@@ -516,6 +690,15 @@
     "pageTitle": "Valider la signature PDF - Vérifier les signatures numériques | BentoPDF",
     "subtitle": "Vérifier les signatures numériques de vos fichiers PDF. Contrôlez la validité du certificat, consultez les informations du signataire et confirmez l’intégrité du document. Tout le traitement s’effectue dans votre navigateur."
   },
+  "timestampPdf": {
+    "name": "Horodater un PDF",
+    "pageTitle": "Horodatage PDF en ligne gratuit - Horodatage RFC 3161 | BentoPDF",
+    "subtitle": "Ajoutez un horodatage RFC 3161 à votre PDF via un serveur d'horodatage (TSA) de confiance. Prouve que votre document existait à un moment précis. Aucun certificat requis.",
+    "tsaSectionTitle": "Serveur d'horodatage (TSA)",
+    "selectTsa": "Sélectionner un serveur TSA",
+    "applyTimestamp": "Appliquer l'horodatage",
+    "successMessage": "PDF horodaté avec succès ! L'horodatage peut être vérifié dans Adobe Acrobat et d'autres lecteurs PDF."
+  },
   "emailToPdf": {
     "name": "Email vers PDF",
     "subtitle": "Convertir des fichiers email (EML, MSG) au format PDF. Prend en charge les exports Outlook et les formats email standards.",
@@ -529,5 +712,93 @@
   "deskewPdf": {
     "name": "Redresser un PDF",
     "subtitle": "Redresser automatiquement les pages scannées inclinées à l’aide d’OpenCV."
+  },
+  "pdfToWord": {
+    "name": "PDF vers Word",
+    "subtitle": "Convertir des fichiers PDF en documents Word modifiables."
+  },
+  "extractImages": {
+    "name": "Extraire les images",
+    "subtitle": "Extraire toutes les images intégrées de vos fichiers PDF."
+  },
+  "pdfToMarkdown": {
+    "name": "PDF vers Markdown",
+    "subtitle": "Convertir le texte et les tableaux PDF au format Markdown."
+  },
+  "preparePdfForAi": {
+    "name": "Préparer le PDF pour l'IA",
+    "subtitle": "Extraire le contenu PDF en JSON LlamaIndex pour les pipelines RAG/LLM."
+  },
+  "pdfOcg": {
+    "name": "Calques PDF (OCG)",
+    "subtitle": "Afficher, basculer, ajouter et supprimer les calques OCG de votre PDF."
+  },
+  "pdfToPdfa": {
+    "name": "PDF vers PDF/A",
+    "subtitle": "Convertir un PDF en PDF/A pour l'archivage à long terme."
+  },
+  "rasterizePdf": {
+    "name": "Rastériser le PDF",
+    "subtitle": "Convertir un PDF en PDF basé sur des images. Aplatir les calques et supprimer le texte sélectionnable."
+  },
+  "pdfWorkflow": {
+    "name": "Constructeur de workflow PDF",
+    "subtitle": "Créez des pipelines de traitement PDF personnalisés avec un éditeur de nœuds visuel.",
+    "nodes": "Nœuds",
+    "searchNodes": "Rechercher des nœuds...",
+    "run": "Exécuter",
+    "clear": "Effacer",
+    "save": "Enregistrer",
+    "load": "Charger",
+    "export": "Exporter",
+    "import": "Importer",
+    "ready": "Prêt",
+    "settings": "Paramètres",
+    "processing": "Traitement en cours...",
+    "saveTemplate": "Enregistrer le modèle",
+    "templateName": "Nom du modèle",
+    "templatePlaceholder": "ex. Workflow de facturation",
+    "cancel": "Annuler",
+    "loadTemplate": "Charger un modèle",
+    "noTemplates": "Aucun modèle enregistré pour le moment.",
+    "ok": "OK",
+    "workflowCompleted": "Workflow terminé",
+    "errorDuringExecution": "Erreur lors de l'exécution",
+    "addNodeError": "Ajoutez au moins un nœud pour exécuter le workflow.",
+    "needInputOutput": "Votre workflow nécessite au moins un nœud d'entrée et un nœud de sortie pour fonctionner.",
+    "enterName": "Veuillez saisir un nom.",
+    "templateExists": "Un modèle portant ce nom existe déjà.",
+    "templateSaved": "Modèle \"{{name}}\" enregistré.",
+    "templateLoaded": "Modèle \"{{name}}\" chargé.",
+    "failedLoadTemplate": "Échec du chargement du modèle.",
+    "noSettings": "Aucun paramètre configurable pour ce nœud.",
+    "advancedSettings": "Paramètres avancés"
+  },
+  "pdfOverlay": {
+    "name": "Superposition PDF",
+    "subtitle": "Superposer ou placer en arrière-plan les pages d'un PDF sur un autre.",
+    "basePdfLabel": "PDF de base",
+    "uploadBasePdf": "Télécharger le PDF de base",
+    "overlayPdfLabel": "PDF de superposition / arrière-plan",
+    "uploadOverlayPdf": "Télécharger le PDF de superposition/arrière-plan",
+    "modeLabel": "Mode",
+    "overlayOption": "Superposition (au-dessus des pages)",
+    "underlayOption": "Arrière-plan (derrière les pages)",
+    "pageRangeLabel": "Appliquer aux pages (optionnel)",
+    "pageRangeHint": "Utilisez \"z\" pour la dernière page. Laissez vide pour appliquer à toutes les pages.",
+    "repeatLabel": "Répéter les pages de superposition/arrière-plan si la base est plus longue",
+    "processButton": "Appliquer superposition / arrière-plan",
+    "howItWorksUploadTitle": "Télécharger deux PDFs",
+    "howItWorksUploadDescription": "Téléchargez votre PDF de base et le PDF que vous souhaitez superposer ou placer en arrière-plan.",
+    "howItWorksModeTitle": "Choisir le mode",
+    "howItWorksModeDescription": "Sélectionnez superposition (au-dessus) ou arrière-plan (derrière). Définissez optionnellement une plage de pages et la répétition.",
+    "howItWorksDownloadTitle": "Télécharger",
+    "howItWorksDownloadDescription": "Téléchargez votre PDF avec la superposition ou l'arrière-plan appliqué.",
+    "faqDifferenceQuestion": "Quelle est la différence entre superposition et arrière-plan ?",
+    "faqDifferenceAnswer": "La superposition place les pages au-dessus de votre PDF de base (comme un filigrane). L'arrière-plan place les pages derrière votre PDF de base (comme un en-tête ou un fond).",
+    "faqSinglePageQuestion": "Puis-je utiliser un PDF d'une seule page comme superposition pour toutes les pages ?",
+    "faqSinglePageAnswer": "Oui ! Activez l'option \"Répéter\" et vos pages de superposition se répéteront sur toutes les pages de base. Un filigrane d'une seule page s'appliquera à chaque page.",
+    "faqPrivacyQuestion": "Mes fichiers sont-ils privés et sécurisés ?",
+    "faqPrivacyAnswer": "Absolument ! Tout le traitement se fait dans votre navigateur. Vos fichiers ne quittent jamais votre appareil, garantissant une confidentialité totale."
   }
 }

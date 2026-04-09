@@ -6,18 +6,21 @@ import '@phosphor-icons/web/regular';
 import * as pdfjsLib from 'pdfjs-dist';
 import '../css/styles.css';
 import { formatShortcutDisplay, formatStars } from './utils/helpers.js';
-import { APP_VERSION } from '../version.js';
 import {
   initI18n,
   applyTranslations,
   rewriteLinks,
   injectLanguageSwitcher,
-  createLanguageSwitcher,
   t,
 } from './i18n/index.js';
-import { startBackgroundPreload } from './utils/wasm-preloader.js';
+import {
+  loadRuntimeConfig,
+  isToolDisabled,
+  isCurrentPageDisabled,
+} from './utils/disabled-tools.js';
 import { initTheme } from './theme/index.js';
 import { applyBrandingConfig } from './utils/config.js';
+declare const __BRAND_NAME__: string;
 
 const ensureConfigLoaded = async (): Promise<void> => {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
@@ -35,7 +38,9 @@ const ensureConfigLoaded = async (): Promise<void> => {
       }
 
       existingScript.addEventListener('load', () => resolve(), { once: true });
-      existingScript.addEventListener('error', () => resolve(), { once: true });
+      existingScript.addEventListener('error', () => resolve(), {
+        once: true,
+      });
     });
     return;
   }
@@ -57,45 +62,27 @@ const init = async () => {
   applyBrandingConfig();
 
   await initI18n();
+  await loadRuntimeConfig();
   injectLanguageSwitcher();
   applyTranslations();
 
-  const shouldHideSecondarySections =
-    document.documentElement.classList.contains('simple-mode') ||
-    document.body.classList.contains('simple-mode');
-
-  if (shouldHideSecondarySections) {
-    const sectionHeadings = [
-      'how it works',
-      'related pdf tools',
-      'related tools',
-      'frequently asked questions',
-      'faq',
-    ];
-
-    document.querySelectorAll('section').forEach((section) => {
-      const heading = section.querySelector('h2, h3');
-      const text = heading?.textContent?.trim().toLowerCase();
-      if (!text) return;
-
-      if (sectionHeadings.some((label) => text.startsWith(label))) {
-        section.remove();
-      }
-    });
-
-    document
-      .querySelectorAll('script[type="application/ld+json"]')
-      .forEach((script) => {
-        const content = script.textContent || '';
-        if (
-          content.includes('"@type": "HowTo"') ||
-          content.includes('"@type":"HowTo"') ||
-          content.includes('"@type": "FAQPage"') ||
-          content.includes('"@type":"FAQPage"')
-        ) {
-          script.remove();
-        }
-      });
+  if (isCurrentPageDisabled()) {
+    document.title = t('disabledTool.title') || 'Tool Unavailable';
+    const main = document.querySelector('main') || document.body;
+    const heading = t('disabledTool.heading') || 'This tool has been disabled';
+    const message =
+      t('disabledTool.message') ||
+      'This tool is not available in your deployment. Contact your administrator for more information.';
+    const backHome = t('disabledTool.backHome') || 'Back to Home';
+    main.innerHTML = `
+      <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+        <i class="ph ph-prohibit text-6xl text-gray-500 mb-4"></i>
+        <h1 class="text-2xl font-bold text-white mb-2">${heading}</h1>
+        <p class="text-gray-400 mb-6">${message}</p>
+        <a href="${import.meta.env.BASE_URL}" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition">${backHome}</a>
+      </div>
+    `;
+    return;
   }
 
   pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -158,18 +145,19 @@ const init = async () => {
         (divider as HTMLElement).style.display = 'none';
       });
 
-      document.title = 'BentoPDF - PDF Tools';
+      const brandName = __BRAND_NAME__ || 'BentoPDF';
+      document.title = `${brandName} - ${t('simpleMode.title')}`;
 
       const toolsHeader = document.getElementById('tools-header');
       if (toolsHeader) {
         const title = toolsHeader.querySelector('h2');
         const subtitle = toolsHeader.querySelector('p');
         if (title) {
-          title.textContent = 'PDF Tools';
+          title.textContent = t('simpleMode.title');
           title.className = 'text-4xl md:text-5xl font-bold text-white mb-3';
         }
         if (subtitle) {
-          subtitle.textContent = 'Select a tool to get started';
+          subtitle.textContent = t('simpleMode.subtitle');
           subtitle.className = 'text-lg text-gray-400';
         }
       }
@@ -213,6 +201,7 @@ const init = async () => {
   };
 
   const toolTranslationKeys: Record<string, string> = {
+    'PDF Workflow Builder': 'tools:pdfWorkflow',
     'PDF Multi Tool': 'tools:pdfMultiTool',
     'Merge PDF': 'tools:mergePdf',
     'Split PDF': 'tools:splitPdf',
@@ -227,12 +216,14 @@ const init = async () => {
     'Edit Bookmarks': 'tools:editBookmarks',
     'Table of Contents': 'tools:tableOfContents',
     'Page Numbers': 'tools:pageNumbers',
+    'Add Page Labels': 'tools:addPageLabels',
     'Add Watermark': 'tools:addWatermark',
     'Header & Footer': 'tools:headerFooter',
     'Invert Colors': 'tools:invertColors',
     'Background Color': 'tools:backgroundColor',
     'Change Text Color': 'tools:changeTextColor',
     'Add Stamps': 'tools:addStamps',
+    'Bates Numbering': 'tools:batesNumbering',
     'Remove Annotations': 'tools:removeAnnotations',
     'PDF Form Filler': 'tools:pdfFormFiller',
     'Create PDF Form': 'tools:createPdfForm',
@@ -251,10 +242,12 @@ const init = async () => {
     'PDF to WebP': 'tools:pdfToWebp',
     'PDF to BMP': 'tools:pdfToBmp',
     'PDF to TIFF': 'tools:pdfToTiff',
+    'PDF to CBZ': 'tools:pdfToCbz',
     'PDF to Greyscale': 'tools:pdfToGreyscale',
     'PDF to JSON': 'tools:pdfToJson',
     'OCR PDF': 'tools:ocrPdf',
     'Alternate & Mix Pages': 'tools:alternateMix',
+    'PDF Overlay': 'tools:pdfOverlay',
     'Organize & Duplicate': 'tools:duplicateOrganize',
     'Add Attachments': 'tools:addAttachments',
     'Extract Attachments': 'tools:extractAttachments',
@@ -287,40 +280,43 @@ const init = async () => {
     'Deskew PDF': 'tools:deskewPdf',
     'Digital Signature': 'tools:digitalSignPdf',
     'Validate Signature': 'tools:validateSignaturePdf',
+    'Timestamp PDF': 'tools:timestampPdf',
+    'Scanner Effect': 'tools:scannerEffect',
+    'Adjust Colors': 'tools:adjustColors',
+    'Markdown to PDF': 'tools:markdownToPdf',
+    'PDF Booklet': 'tools:pdfBooklet',
     'Word to PDF': 'tools:wordToPdf',
     'Excel to PDF': 'tools:excelToPdf',
     'PowerPoint to PDF': 'tools:powerpointToPdf',
-    'Markdown to PDF': 'tools:markdownToPdf',
-    'CSV to PDF': 'tools:csvToPdf',
-    'ODT to PDF': 'tools:odtToPdf',
-    'ODS to PDF': 'tools:odsToPdf',
-    'ODP to PDF': 'tools:odpToPdf',
-    'ODG to PDF': 'tools:odgToPdf',
-    'RTF to PDF': 'tools:rtfToPdf',
-    'EPUB to PDF': 'tools:epubToPdf',
-    'MOBI to PDF': 'tools:mobiToPdf',
-    'CBZ to PDF': 'tools:cbzToPdf',
-    'FB2 to PDF': 'tools:fb2ToPdf',
-    'PSD to PDF': 'tools:psdToPdf',
     'XPS to PDF': 'tools:xpsToPdf',
-    'Pages to PDF': 'tools:pagesToPdf',
-    'PUB to PDF': 'tools:pubToPdf',
-    'VSD to PDF': 'tools:vsdToPdf',
+    'MOBI to PDF': 'tools:mobiToPdf',
+    'EPUB to PDF': 'tools:epubToPdf',
+    'FB2 to PDF': 'tools:fb2ToPdf',
+    'CBZ to PDF': 'tools:cbzToPdf',
     'WPD to PDF': 'tools:wpdToPdf',
     'WPS to PDF': 'tools:wpsToPdf',
     'XML to PDF': 'tools:xmlToPdf',
-    'PDF to Word': 'tools:pdfToDocx',
+    'Pages to PDF': 'tools:pagesToPdf',
+    'ODG to PDF': 'tools:odgToPdf',
+    'ODS to PDF': 'tools:odsToPdf',
+    'ODP to PDF': 'tools:odpToPdf',
+    'PUB to PDF': 'tools:pubToPdf',
+    'VSD to PDF': 'tools:vsdToPdf',
+    'PSD to PDF': 'tools:psdToPdf',
+    'ODT to PDF': 'tools:odtToPdf',
+    'CSV to PDF': 'tools:csvToPdf',
+    'RTF to PDF': 'tools:rtfToPdf',
+    'PDF to SVG': 'tools:pdfToSvg',
+    'PDF to CSV': 'tools:pdfToCsv',
     'PDF to Excel': 'tools:pdfToExcel',
     'PDF to Text': 'tools:pdfToText',
-    'PDF to Markdown': 'tools:pdfToMarkdown',
-    'PDF to CSV': 'tools:pdfToCsv',
-    'PDF to SVG': 'tools:pdfToSvg',
-    'PDF to PDF/A': 'tools:pdfToPdfa',
-    'PDF OCG': 'tools:pdfLayers',
-    'Extract Images': 'tools:extractImages',
     'Extract Tables': 'tools:extractTables',
-    'PDF Booklet': 'tools:pdfBooklet',
+    'PDF to Word': 'tools:pdfToWord',
+    'Extract Images': 'tools:extractImages',
+    'PDF to Markdown': 'tools:pdfToMarkdown',
     'Prepare PDF for AI': 'tools:preparePdfForAi',
+    'PDF OCG': 'tools:pdfOcg',
+    'PDF to PDF/A': 'tools:pdfToPdfa',
     'Rasterize PDF': 'tools:rasterizePdf',
   };
 
@@ -390,19 +386,85 @@ const init = async () => {
   if (dom.toolGrid) {
     dom.toolGrid.textContent = '';
 
-    categories.forEach((category) => {
+    let collapsedCategories: string[] = [];
+    try {
+      const stored = localStorage.getItem('collapsedCategories');
+      if (stored) collapsedCategories = JSON.parse(stored);
+    } catch {
+      localStorage.removeItem('collapsedCategories');
+    }
+
+    function saveCollapsedCategories() {
+      localStorage.setItem(
+        'collapsedCategories',
+        JSON.stringify(collapsedCategories)
+      );
+    }
+
+    const filteredCategories = categories
+      .map((category) => ({
+        ...category,
+        tools: category.tools.filter((tool) => !isToolDisabled(tool.id)),
+      }))
+      .filter((category) => category.tools.length > 0);
+
+    filteredCategories.forEach((category) => {
       const categoryGroup = document.createElement('div');
       categoryGroup.className = 'category-group col-span-full';
 
-      const title = document.createElement('h2');
-      title.className =
-        'text-xl font-bold text-indigo-400 mb-4 mt-8 first:mt-0 text-white';
+      const header = document.createElement('button');
+      header.className = 'category-header';
+      header.type = 'button';
+
+      const title = document.createElement('span');
       const categoryKey = categoryTranslationKeys[category.name];
       title.textContent = categoryKey ? t(categoryKey) : category.name;
 
+      const chevron = document.createElement('i');
+      chevron.setAttribute('data-lucide', 'chevron-down');
+      chevron.className =
+        'category-chevron w-5 h-5 text-gray-400 transition-transform duration-300';
+
+      header.append(title, chevron);
+
       const toolsContainer = document.createElement('div');
       toolsContainer.className =
-        'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6';
+        'category-tools grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6';
+
+      const isCollapsed = collapsedCategories.includes(category.name);
+      if (isCollapsed) {
+        categoryGroup.classList.add('collapsed');
+        toolsContainer.style.maxHeight = '0px';
+      }
+
+      toolsContainer.addEventListener('transitionend', (e) => {
+        if ((e as TransitionEvent).propertyName !== 'max-height') return;
+        if (!categoryGroup.classList.contains('collapsed')) {
+          toolsContainer.style.maxHeight = 'none';
+          toolsContainer.style.overflow = 'visible';
+        }
+      });
+
+      header.addEventListener('click', () => {
+        const collapsed = categoryGroup.classList.toggle('collapsed');
+        if (collapsed) {
+          toolsContainer.style.maxHeight = toolsContainer.scrollHeight + 'px';
+          toolsContainer.style.overflow = 'hidden';
+          requestAnimationFrame(() => {
+            toolsContainer.style.maxHeight = '0px';
+          });
+          if (!collapsedCategories.includes(category.name)) {
+            collapsedCategories.push(category.name);
+          }
+        } else {
+          toolsContainer.style.overflow = 'hidden';
+          toolsContainer.style.maxHeight = toolsContainer.scrollHeight + 'px';
+          collapsedCategories = collapsedCategories.filter(
+            (n) => n !== category.name
+          );
+        }
+        saveCollapsedCategories();
+      });
 
       category.tools.forEach((tool) => {
         let toolCard: HTMLDivElement | HTMLAnchorElement;
@@ -447,8 +509,13 @@ const init = async () => {
         toolsContainer.appendChild(toolCard);
       });
 
-      categoryGroup.append(title, toolsContainer);
+      categoryGroup.append(header, toolsContainer);
       dom.toolGrid.appendChild(categoryGroup);
+
+      if (!isCollapsed) {
+        toolsContainer.style.maxHeight = 'none';
+        toolsContainer.style.overflow = 'visible';
+      }
     });
 
     const searchBar = document.getElementById('search-bar');
@@ -535,7 +602,7 @@ const init = async () => {
       }
     });
 
-    dom.toolGrid.addEventListener('click', (e) => {
+    dom.toolGrid.addEventListener('click', () => {
       // All tools now use href and navigate directly - no modal handling needed
     });
   }
@@ -573,11 +640,6 @@ const init = async () => {
 
   createIcons({ icons });
   console.log('Please share our tool and share the love!');
-
-  // Start background WASM preloading only on tool pages
-  if (document.getElementById('tool-uploader')) {
-    startBackgroundPreload();
-  }
 
   const githubStarsElements = [
     document.getElementById('github-stars-desktop'),
@@ -687,6 +749,35 @@ const init = async () => {
       const enabled = (e.target as HTMLInputElement).checked;
       localStorage.setItem('fullWidthMode', enabled.toString());
       applyFullWidthMode(enabled);
+    });
+  }
+
+  const compactModeToggle = document.getElementById(
+    'compact-mode-toggle'
+  ) as HTMLInputElement;
+
+  const savedCompactMode = localStorage.getItem('compactMode') === 'true';
+  if (compactModeToggle) {
+    compactModeToggle.checked = savedCompactMode;
+  }
+  applyCompactMode(savedCompactMode);
+
+  function applyCompactMode(enabled: boolean) {
+    if (dom.toolGrid) {
+      dom.toolGrid.classList.toggle('compact-mode', enabled);
+      dom.toolGrid
+        .querySelectorAll('.category-group:not(.collapsed) .category-tools')
+        .forEach((container) => {
+          (container as HTMLElement).style.maxHeight = 'none';
+        });
+    }
+  }
+
+  if (compactModeToggle) {
+    compactModeToggle.addEventListener('change', (e) => {
+      const enabled = (e.target as HTMLInputElement).checked;
+      localStorage.setItem('compactMode', enabled.toString());
+      applyCompactMode(enabled);
     });
   }
 
@@ -902,7 +993,7 @@ const init = async () => {
     });
   }
 
-  function getToolId(tool: any): string {
+  function getToolId(tool: { id?: string; href?: string }): string {
     if (tool.id) return tool.id;
     if (tool.href) {
       const match = tool.href.match(/\/([^/]+)\.html$/);
@@ -917,16 +1008,21 @@ const init = async () => {
 
     const allShortcuts = ShortcutsManager.getAllShortcuts();
     const isMac = navigator.userAgent.toUpperCase().includes('MAC');
-    const allTools = categories.flatMap((c) => c.tools);
+    const shortcutCategories = categories
+      .map((category) => ({
+        ...category,
+        tools: category.tools.filter((tool) => !isToolDisabled(tool.id)),
+      }))
+      .filter((category) => category.tools.length > 0);
+    const allTools = shortcutCategories.flatMap((c) => c.tools);
 
-    categories.forEach((category) => {
+    shortcutCategories.forEach((category) => {
       const section = document.createElement('div');
       section.className = 'category-section mb-6 last:mb-0';
 
       const header = document.createElement('h3');
       header.className =
         'text-gray-400 text-xs font-bold uppercase tracking-wider mb-3 pl-1';
-      // Translate category name
       const categoryKey = categoryTranslationKeys[category.name];
       header.textContent = categoryKey ? t(categoryKey) : category.name;
       section.appendChild(header);
@@ -950,8 +1046,12 @@ const init = async () => {
         left.className = 'flex items-center gap-3';
 
         const icon = document.createElement('i');
-        icon.className = 'w-5 h-5 text-indigo-400';
-        icon.setAttribute('data-lucide', tool.icon);
+        if (tool.icon.startsWith('ph-')) {
+          icon.className = `ph ${tool.icon} w-5 h-5 text-indigo-400`;
+        } else {
+          icon.className = 'w-5 h-5 text-indigo-400';
+          icon.setAttribute('data-lucide', tool.icon);
+        }
 
         const name = document.createElement('span');
         name.className = 'text-gray-200 font-medium';

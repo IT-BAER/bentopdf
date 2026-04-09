@@ -1,8 +1,15 @@
 // This file centralizes the definition of all available tools, organized by category.
-export const categories = [
+const baseCategories = [
   {
     name: 'Popular Tools',
     tools: [
+      {
+        href: import.meta.env.BASE_URL + 'pdf-workflow.html',
+        name: 'PDF Workflow Builder',
+        icon: 'ph-tree-structure',
+        subtitle:
+          'Build custom PDF processing pipelines with a visual node editor.',
+      },
       {
         href: import.meta.env.BASE_URL + 'pdf-multi-tool.html',
         name: 'PDF Multi Tool',
@@ -102,6 +109,19 @@ export const categories = [
         subtitle: 'Insert page numbers into your document.',
       },
       {
+        href: import.meta.env.BASE_URL + 'add-page-labels.html',
+        name: 'Add Page Labels',
+        icon: 'ph-text-aa',
+        subtitle:
+          'Apply PDF page labels with Roman numerals, prefixes, and custom starts.',
+      },
+      {
+        href: import.meta.env.BASE_URL + 'bates-numbering.html',
+        name: 'Bates Numbering',
+        icon: 'ph-hash',
+        subtitle: 'Add sequential Bates numbers across one or more PDF files.',
+      },
+      {
         href: import.meta.env.BASE_URL + 'add-watermark.html',
         name: 'Add Watermark',
         icon: 'ph-drop',
@@ -118,6 +138,18 @@ export const categories = [
         name: 'Invert Colors',
         icon: 'ph-circle-half',
         subtitle: 'Create a "dark mode" version of your PDF.',
+      },
+      {
+        href: import.meta.env.BASE_URL + 'scanner-effect.html',
+        name: 'Scanner Effect',
+        icon: 'ph-scan',
+        subtitle: 'Make your PDF look like a scanned document.',
+      },
+      {
+        href: import.meta.env.BASE_URL + 'adjust-colors.html',
+        name: 'Adjust Colors',
+        icon: 'ph-sliders-horizontal',
+        subtitle: 'Fine-tune brightness, contrast, saturation and more.',
       },
       {
         href: import.meta.env.BASE_URL + 'background-color.html',
@@ -416,6 +448,13 @@ export const categories = [
         subtitle: 'Convert each PDF page into a TIFF image.',
       },
       {
+        href: import.meta.env.BASE_URL + 'pdf-to-cbz.html',
+        name: 'PDF to CBZ',
+        icon: 'ph-book-open',
+        subtitle:
+          'Convert a PDF into a CBZ (Comic Book Archive) file for comic readers.',
+      },
+      {
         href: import.meta.env.BASE_URL + 'pdf-to-svg.html',
         name: 'PDF to SVG',
         icon: 'ph-file-code',
@@ -505,6 +544,12 @@ export const categories = [
         name: 'Organize & Duplicate',
         icon: 'ph-files',
         subtitle: 'Duplicate, reorder, and delete pages.',
+      },
+      {
+        href: import.meta.env.BASE_URL + 'overlay-pdf.html',
+        name: 'PDF Overlay',
+        icon: 'ph-stack-simple',
+        subtitle: 'Overlay or underlay pages from one PDF onto another.',
       },
       {
         href: import.meta.env.BASE_URL + 'add-attachments.html',
@@ -760,6 +805,26 @@ export const categories = [
         icon: 'ph-seal-check',
         subtitle: 'Verify digital signatures and view certificate details.',
       },
+      {
+        href: import.meta.env.BASE_URL + 'timestamp-pdf.html',
+        name: 'Timestamp PDF',
+        icon: 'ph-clock',
+        subtitle:
+          'Add an RFC 3161 document timestamp using a trusted TSA server.',
+      },
     ],
   },
 ];
+
+const getToolIdFromHref = (href: string): string => {
+  const match = href.match(/\/([^/]+)\.html$/);
+  return match?.[1] ?? href;
+};
+
+export const categories = baseCategories.map((category) => ({
+  ...category,
+  tools: category.tools.map((tool) => ({
+    ...tool,
+    id: getToolIdFromHref(tool.href),
+  })),
+}));

@@ -1,11 +1,12 @@
 /**
  * PDF/A Conversion using Ghostscript WASM
- * * Converts PDFs to PDF/A-1b, PDF/A-2b, or PDF/A-3b format.
+ * Converts PDFs to PDF/A-1b, PDF/A-2b, or PDF/A-3b format.
+ * Requires user to configure Ghostscript URL in WASM Settings.
  */
 
-import loadWASM from '@bentopdf/gs-wasm';
-import { getWasmBaseUrl, fetchWasmFile } from '../config/wasm-cdn-config.js';
-import { PDFDocument, PDFDict, PDFName, PDFArray } from 'pdf-lib';
+import { getWasmBaseUrl, isWasmAvailable } from '../config/wasm-cdn-config.js';
+import { PDFDict, PDFName, PDFArray } from 'pdf-lib';
+import { loadPdfDocument } from './load-pdf-document.js';
 
 interface GhostscriptModule {
   FS: {
@@ -29,11 +30,49 @@ export function getCachedGsModule(): GhostscriptModule | null {
   return cachedGsModule;
 }
 
+export async function loadGsModule(): Promise<GhostscriptModule> {
+  const gsBaseUrl = getWasmBaseUrl('ghostscript')!;
+  const normalizedUrl = gsBaseUrl.endsWith('/') ? gsBaseUrl : `${gsBaseUrl}/`;
+
+  const gsJsUrl = `${normalizedUrl}gs.js`;
+  const response = await fetch(gsJsUrl);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch gs.js: HTTP ${response.status}`);
+  }
+  const jsText = await response.text();
+  const blob = new Blob([jsText], { type: 'application/javascript' });
+  const blobUrl = URL.createObjectURL(blob);
+
+  try {
+    const gsModule = await import(/* @vite-ignore */ blobUrl);
+    const ModuleFactory = gsModule.default;
+
+    return (await ModuleFactory({
+      locateFile: (path: string) => {
+        if (path.endsWith('.wasm')) {
+          return `${normalizedUrl}gs.wasm`;
+        }
+        return `${normalizedUrl}${path}`;
+      },
+      print: (text: string) => console.log('[GS]', text),
+      printErr: (text: string) => console.error('[GS Error]', text),
+    })) as GhostscriptModule;
+  } finally {
+    URL.revokeObjectURL(blobUrl);
+  }
+}
+
 export async function convertToPdfA(
   pdfData: Uint8Array,
   level: PdfALevel = 'PDF/A-2b',
   onProgress?: (msg: string) => void
 ): Promise<Uint8Array> {
+  if (!isWasmAvailable('ghostscript')) {
+    throw new Error(
+      'Ghostscript is not configured. Please configure it in WASM Settings.'
+    );
+  }
+
   onProgress?.('Loading Ghostscript...');
 
   let gs: GhostscriptModule;
@@ -41,17 +80,7 @@ export async function convertToPdfA(
   if (cachedGsModule) {
     gs = cachedGsModule;
   } else {
-    const gsBaseUrl = getWasmBaseUrl('ghostscript');
-    gs = (await loadWASM({
-      locateFile: (path: string) => {
-        if (path.endsWith('.wasm')) {
-          return gsBaseUrl + 'gs.wasm';
-        }
-        return path;
-      },
-      print: (text: string) => console.log('[GS]', text),
-      printErr: (text: string) => console.error('[GS Error]', text),
-    })) as GhostscriptModule;
+    gs = await loadGsModule();
     cachedGsModule = gs;
   }
 
@@ -73,11 +102,12 @@ export async function convertToPdfA(
 
   try {
     const iccFileName = 'sRGB_IEC61966-2-1_no_black_scaling.icc';
-    const response = await fetchWasmFile('ghostscript', iccFileName);
+    const iccUrl = `${import.meta.env.BASE_URL}${iccFileName}`;
+    const response = await fetch(iccUrl);
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch ICC profile: ${iccFileName}. Ensure it is in your assets folder.`
+        `Failed to fetch ICC profile from ${iccUrl}: HTTP ${response.status}`
       );
     }
 
@@ -127,7 +157,9 @@ export async function convertToPdfA(
     );
   } catch (e) {
     console.error('[Ghostscript] Failed to setup PDF/A assets:', e);
-    throw new Error('Conversion failed: could not create PDF/A definition');
+    throw new Error('Conversion failed: could not create PDF/A definition', {
+      cause: e,
+    });
   }
 
   const args = [
@@ -167,7 +199,7 @@ export async function convertToPdfA(
     exitCode = gs.callMain(args);
   } catch (e) {
     console.error('[Ghostscript] Exception:', e);
-    throw new Error(`Ghostscript threw an exception: ${e}`);
+    throw new Error(`Ghostscript threw an exception: ${e}`, { cause: e });
   }
 
   console.log('[Ghostscript] Exit code:', exitCode);
@@ -175,23 +207,23 @@ export async function convertToPdfA(
   if (exitCode !== 0) {
     try {
       gs.FS.unlink(inputPath);
-    } catch {
-      /* ignore */
+    } catch (e) {
+      console.warn('[Ghostscript] Failed to clean up temp file:', e);
     }
     try {
       gs.FS.unlink(outputPath);
-    } catch {
-      /* ignore */
+    } catch (e) {
+      console.warn('[Ghostscript] Failed to clean up temp file:', e);
     }
     try {
       gs.FS.unlink(iccPath);
-    } catch {
-      /* ignore */
+    } catch (e) {
+      console.warn('[Ghostscript] Failed to clean up temp file:', e);
     }
     try {
       gs.FS.unlink(pdfaDefPath);
-    } catch {
-      /* ignore */
+    } catch (e) {
+      console.warn('[Ghostscript] Failed to clean up temp file:', e);
     }
     throw new Error(`Ghostscript conversion failed with exit code ${exitCode}`);
   }
@@ -204,29 +236,29 @@ export async function convertToPdfA(
     output = gs.FS.readFile(outputPath);
   } catch (e) {
     console.error('[Ghostscript] Failed to read output:', e);
-    throw new Error('Ghostscript did not produce output file');
+    throw new Error('Ghostscript did not produce output file', { cause: e });
   }
 
   // Cleanup
   try {
     gs.FS.unlink(inputPath);
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.warn('[Ghostscript] Failed to clean up temp file:', e);
   }
   try {
     gs.FS.unlink(outputPath);
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.warn('[Ghostscript] Failed to clean up temp file:', e);
   }
   try {
     gs.FS.unlink(iccPath);
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.warn('[Ghostscript] Failed to clean up temp file:', e);
   }
   try {
     gs.FS.unlink(pdfaDefPath);
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.warn('[Ghostscript] Failed to clean up temp file:', e);
   }
 
   if (level !== 'PDF/A-1b') {
@@ -249,8 +281,7 @@ export async function convertToPdfA(
 async function addPageGroupDictionaries(
   pdfData: Uint8Array
 ): Promise<Uint8Array> {
-  const pdfDoc = await PDFDocument.load(pdfData, {
-    ignoreEncryption: true,
+  const pdfDoc = await loadPdfDocument(pdfData, {
     updateMetadata: false,
   });
 
@@ -319,7 +350,7 @@ async function addPageGroupDictionaries(
   }
 
   if (iccProfileRef) {
-    pdfDoc.context.enumerateIndirectObjects().forEach(([ref, obj]) => {
+    pdfDoc.context.enumerateIndirectObjects().forEach(([_ref, obj]) => {
       if (
         obj instanceof PDFDict ||
         (obj && typeof obj === 'object' && 'dict' in obj)
@@ -362,6 +393,12 @@ export async function convertFontsToOutlines(
   pdfData: Uint8Array,
   onProgress?: (msg: string) => void
 ): Promise<Uint8Array> {
+  if (!isWasmAvailable('ghostscript')) {
+    throw new Error(
+      'Ghostscript is not configured. Please configure it in WASM Settings.'
+    );
+  }
+
   onProgress?.('Loading Ghostscript...');
 
   let gs: GhostscriptModule;
@@ -369,17 +406,7 @@ export async function convertFontsToOutlines(
   if (cachedGsModule) {
     gs = cachedGsModule;
   } else {
-    const gsBaseUrl = getWasmBaseUrl('ghostscript');
-    gs = (await loadWASM({
-      locateFile: (path: string) => {
-        if (path.endsWith('.wasm')) {
-          return gsBaseUrl + 'gs.wasm';
-        }
-        return path;
-      },
-      print: (text: string) => console.log('[GS]', text),
-      printErr: (text: string) => console.error('[GS Error]', text),
-    })) as GhostscriptModule;
+    gs = await loadGsModule();
     cachedGsModule = gs;
   }
 
@@ -408,17 +435,23 @@ export async function convertFontsToOutlines(
   } catch (e) {
     try {
       gs.FS.unlink(inputPath);
-    } catch {}
-    throw new Error(`Ghostscript threw an exception: ${e}`);
+    } catch (e2) {
+      console.warn('[Ghostscript] Failed to clean up temp file:', e2);
+    }
+    throw new Error(`Ghostscript threw an exception: ${e}`, { cause: e });
   }
 
   if (exitCode !== 0) {
     try {
       gs.FS.unlink(inputPath);
-    } catch {}
+    } catch (e) {
+      console.warn('[Ghostscript] Failed to clean up temp file:', e);
+    }
     try {
       gs.FS.unlink(outputPath);
-    } catch {}
+    } catch (e) {
+      console.warn('[Ghostscript] Failed to clean up temp file:', e);
+    }
     throw new Error(`Ghostscript conversion failed with exit code ${exitCode}`);
   }
 
@@ -426,15 +459,19 @@ export async function convertFontsToOutlines(
   try {
     output = gs.FS.readFile(outputPath);
   } catch (e) {
-    throw new Error('Ghostscript did not produce output file');
+    throw new Error('Ghostscript did not produce output file', { cause: e });
   }
 
   try {
     gs.FS.unlink(inputPath);
-  } catch {}
+  } catch (e) {
+    console.warn('[Ghostscript] Failed to clean up temp file:', e);
+  }
   try {
     gs.FS.unlink(outputPath);
-  } catch {}
+  } catch (e) {
+    console.warn('[Ghostscript] Failed to clean up temp file:', e);
+  }
 
   return output;
 }

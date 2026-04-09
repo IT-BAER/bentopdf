@@ -86,9 +86,73 @@
     "name": "Số trang",
     "subtitle": "Chèn số trang vào tài liệu của bạn."
   },
+  "addPageLabels": {
+    "name": "Thêm nhãn trang",
+    "subtitle": "Áp dụng nhãn trang PDF với số La Mã, tiền tố và giá trị bắt đầu tùy chỉnh.",
+    "uploadHint": "Tệp PDF",
+    "howLabelsWorkTitle": "Cách nhãn hoạt động",
+    "howLabelsWorkStep1": "Để trống Phạm vi trang để gắn nhãn cho tất cả các trang.",
+    "howLabelsWorkStep2": "Dùng các kiểu như số La Mã cho phần mở đầu và đánh số thập phân cho phần nội dung chính.",
+    "howLabelsWorkStep3": "Dùng Tiền tố với Giá trị bắt đầu 0 để tạo các nhãn như A-0, A-1, A-2.",
+    "howLabelsWorkStep4": "Bật tiến trình khi một quy tắc dùng phạm vi rời rạc như 1-9,30-40 hoặc các trang lẻ.",
+    "labelRulesTitle": "Quy tắc nhãn",
+    "addRule": "Thêm quy tắc",
+    "removeExistingLabels": "Xóa nhãn trang hiện có trước khi áp dụng các quy tắc này",
+    "cpdfNote": "Công cụ này dùng CoherentPDF trong trình duyệt của bạn. Nếu CoherentPDF chưa được cấu hình, bạn sẽ được nhắc thiết lập trong Cài đặt WASM.",
+    "processButton": "Thêm nhãn trang",
+    "howItWorksUploadTitle": "Tải tệp lên",
+    "howItWorksUploadDescription": "Chọn tệp PDF mà bạn muốn gắn nhãn lại.",
+    "howItWorksDefineTitle": "Xác định quy tắc",
+    "howItWorksDefineDescription": "Thiết lập một hoặc nhiều quy tắc nhãn trang với phạm vi trang, kiểu, tiền tố và giá trị bắt đầu.",
+    "howItWorksDownloadTitle": "Tải xuống",
+    "howItWorksDownloadDescription": "Lưu tệp PDF đã cập nhật với các nhãn trang mới.",
+    "relatedToolsTitle": "Công cụ PDF liên quan",
+    "faqWhatIsQuestion": "Nhãn trang là gì?",
+    "faqWhatIsAnswer": "Nhãn trang là kiểu đánh số mà trình đọc PDF hiển thị trong hình thu nhỏ, điều hướng trang và hộp thoại in. Nó không in thêm văn bản mới lên chính trang đó.",
+    "faqMixQuestion": "Tôi có thể trộn số La Mã và số thường không?",
+    "faqMixAnswer": "Có. Hãy thêm nhiều quy tắc, chẳng hạn 1-4 với LowercaseRoman và 5-20 với DecimalArabic.",
+    "faqPrivacyQuestion": "Các tệp của tôi có được giữ riêng tư không?",
+    "faqPrivacyAnswer": "Có. Việc xử lý diễn ra trong trình duyệt của bạn bằng CoherentPDF WASM. Tệp PDF của bạn không rời khỏi thiết bị.",
+    "invalidFileTitle": "Tệp không hợp lệ",
+    "invalidFileMessage": "Vui lòng tải lên một tệp PDF hợp lệ.",
+    "loadingPdf": "Đang tải PDF...",
+    "protectedPdfTitle": "PDF được bảo vệ",
+    "protectedPdfMessage": "Tệp PDF này được bảo vệ bằng mật khẩu. Hãy dùng công cụ Giải mã hoặc Thay đổi quyền trước.",
+    "loadErrorMessage": "Không thể tải tệp PDF. Tệp có thể không hợp lệ, bị hỏng hoặc được bảo vệ bằng mật khẩu.",
+    "fileMeta": "{{size}} • {{count}} trang",
+    "ruleTitle": "Quy tắc nhãn {{number}}",
+    "pageRangeLabel": "Phạm vi trang",
+    "pageRangePlaceholder": "Tất cả các trang, hoặc ví dụ 1-4, 7, lẻ",
+    "labelStyleLabel": "Kiểu nhãn",
+    "labelPrefixLabel": "Tiền tố nhãn",
+    "labelPrefixPlaceholder": "Tiền tố tùy chọn, ví dụ A-",
+    "startValueLabel": "Giá trị bắt đầu",
+    "continueNumbering": "Tiếp tục đánh số qua các phạm vi rời rạc",
+    "examplesNote": "Ví dụ: 1-4 cho phần mở đầu bằng số La Mã, 15-20 với tiền tố A- và giá trị bắt đầu 0, hoặc các trang lẻ khi đã bật tiến trình.",
+    "uploadFirstMessage": "Vui lòng tải lên tệp PDF trước.",
+    "applyingLabels": "Đang áp dụng nhãn trang...",
+    "invalidRangeMessage": "Quy tắc {{number}} có phạm vi trang không hợp lệ: {{range}}",
+    "allPages": "tất cả các trang",
+    "emptyOutputMessage": "CoherentPDF đã tạo ra một tệp rỗng.",
+    "successMessage": "Đã thêm nhãn trang thành công!",
+    "processErrorMessage": "Không thể thêm nhãn trang.",
+    "styleOptions": {
+      "DecimalArabic": "Số thập phân",
+      "LowercaseRoman": "Số La Mã thường",
+      "UppercaseRoman": "Số La Mã hoa",
+      "LowercaseLetters": "Chữ thường",
+      "UppercaseLetters": "Chữ hoa",
+      "NoLabelPrefixOnly": "Chỉ tiền tố, không đánh số"
+    }
+  },
+  "batesNumbering": {
+    "name": "Đánh số Bates",
+    "subtitle": "Thêm số Bates tuần tự trên một hoặc nhiều tệp PDF."
+  },
   "addWatermark": {
     "name": "Thêm Watermark",
-    "subtitle": "Đóng dấu văn bản hoặc hình ảnh lên các trang PDF của bạn."
+    "subtitle": "Đóng dấu văn bản hoặc hình ảnh lên các trang PDF của bạn.",
+    "applyToAllPages": "Áp dụng cho tất cả các trang"
   },
   "headerFooter": {
     "name": "Đầu trang & Chân trang",
@@ -97,6 +161,37 @@
   "invertColors": {
     "name": "Đảo ngược màu",
     "subtitle": "Tạo phiên bản \"chế độ tối\" cho PDF của bạn."
+  },
+  "scannerEffect": {
+    "name": "Hiệu ứng máy quét",
+    "subtitle": "Làm cho PDF trông giống như tài liệu đã quét.",
+    "scanSettings": "Cài đặt quét",
+    "colorspace": "Không gian màu",
+    "gray": "Thang xám",
+    "border": "Viền",
+    "rotate": "Xoay",
+    "rotateVariance": "Biên độ xoay",
+    "brightness": "Độ sáng",
+    "contrast": "Độ tương phản",
+    "blur": "Làm mờ",
+    "noise": "Nhiễu",
+    "yellowish": "Ngả vàng",
+    "resolution": "Độ phân giải",
+    "processButton": "Áp dụng hiệu ứng máy quét"
+  },
+  "adjustColors": {
+    "name": "Điều chỉnh màu sắc",
+    "subtitle": "Tinh chỉnh độ sáng, tương phản, độ bão hòa và nhiều hơn nữa.",
+    "colorSettings": "Cài đặt màu sắc",
+    "brightness": "Độ sáng",
+    "contrast": "Tương phản",
+    "saturation": "Độ bão hòa",
+    "hueShift": "Dịch chuyển sắc độ",
+    "temperature": "Nhiệt độ màu",
+    "tint": "Sắc thái",
+    "gamma": "Gamma",
+    "sepia": "Sepia",
+    "processButton": "Áp dụng điều chỉnh màu"
   },
   "backgroundColor": {
     "name": "Màu nền",
@@ -127,7 +222,8 @@
   },
   "removeBlankPages": {
     "name": "Xóa trang trống",
-    "subtitle": "Tự động phát hiện và xóa trang trống."
+    "subtitle": "Tự động phát hiện và xóa trang trống.",
+    "sensitivityHint": "Cao hơn = nghiêm ngặt hơn, chỉ các trang hoàn toàn trống. Thấp hơn = cho phép trang có một số nội dung."
   },
   "imageToPdf": {
     "name": "Hình ảnh sang PDF",
@@ -183,7 +279,45 @@
   },
   "pdfToTiff": {
     "name": "PDF sang TIFF",
-    "subtitle": "Chuyển đổi mỗi trang PDF thành hình ảnh TIFF."
+    "subtitle": "Chuyển đổi mỗi trang PDF thành hình ảnh TIFF.",
+    "dpi": "DPI (Độ phân giải)",
+    "dpiExplanation": "DPI cao hơn = chất lượng in tốt hơn, kích thước tệp lớn hơn",
+    "compression": "Nén",
+    "compressionExplanation": "LZW và Deflate là nén không mất dữ liệu. CCITT Nhóm 4 phù hợp nhất cho tài liệu quét đen trắng.",
+    "colorMode": "Chế độ màu",
+    "multiPage": "Lưu dưới dạng TIFF nhiều trang (một tệp)",
+    "loadingVips": "Đang tải bộ xử lý hình ảnh...",
+    "converting": "Đang chuyển đổi sang TIFF..."
+  },
+  "pdfToCbz": {
+    "name": "PDF sang CBZ",
+    "subtitle": "Chuyển đổi PDF thành tệp CBZ (Kho lưu trữ truyện tranh) cho trình đọc truyện tranh.",
+    "imageFormat": "Định dạng hình ảnh",
+    "quality": "Chất lượng hình ảnh",
+    "qualityExplanation": "Chất lượng cao hơn = kích thước tệp lớn hơn",
+    "scale": "Tỷ lệ",
+    "scaleExplanation": "Tỷ lệ cao hơn = chất lượng tốt hơn cho màn hình độ phân giải cao",
+    "grayscale": "Chuyển sang thang xám",
+    "manga": "Chế độ manga (phải sang trái)",
+    "includeMetadata": "Bao gồm siêu dữ liệu ComicInfo.xml",
+    "titleLabel": "Tiêu đề",
+    "seriesLabel": "Bộ truyện",
+    "authorLabel": "Tác giả",
+    "numberLabel": "#",
+    "volumeLabel": "Tập",
+    "publisherLabel": "Nhà xuất bản",
+    "tagsLabel": "Thẻ / Thể loại",
+    "yearLabel": "Năm xuất bản",
+    "ratingLabel": "Đánh giá (0-5)",
+    "converting": "Đang chuyển đổi sang CBZ...",
+    "alert": {
+      "invalidFile": "Tệp không hợp lệ",
+      "invalidFileExplanation": "Vui lòng tải lên tệp PDF.",
+      "noFile": "Không có tệp",
+      "noFileExplanation": "Vui lòng tải lên tệp PDF trước.",
+      "conversionSuccess": "Chuyển đổi PDF sang CBZ thành công!",
+      "conversionError": "Không thể chuyển đổi PDF sang CBZ. Tệp có thể bị hỏng."
+    }
   },
   "pdfToGreyscale": {
     "name": "PDF sang thang xám",
@@ -255,7 +389,47 @@
   },
   "comparePdfs": {
     "name": "So sánh PDF",
-    "subtitle": "So sánh hai PDF cạnh nhau."
+    "subtitle": "So sánh hai PDF cạnh nhau.",
+    "firstPdf": "PDF thứ nhất",
+    "secondPdf": "PDF thứ hai",
+    "clickOrDrop": "Nhấp hoặc thả",
+    "page": "Trang",
+    "overlay": "Chồng lớp",
+    "sideBySide": "Cạnh nhau",
+    "flicker": "Nhấp nháy",
+    "syncScroll": "Đồng bộ cuộn",
+    "export": "Xuất",
+    "exportAsPdf": "Xuất dưới dạng PDF",
+    "splitView": "Chế độ chia đôi",
+    "alternating": "Luân phiên",
+    "leftDocument": "Tài liệu bên trái",
+    "rightDocument": "Tài liệu bên phải",
+    "original": "Bản gốc",
+    "modified": "Đã sửa đổi",
+    "searchChanges": "Tìm kiếm thay đổi...",
+    "deleted": "Đã xóa",
+    "added": "Đã thêm",
+    "prevPage": "Trang trước",
+    "nextPage": "Trang sau",
+    "prevChange": "Thay đổi trước",
+    "nextChange": "Thay đổi sau",
+    "uploadTwoPdfs": "Tải lên hai PDF để xem sự khác biệt.",
+    "noDifferences": "Không phát hiện khác biệt trên trang này.",
+    "noMatchingChanges": "Không có thay đổi nào khớp với bộ lọc hiện tại.",
+    "pageNotExist": "Trang {{page}} không tồn tại trong PDF này.",
+    "noPairedPage": "Không có trang ghép cho phía này.",
+    "buildingModel": "Đang xây dựng mô hình ghép trang...",
+    "indexingPdf": "Đang lập chỉ mục PDF {{num}}, trang {{page}} trên {{total}}...",
+    "loadingComparison": "Đang tải so sánh {{current}} trên {{total}}...",
+    "runningOcr": "Đang chạy OCR trên trang {{page}}...",
+    "preparingExport": "Đang chuẩn bị xuất PDF...",
+    "renderingPage": "Đang kết xuất trang {{current}} trên {{total}}...",
+    "exportError": "Lỗi xuất",
+    "exportFailed": "Không thể xuất PDF so sánh.",
+    "loadingFile": "Đang tải {{name}}...",
+    "invalidFile": "Tệp không hợp lệ",
+    "invalidFileMsg": "Vui lòng chọn tệp PDF hợp lệ.",
+    "loadError": "Không thể tải PDF. Có thể tệp bị hỏng hoặc được bảo vệ bằng mật khẩu."
   },
   "posterizePdf": {
     "name": "Posterize PDF",
@@ -516,6 +690,15 @@
     "pageTitle": "Xác minh chữ ký PDF - Xác thực chữ ký số | BentoPDF",
     "subtitle": "Xác minh chữ ký số trong tệp PDF của bạn. Kiểm tra hiệu lực chứng chỉ, xem thông tin người ký và xác nhận tính toàn vẹn tài liệu. Tất cả xử lý diễn ra trong trình duyệt của bạn."
   },
+  "timestampPdf": {
+    "name": "Đóng dấu thời gian PDF",
+    "pageTitle": "Đóng dấu thời gian PDF miễn phí - RFC 3161 | BentoPDF",
+    "subtitle": "Thêm dấu thời gian RFC 3161 vào PDF của bạn thông qua máy chủ TSA đáng tin cậy. Chứng minh tài liệu của bạn tồn tại tại một thời điểm cụ thể. Không cần chứng chỉ.",
+    "tsaSectionTitle": "Máy chủ dấu thời gian (TSA)",
+    "selectTsa": "Chọn máy chủ TSA",
+    "applyTimestamp": "Áp dụng dấu thời gian",
+    "successMessage": "PDF đã được đóng dấu thời gian thành công! Dấu thời gian có thể được xác minh trong Adobe Acrobat và các trình đọc PDF khác."
+  },
   "emailToPdf": {
     "name": "Email sang PDF",
     "subtitle": "Chuyển đổi tệp email (EML, MSG) sang định dạng PDF. Hỗ trợ xuất Outlook và định dạng email tiêu chuẩn.",
@@ -529,5 +712,93 @@
   "deskewPdf": {
     "name": "Chỉnh nghiêng PDF",
     "subtitle": "Tự động làm thẳng các trang quét bị nghiêng bằng OpenCV."
+  },
+  "pdfToWord": {
+    "name": "PDF sang Word",
+    "subtitle": "Chuyển đổi tệp PDF thành tài liệu Word có thể chỉnh sửa."
+  },
+  "extractImages": {
+    "name": "Trích xuất hình ảnh",
+    "subtitle": "Trích xuất tất cả hình ảnh nhúng từ tệp PDF của bạn."
+  },
+  "pdfToMarkdown": {
+    "name": "PDF sang Markdown",
+    "subtitle": "Chuyển đổi văn bản và bảng PDF sang định dạng Markdown."
+  },
+  "preparePdfForAi": {
+    "name": "Chuẩn bị PDF cho AI",
+    "subtitle": "Trích xuất nội dung PDF dưới dạng JSON LlamaIndex cho quy trình RAG/LLM."
+  },
+  "pdfOcg": {
+    "name": "Lớp PDF (OCG)",
+    "subtitle": "Xem, chuyển đổi, thêm và xóa các lớp OCG trong PDF của bạn."
+  },
+  "pdfToPdfa": {
+    "name": "PDF sang PDF/A",
+    "subtitle": "Chuyển đổi PDF sang PDF/A để lưu trữ lâu dài."
+  },
+  "rasterizePdf": {
+    "name": "Rasterize PDF",
+    "subtitle": "Chuyển đổi PDF thành PDF dựa trên hình ảnh. Làm phẳng các lớp và xóa văn bản có thể chọn."
+  },
+  "pdfWorkflow": {
+    "name": "Trình xây dựng quy trình PDF",
+    "subtitle": "Xây dựng quy trình xử lý PDF tùy chỉnh bằng trình chỉnh sửa nút trực quan.",
+    "nodes": "Nút",
+    "searchNodes": "Tìm kiếm nút...",
+    "run": "Chạy",
+    "clear": "Xóa",
+    "save": "Lưu",
+    "load": "Tải",
+    "export": "Xuất",
+    "import": "Nhập",
+    "ready": "Sẵn sàng",
+    "settings": "Cài đặt",
+    "processing": "Đang xử lý...",
+    "saveTemplate": "Lưu mẫu",
+    "templateName": "Tên mẫu",
+    "templatePlaceholder": "ví dụ: Quy trình hóa đơn",
+    "cancel": "Hủy",
+    "loadTemplate": "Tải mẫu",
+    "noTemplates": "Chưa có mẫu nào được lưu.",
+    "ok": "OK",
+    "workflowCompleted": "Quy trình đã hoàn tất",
+    "errorDuringExecution": "Lỗi trong quá trình thực thi",
+    "addNodeError": "Thêm ít nhất một nút để chạy quy trình.",
+    "needInputOutput": "Quy trình của bạn cần ít nhất một nút đầu vào và một nút đầu ra để chạy.",
+    "enterName": "Vui lòng nhập tên.",
+    "templateExists": "Đã tồn tại mẫu có tên này.",
+    "templateSaved": "Đã lưu mẫu \"{{name}}\".",
+    "templateLoaded": "Đã tải mẫu \"{{name}}\".",
+    "failedLoadTemplate": "Không thể tải mẫu.",
+    "noSettings": "Không có cài đặt nào có thể cấu hình cho nút này.",
+    "advancedSettings": "Cài đặt nâng cao"
+  },
+  "pdfOverlay": {
+    "name": "Chồng PDF",
+    "subtitle": "Chồng hoặc lót các trang từ một PDF lên PDF khác.",
+    "basePdfLabel": "PDF gốc",
+    "uploadBasePdf": "Tải lên PDF gốc",
+    "overlayPdfLabel": "PDF chồng / lót",
+    "uploadOverlayPdf": "Tải lên PDF chồng/lót",
+    "modeLabel": "Chế độ",
+    "overlayOption": "Chồng lên (trên các trang)",
+    "underlayOption": "Lót dưới (sau các trang)",
+    "pageRangeLabel": "Áp dụng cho trang (tùy chọn)",
+    "pageRangeHint": "Dùng \"z\" cho trang cuối. Để trống để áp dụng cho tất cả các trang.",
+    "repeatLabel": "Lặp lại các trang chồng/lót nếu tài liệu gốc dài hơn",
+    "processButton": "Áp dụng chồng / lót",
+    "howItWorksUploadTitle": "Tải lên hai PDF",
+    "howItWorksUploadDescription": "Tải lên PDF gốc và PDF bạn muốn chồng hoặc lót.",
+    "howItWorksModeTitle": "Chọn chế độ",
+    "howItWorksModeDescription": "Chọn chồng lên (phía trên) hoặc lót dưới (phía sau). Tùy chọn đặt phạm vi trang và lặp lại.",
+    "howItWorksDownloadTitle": "Tải xuống",
+    "howItWorksDownloadDescription": "Tải xuống PDF của bạn với phần chồng hoặc lót đã được áp dụng.",
+    "faqDifferenceQuestion": "Sự khác biệt giữa chồng lên và lót dưới là gì?",
+    "faqDifferenceAnswer": "Chồng lên đặt các trang lên trên PDF gốc (như hình mờ). Lót dưới đặt các trang phía sau PDF gốc (như tiêu đề thư hoặc nền).",
+    "faqSinglePageQuestion": "Tôi có thể dùng PDF một trang làm chồng cho tất cả các trang không?",
+    "faqSinglePageAnswer": "Có! Bật tùy chọn \"Lặp lại\" và các trang chồng sẽ lặp lại trên tất cả các trang gốc. Hình mờ một trang sẽ được áp dụng cho mọi trang.",
+    "faqPrivacyQuestion": "Tệp của tôi có được bảo mật không?",
+    "faqPrivacyAnswer": "Chắc chắn! Toàn bộ quá trình xử lý diễn ra trong trình duyệt của bạn. Tệp của bạn không bao giờ rời khỏi thiết bị, đảm bảo quyền riêng tư hoàn toàn."
   }
 }

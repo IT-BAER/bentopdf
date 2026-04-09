@@ -1,8 +1,10 @@
 import createModule from '@neslinesli93/qpdf-wasm';
+import type { QpdfInstanceExtended } from '@/types';
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { createIcons } from 'lucide';
 import { state, resetState } from '../state.js';
 import * as pdfjsLib from 'pdfjs-dist';
+import type { DocumentInitParameters } from 'pdfjs-dist/types/src/display/api';
 
 const STANDARD_SIZES = {
   A4: { width: 595.28, height: 841.89 },
@@ -13,7 +15,7 @@ const STANDARD_SIZES = {
   A5: { width: 419.53, height: 595.28 },
 };
 
-export function getStandardPageName(width: any, height: any) {
+export function getStandardPageName(width: number, height: number) {
   const tolerance = 1; // Allow for minor floating point variations
   for (const [name, size] of Object.entries(STANDARD_SIZES)) {
     if (
@@ -28,8 +30,8 @@ export function getStandardPageName(width: any, height: any) {
   return 'Custom';
 }
 
-export function convertPoints(points: any, unit: any) {
-  let result = 0;
+export function convertPoints(points: number, unit: string) {
+  let result: number;
   switch (unit) {
     case 'in':
       result = points / 72;
@@ -59,7 +61,7 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } {
     : { r: 0, g: 0, b: 0 };
 }
 
-export const formatBytes = (bytes: any, decimals = 1) => {
+export const formatBytes = (bytes: number, decimals = 1) => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
@@ -71,29 +73,106 @@ export const formatBytes = (bytes: any, decimals = 1) => {
 /**
  * Get MIME type configuration for File System Access API
  */
-const getMimeTypeConfig = (filename: string): { description: string; mimeType: string; extensions: string[] } => {
+const getMimeTypeConfig = (
+  filename: string
+): { description: string; mimeType: string; extensions: string[] } => {
   const ext = filename.split('.').pop()?.toLowerCase() || '';
-  
-  const mimeTypes: Record<string, { description: string; mimeType: string; extensions: string[] }> = {
-    'pdf': { description: 'PDF Document', mimeType: 'application/pdf', extensions: ['.pdf'] },
-    'zip': { description: 'ZIP Archive', mimeType: 'application/zip', extensions: ['.zip'] },
-    'jpg': { description: 'JPEG Image', mimeType: 'image/jpeg', extensions: ['.jpg', '.jpeg'] },
-    'jpeg': { description: 'JPEG Image', mimeType: 'image/jpeg', extensions: ['.jpg', '.jpeg'] },
-    'png': { description: 'PNG Image', mimeType: 'image/png', extensions: ['.png'] },
-    'webp': { description: 'WebP Image', mimeType: 'image/webp', extensions: ['.webp'] },
-    'svg': { description: 'SVG Image', mimeType: 'image/svg+xml', extensions: ['.svg'] },
-    'bmp': { description: 'BMP Image', mimeType: 'image/bmp', extensions: ['.bmp'] },
-    'tiff': { description: 'TIFF Image', mimeType: 'image/tiff', extensions: ['.tiff', '.tif'] },
-    'tif': { description: 'TIFF Image', mimeType: 'image/tiff', extensions: ['.tiff', '.tif'] },
-    'txt': { description: 'Text File', mimeType: 'text/plain', extensions: ['.txt'] },
-    'csv': { description: 'CSV File', mimeType: 'text/csv', extensions: ['.csv'] },
-    'json': { description: 'JSON File', mimeType: 'application/json', extensions: ['.json'] },
-    'docx': { description: 'Word Document', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', extensions: ['.docx'] },
-    'xlsx': { description: 'Excel Spreadsheet', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', extensions: ['.xlsx'] },
-    'md': { description: 'Markdown File', mimeType: 'text/markdown', extensions: ['.md'] },
+
+  const mimeTypes: Record<
+    string,
+    { description: string; mimeType: string; extensions: string[] }
+  > = {
+    pdf: {
+      description: 'PDF Document',
+      mimeType: 'application/pdf',
+      extensions: ['.pdf'],
+    },
+    zip: {
+      description: 'ZIP Archive',
+      mimeType: 'application/zip',
+      extensions: ['.zip'],
+    },
+    jpg: {
+      description: 'JPEG Image',
+      mimeType: 'image/jpeg',
+      extensions: ['.jpg', '.jpeg'],
+    },
+    jpeg: {
+      description: 'JPEG Image',
+      mimeType: 'image/jpeg',
+      extensions: ['.jpg', '.jpeg'],
+    },
+    png: {
+      description: 'PNG Image',
+      mimeType: 'image/png',
+      extensions: ['.png'],
+    },
+    webp: {
+      description: 'WebP Image',
+      mimeType: 'image/webp',
+      extensions: ['.webp'],
+    },
+    svg: {
+      description: 'SVG Image',
+      mimeType: 'image/svg+xml',
+      extensions: ['.svg'],
+    },
+    bmp: {
+      description: 'BMP Image',
+      mimeType: 'image/bmp',
+      extensions: ['.bmp'],
+    },
+    tiff: {
+      description: 'TIFF Image',
+      mimeType: 'image/tiff',
+      extensions: ['.tiff', '.tif'],
+    },
+    tif: {
+      description: 'TIFF Image',
+      mimeType: 'image/tiff',
+      extensions: ['.tiff', '.tif'],
+    },
+    txt: {
+      description: 'Text File',
+      mimeType: 'text/plain',
+      extensions: ['.txt'],
+    },
+    csv: {
+      description: 'CSV File',
+      mimeType: 'text/csv',
+      extensions: ['.csv'],
+    },
+    json: {
+      description: 'JSON File',
+      mimeType: 'application/json',
+      extensions: ['.json'],
+    },
+    docx: {
+      description: 'Word Document',
+      mimeType:
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      extensions: ['.docx'],
+    },
+    xlsx: {
+      description: 'Excel Spreadsheet',
+      mimeType:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      extensions: ['.xlsx'],
+    },
+    md: {
+      description: 'Markdown File',
+      mimeType: 'text/markdown',
+      extensions: ['.md'],
+    },
   };
-  
-  return mimeTypes[ext] || { description: 'File', mimeType: 'application/octet-stream', extensions: [`.${ext}`] };
+
+  return (
+    mimeTypes[ext] || {
+      description: 'File',
+      mimeType: 'application/octet-stream',
+      extensions: [`.${ext}`],
+    }
+  );
 };
 
 /**
@@ -101,20 +180,25 @@ const getMimeTypeConfig = (filename: string): { description: string; mimeType: s
  * Uses File System Access API on supported browsers (Chrome, Edge, Opera)
  * Falls back to traditional download on unsupported browsers (Firefox, Safari)
  */
-export const downloadFile = async (blob: Blob, filename: string): Promise<void> => {
+export const downloadFile = async (
+  blob: Blob,
+  filename: string
+): Promise<void> => {
   // Check if File System Access API is available
   if ('showSaveFilePicker' in window) {
     try {
       const config = getMimeTypeConfig(filename);
-      
+
       const handle = await (window as any).showSaveFilePicker({
         suggestedName: filename,
-        types: [{
-          description: config.description,
-          accept: { [config.mimeType]: config.extensions }
-        }]
+        types: [
+          {
+            description: config.description,
+            accept: { [config.mimeType]: config.extensions },
+          },
+        ],
       });
-      
+
       const writable = await handle.createWritable();
       await writable.write(blob);
       await writable.close();
@@ -125,10 +209,13 @@ export const downloadFile = async (blob: Blob, filename: string): Promise<void> 
         return;
       }
       // For other errors, fall back to traditional download
-      console.warn('File System Access API failed, falling back to traditional download:', err);
+      console.warn(
+        'File System Access API failed, falling back to traditional download:',
+        err
+      );
     }
   }
-  
+
   // Fallback for browsers that don't support File System Access API
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -140,10 +227,12 @@ export const downloadFile = async (blob: Blob, filename: string): Promise<void> 
   URL.revokeObjectURL(url);
 };
 
-export const readFileAsArrayBuffer = (file: any) => {
+export const readFileAsArrayBuffer = (
+  file: Blob
+): Promise<ArrayBuffer | null> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
+    reader.onload = () => resolve(reader.result as ArrayBuffer | null);
     reader.onerror = (error) => reject(error);
     reader.readAsArrayBuffer(file);
   });
@@ -200,7 +289,7 @@ export function parsePageRanges(
  * @param {string} isoDateString - The ISO 8601 date string.
  * @returns {string} A localized date and time string, or the original string if parsing fails.
  */
-export function formatIsoDate(isoDateString) {
+export function formatIsoDate(isoDateString: string) {
   if (!isoDateString || typeof isoDateString !== 'string') {
     return isoDateString; // Return original value if it's not a valid string
   }
@@ -217,20 +306,20 @@ export function formatIsoDate(isoDateString) {
   }
 }
 
-let qpdfInstance: any = null;
+let qpdfInstance: QpdfInstanceExtended | null = null;
 
 /**
  * Initialize qpdf-wasm singleton.
  * Subsequent calls return the same instance.
  */
-export async function initializeQpdf() {
+export async function initializeQpdf(): Promise<QpdfInstanceExtended> {
   if (qpdfInstance) return qpdfInstance;
 
   showLoader('Initializing PDF engine...');
   try {
-    qpdfInstance = await createModule({
+    qpdfInstance = (await createModule({
       locateFile: () => import.meta.env.BASE_URL + 'qpdf.wasm',
-    });
+    })) as unknown as QpdfInstanceExtended;
   } catch (error) {
     console.error('Failed to initialize qpdf-wasm:', error);
     showAlert(
@@ -328,24 +417,19 @@ export function resetAndReloadTool(preResetCallback?: () => void) {
  * @param src The source to load (url string, typed array, or parameters object)
  * @returns The PDF loading task
  */
-export function getPDFDocument(src: any) {
-  let params = src;
+export function getPDFDocument(
+  src: string | Uint8Array | ArrayBuffer | DocumentInitParameters
+) {
+  let params: DocumentInitParameters;
 
-  // Handle different input types similar to how getDocument handles them,
-  // but we ensure we have an object to attach wasmUrl to.
   if (typeof src === 'string') {
     params = { url: src };
   } else if (src instanceof Uint8Array || src instanceof ArrayBuffer) {
     params = { data: src };
+  } else {
+    params = src;
   }
 
-  // Ensure params is an object
-  if (typeof params !== 'object' || params === null) {
-    params = {};
-  }
-
-  // Add wasmUrl pointing to our public/wasm directory
-  // This is required for PDF.js v5+ to load OpenJPEG for certain images
   return pdfjsLib.getDocument({
     ...params,
     wasmUrl: import.meta.env.BASE_URL + 'pdfjs-viewer/wasm/',
@@ -378,44 +462,199 @@ export function uint8ArrayToBase64(bytes: Uint8Array): string {
   return btoa(chunks.join(''));
 }
 
-export function sanitizeEmailHtml(html: string): string {
-  if (!html) return html;
+const EMAIL_BLOCKED_TAGS = new Set([
+  'base',
+  'button',
+  'embed',
+  'form',
+  'iframe',
+  'input',
+  'link',
+  'meta',
+  'object',
+  'script',
+  'select',
+  'source',
+  'style',
+  'textarea',
+  'track',
+  'video',
+]);
 
+const EMAIL_STRIPPED_ATTRIBUTES = new Set([
+  'align',
+  'bgcolor',
+  'border',
+  'cellpadding',
+  'cellspacing',
+  'class',
+  'dir',
+  'height',
+  'id',
+  'originalsrc',
+  'role',
+  'style',
+  'valign',
+  'width',
+]);
+
+function unwrapOutlookSafeLink(value: string): string {
+  try {
+    const parsed = new URL(value);
+    if (!parsed.hostname.endsWith('safelinks.protection.outlook.com')) {
+      return value;
+    }
+
+    const decodedUrl = parsed.searchParams.get('url');
+    return decodedUrl ? decodeURIComponent(decodedUrl) : value;
+  } catch {
+    return value;
+  }
+}
+
+function sanitizeEmailHref(value: string): string | null {
+  let normalized = unwrapOutlookSafeLink(value.trim());
+  if (!normalized) return null;
+
+  const lower = normalized.toLowerCase();
+  if (lower.startsWith('javascript:') || lower.startsWith('data:')) {
+    return null;
+  }
+
+  if (normalized.length > 500) {
+    const baseUrl = normalized.split('?')[0];
+    normalized =
+      baseUrl && baseUrl.length < 200 ? baseUrl : normalized.slice(0, 200);
+  }
+
+  return normalized;
+}
+
+function isEmbeddedResourceUrl(value: string): boolean {
+  const normalized = value.trim().toLowerCase();
+  return normalized.startsWith('cid:') || normalized.startsWith('data:');
+}
+
+function isEmbeddedSrcset(value: string): boolean {
+  return value
+    .split(',')
+    .map((entry) => entry.trim().split(/\s+/)[0])
+    .filter(Boolean)
+    .every(isEmbeddedResourceUrl);
+}
+
+function sanitizeEmailHtmlWithDom(html: string): string {
+  const parser = new DOMParser();
+  const document = parser.parseFromString(html, 'text/html');
+
+  for (const element of Array.from(document.body.querySelectorAll('*'))) {
+    const tagName = element.tagName.toLowerCase();
+    if (EMAIL_BLOCKED_TAGS.has(tagName)) {
+      element.remove();
+      continue;
+    }
+
+    if (
+      tagName === 'img' &&
+      ((element.getAttribute('width') === '1' &&
+        element.getAttribute('height') === '1') ||
+        element.getAttribute('style')?.includes('display:none'))
+    ) {
+      element.remove();
+      continue;
+    }
+
+    for (const attributeName of element.getAttributeNames()) {
+      const lowerName = attributeName.toLowerCase();
+      const attributeValue = element.getAttribute(attributeName) || '';
+
+      if (
+        lowerName.startsWith('on') ||
+        lowerName.startsWith('data-') ||
+        lowerName === 'srcdoc' ||
+        EMAIL_STRIPPED_ATTRIBUTES.has(lowerName)
+      ) {
+        element.removeAttribute(attributeName);
+        continue;
+      }
+
+      if (lowerName === 'href') {
+        const safeHref = sanitizeEmailHref(attributeValue);
+        if (safeHref) {
+          element.setAttribute('href', safeHref);
+        } else {
+          element.removeAttribute(attributeName);
+        }
+        continue;
+      }
+
+      if (lowerName === 'srcset') {
+        if (!isEmbeddedSrcset(attributeValue)) {
+          element.removeAttribute(attributeName);
+        }
+        continue;
+      }
+
+      if (
+        ['background', 'poster', 'src'].includes(lowerName) &&
+        !isEmbeddedResourceUrl(attributeValue)
+      ) {
+        element.removeAttribute(attributeName);
+      }
+    }
+  }
+
+  return document.body.innerHTML;
+}
+
+function sanitizeEmailHtmlFallback(html: string): string {
   let sanitized = html;
 
   sanitized = sanitized.replace(/<head[^>]*>[\s\S]*?<\/head>/gi, '');
   sanitized = sanitized.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
   sanitized = sanitized.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
   sanitized = sanitized.replace(/<link[^>]*>/gi, '');
+  sanitized = sanitized.replace(
+    /<(base|button|embed|form|iframe|input|meta|object|select|source|textarea|track|video)[^>]*>[\s\S]*?<\/\1>/gi,
+    ''
+  );
+  sanitized = sanitized.replace(
+    /<(base|button|embed|form|iframe|input|meta|object|select|source|textarea|track|video)[^>]*\/?\s*>/gi,
+    ''
+  );
   sanitized = sanitized.replace(/\s+style=["'][^"']*["']/gi, '');
   sanitized = sanitized.replace(/\s+class=["'][^"']*["']/gi, '');
   sanitized = sanitized.replace(/\s+data-[a-z-]+=["'][^"']*["']/gi, '');
   sanitized = sanitized.replace(
+    /\s+on[a-z-]+=(?:["'][^"']*["']|[^\s>]+)/gi,
+    ''
+  );
+  sanitized = sanitized.replace(/\s+srcdoc=["'][^"']*["']/gi, '');
+  sanitized = sanitized.replace(
     /<img[^>]*(?:width=["']1["'][^>]*height=["']1["']|height=["']1["'][^>]*width=["']1["'])[^>]*\/?>/gi,
     ''
   );
-  sanitized = sanitized.replace(
-    /href=["']https?:\/\/[^"']*safelinks\.protection\.outlook\.com[^"']*url=([^&"']+)[^"']*["']/gi,
-    (match, encodedUrl) => {
-      try {
-        const decodedUrl = decodeURIComponent(encodedUrl);
-        return `href="${decodedUrl}"`;
-      } catch {
-        return match;
-      }
-    }
-  );
   sanitized = sanitized.replace(/\s+originalsrc=["'][^"']*["']/gi, '');
+  sanitized = sanitized.replace(/\s+srcset=["'][^"']*["']/gi, '');
   sanitized = sanitized.replace(
-    /href=["']([^"']{500,})["']/gi,
-    (match, url) => {
-      const baseUrl = url.split('?')[0];
-      if (baseUrl && baseUrl.length < 200) {
-        return `href="${baseUrl}"`;
-      }
-      return `href="${url.substring(0, 200)}"`;
-    }
+    /\s+(background|poster|src)=["'](?!(?:cid:|data:))[^"']*["']/gi,
+    ''
   );
+  sanitized = sanitized.replace(
+    /\s+href=["'](?:javascript:|data:)[^"']*["']/gi,
+    ''
+  );
+
+  return sanitized;
+}
+
+export function sanitizeEmailHtml(html: string): string {
+  if (!html) return html;
+
+  let sanitized =
+    typeof DOMParser === 'undefined'
+      ? sanitizeEmailHtmlFallback(html)
+      : sanitizeEmailHtmlWithDom(html);
 
   sanitized = sanitized.replace(
     /\s+(cellpadding|cellspacing|bgcolor|border|valign|align|width|height|role|dir|id)=["'][^"']*["']/gi,
@@ -474,7 +713,7 @@ export function formatRawDate(raw: string): string {
         year,
         hoursStr,
         minsStr,
-        secsStr,
+        _secsStr,
         timezone,
       ] = match;
 
@@ -516,8 +755,27 @@ export function formatRawDate(raw: string): string {
 
       return `${fullDay}, ${fullMonth} ${dom}, ${year} at ${hours}:${minsStr} ${ampm} (${formattedTz})`;
     }
-  } catch (e) {
-    // Fallback to raw string if parsing fails
+  } catch {
+    console.error('Error parsing date string:', raw);
   }
   return raw;
+}
+
+/**
+ * Returns a sanitized PDF filename.
+ *
+ * The provided filename is processed as follows:
+ * - Removes a trailing `.pdf` file extension (case-insensitive)
+ * - Trims leading and trailing whitespace
+ * - Truncates the name to a maximum of 80 characters
+ *
+ * @param filename The original filename (including extension)
+ * @returns The sanitized filename without the `.pdf` extension, limited to 80 characters
+ */
+export function getCleanPdfFilename(filename: string): string {
+  let clean = filename.replace(/\.pdf$/i, '').trim();
+  if (clean.length > 80) {
+    clean = clean.slice(0, 80);
+  }
+  return clean;
 }

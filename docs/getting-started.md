@@ -14,6 +14,15 @@ Visit [bentopdf.com](https://bentopdf.com) to use BentoPDF instantly—no instal
 
 ### Option 2: Self-Host with Docker
 
+> [!IMPORTANT]
+> Office file conversion requires `SharedArrayBuffer`, which needs both:
+>
+> - `Cross-Origin-Opener-Policy: same-origin`
+> - `Cross-Origin-Embedder-Policy: require-corp`
+> - a secure context
+>
+> `http://localhost` works for local testing because browsers treat loopback as trustworthy. `http://192.168.x.x` or other LAN IPs usually do not, so Word/Excel/PowerPoint conversions will require HTTPS when accessed from other devices on your network.
+
 ```bash
 # Pull and run the Docker image
 docker run -d -p 3000:8080 ghcr.io/alam00000/bentopdf:latest
@@ -24,6 +33,9 @@ docker compose up -d
 ```
 
 Then open `http://localhost:3000` in your browser.
+
+> [!NOTE]
+> If you are preparing an air-gapped OCR deployment, you must host the OCR text-layer fonts internally in addition to the Tesseract worker, core runtime, and traineddata files. The full setup is documented in [Self-Hosting](/self-hosting/), including `VITE_OCR_FONT_BASE_URL` and the bundled `ocr-fonts/` directory.
 
 ### Option 3: Build from Source
 
@@ -41,14 +53,14 @@ npm run dev
 
 ## Features at a Glance
 
-| Category | Tools |
-|----------|-------|
-| **Convert to PDF** | Word, Excel, PowerPoint, Images, Markdown, EPUB, MOBI, and more |
-| **Convert from PDF** | JPG, PNG, Text, Excel, SVG, and more |
-| **Edit & Annotate** | Sign, Highlight, Redact, Fill Forms, Add Stamps |
-| **Organize** | Merge, Split, Rotate, Delete Pages, Reorder |
-| **Optimize** | Compress, Repair, Flatten, OCR |
-| **Security** | Encrypt, Decrypt, Remove Restrictions |
+| Category             | Tools                                                           |
+| -------------------- | --------------------------------------------------------------- |
+| **Convert to PDF**   | Word, Excel, PowerPoint, Images, Markdown, EPUB, MOBI, and more |
+| **Convert from PDF** | JPG, PNG, Text, Excel, SVG, and more                            |
+| **Edit & Annotate**  | Sign, Highlight, Redact, Fill Forms, Add Stamps                 |
+| **Organize**         | Merge, Split, Rotate, Delete Pages, Reorder                     |
+| **Optimize**         | Compress, Repair, Flatten, OCR                                  |
+| **Security**         | Encrypt, Decrypt, Remove Restrictions                           |
 
 ## Browser Support
 

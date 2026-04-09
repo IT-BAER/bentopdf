@@ -86,9 +86,73 @@
     "name": "Seitenzahlen",
     "subtitle": "Seitenzahlen in Ihr Dokument einfügen."
   },
+  "addPageLabels": {
+    "name": "Seitenbeschriftungen hinzufügen",
+    "subtitle": "PDF-Seitenbeschriftungen mit römischen Zahlen, Präfixen und benutzerdefinierten Startwerten anwenden.",
+    "uploadHint": "PDF-Datei",
+    "howLabelsWorkTitle": "So funktionieren Seitenbeschriftungen",
+    "howLabelsWorkStep1": "Lassen Sie den Seitenbereich leer, um alle Seiten zu beschriften.",
+    "howLabelsWorkStep2": "Verwenden Sie Stile wie römische Zahlen für Vorspannseiten und Dezimalzahlen für den Hauptteil.",
+    "howLabelsWorkStep3": "Verwenden Sie ein Präfix mit dem Startwert 0, um Beschriftungen wie A-0, A-1, A-2 zu erzeugen.",
+    "howLabelsWorkStep4": "Aktivieren Sie die fortlaufende Nummerierung, wenn eine Regel einen nicht zusammenhängenden Bereich wie 1-9,30-40 oder ungerade Seiten verwendet.",
+    "labelRulesTitle": "Beschriftungsregeln",
+    "addRule": "Regel hinzufügen",
+    "removeExistingLabels": "Vor dem Anwenden dieser Regeln vorhandene Seitenbeschriftungen entfernen",
+    "cpdfNote": "Dieses Werkzeug verwendet CoherentPDF in Ihrem Browser. Wenn CoherentPDF nicht konfiguriert ist, werden Sie aufgefordert, es in den WASM-Einstellungen einzurichten.",
+    "processButton": "Seitenbeschriftungen hinzufügen",
+    "howItWorksUploadTitle": "Datei hochladen",
+    "howItWorksUploadDescription": "Wählen Sie die PDF-Datei aus, die Sie neu beschriften möchten.",
+    "howItWorksDefineTitle": "Regeln festlegen",
+    "howItWorksDefineDescription": "Legen Sie eine oder mehrere Regeln für Seitenbeschriftungen mit Seitenbereichen, Stilen, Präfixen und Startwerten fest.",
+    "howItWorksDownloadTitle": "Herunterladen",
+    "howItWorksDownloadDescription": "Speichern Sie die aktualisierte PDF mit ihren neuen Seitenbeschriftungen.",
+    "relatedToolsTitle": "Verwandte PDF-Werkzeuge",
+    "faqWhatIsQuestion": "Was ist eine Seitenbeschriftung?",
+    "faqWhatIsAnswer": "Eine Seitenbeschriftung ist die Nummerierung, die PDF-Reader in Miniaturansichten, der Seitennavigation und Druckdialogen anzeigen. Sie druckt keinen neuen Text auf die Seite selbst.",
+    "faqMixQuestion": "Kann ich römische Ziffern und normale Zahlen mischen?",
+    "faqMixAnswer": "Ja. Fügen Sie mehrere Regeln hinzu, zum Beispiel 1-4 mit LowercaseRoman und 5-20 mit DecimalArabic.",
+    "faqPrivacyQuestion": "Bleiben meine Dateien privat?",
+    "faqPrivacyAnswer": "Ja. Die Verarbeitung erfolgt in Ihrem Browser mit CoherentPDF WASM. Ihre PDF verlässt Ihr Gerät nicht.",
+    "invalidFileTitle": "Ungültige Datei",
+    "invalidFileMessage": "Bitte laden Sie eine gültige PDF-Datei hoch.",
+    "loadingPdf": "PDF wird geladen...",
+    "protectedPdfTitle": "Geschützte PDF",
+    "protectedPdfMessage": "Diese PDF ist passwortgeschützt. Bitte verwenden Sie zuerst das Werkzeug Entschlüsseln oder Berechtigungen ändern.",
+    "loadErrorMessage": "Die PDF-Datei konnte nicht geladen werden. Die Datei ist möglicherweise ungültig, beschädigt oder passwortgeschützt.",
+    "fileMeta": "{{size}} • {{count}} Seiten",
+    "ruleTitle": "Beschriftungsregel {{number}}",
+    "pageRangeLabel": "Seitenbereich",
+    "pageRangePlaceholder": "Alle Seiten oder z. B. 1-4, 7, ungerade",
+    "labelStyleLabel": "Beschriftungsstil",
+    "labelPrefixLabel": "Beschriftungspräfix",
+    "labelPrefixPlaceholder": "Optionales Präfix, z. B. A-",
+    "startValueLabel": "Startwert",
+    "continueNumbering": "Nummerierung über nicht zusammenhängende Bereiche hinweg fortsetzen",
+    "examplesNote": "Beispiele: 1-4 für römisch nummerierte Vorspannseiten, 15-20 mit Präfix A- und Startwert 0 oder ungerade Seiten mit aktivierter Fortsetzung.",
+    "uploadFirstMessage": "Bitte laden Sie zuerst eine PDF-Datei hoch.",
+    "applyingLabels": "Seitenbeschriftungen werden angewendet...",
+    "invalidRangeMessage": "Regel {{number}} hat einen ungültigen Seitenbereich: {{range}}",
+    "allPages": "alle Seiten",
+    "emptyOutputMessage": "CoherentPDF hat eine leere Datei erzeugt.",
+    "successMessage": "Seitenbeschriftungen wurden erfolgreich hinzugefügt!",
+    "processErrorMessage": "Seitenbeschriftungen konnten nicht hinzugefügt werden.",
+    "styleOptions": {
+      "DecimalArabic": "Dezimalzahlen",
+      "LowercaseRoman": "Kleine römische Zahlen",
+      "UppercaseRoman": "Große römische Zahlen",
+      "LowercaseLetters": "Kleinbuchstaben",
+      "UppercaseLetters": "Großbuchstaben",
+      "NoLabelPrefixOnly": "Nur Präfix ohne Nummer"
+    }
+  },
+  "batesNumbering": {
+    "name": "Bates-Nummerierung",
+    "subtitle": "Fortlaufende Bates-Nummern über eine oder mehrere PDF-Dateien hinzufügen."
+  },
   "addWatermark": {
     "name": "Wasserzeichen hinzufügen",
-    "subtitle": "Text oder ein Bild über Ihre PDF-Seiten stempeln."
+    "subtitle": "Text oder ein Bild über Ihre PDF-Seiten stempeln.",
+    "applyToAllPages": "Auf alle Seiten anwenden"
   },
   "headerFooter": {
     "name": "Kopf- & Fußzeile",
@@ -97,6 +161,37 @@
   "invertColors": {
     "name": "Farben invertieren",
     "subtitle": "Eine \"Dunkelmodus\"-Version Ihrer PDF erstellen."
+  },
+  "scannerEffect": {
+    "name": "Scanner-Effekt",
+    "subtitle": "Lassen Sie Ihr PDF wie ein gescanntes Dokument aussehen.",
+    "scanSettings": "Scan-Einstellungen",
+    "colorspace": "Farbraum",
+    "gray": "Grau",
+    "border": "Rand",
+    "rotate": "Drehen",
+    "rotateVariance": "Drehvarianz",
+    "brightness": "Helligkeit",
+    "contrast": "Kontrast",
+    "blur": "Unschärfe",
+    "noise": "Rauschen",
+    "yellowish": "Gelbstich",
+    "resolution": "Auflösung",
+    "processButton": "Scanner-Effekt anwenden"
+  },
+  "adjustColors": {
+    "name": "Farben anpassen",
+    "subtitle": "Helligkeit, Kontrast, Sättigung und mehr in Ihrem PDF feinabstimmen.",
+    "colorSettings": "Farbeinstellungen",
+    "brightness": "Helligkeit",
+    "contrast": "Kontrast",
+    "saturation": "Sättigung",
+    "hueShift": "Farbton",
+    "temperature": "Temperatur",
+    "tint": "Tönung",
+    "gamma": "Gamma",
+    "sepia": "Sepia",
+    "processButton": "Farbanpassungen anwenden"
   },
   "backgroundColor": {
     "name": "Hintergrundfarbe",
@@ -127,7 +222,8 @@
   },
   "removeBlankPages": {
     "name": "Leere Seiten entfernen",
-    "subtitle": "Leere Seiten automatisch erkennen und löschen."
+    "subtitle": "Leere Seiten automatisch erkennen und löschen.",
+    "sensitivityHint": "Höher = strenger, nur rein leere Seiten. Niedriger = erlaubt Seiten mit etwas Inhalt."
   },
   "imageToPdf": {
     "name": "Bilder zu PDF",
@@ -167,23 +263,111 @@
   },
   "pdfToJpg": {
     "name": "PDF zu JPG",
-    "subtitle": "Jede PDF-Seite in ein JPG-Bild konvertieren."
+    "subtitle": "Jede PDF-Seite in ein JPG-Bild konvertieren.",
+    "imageQuality": "Bildqualität",
+    "imageQualityExplanation": "Höhere Qualität = größere Dateigröße",
+    "alert": {
+      "invalidFile": "Ungültige Datei",
+      "invalidFileExplanation": "Bitte wähle eine PDF Datei aus.",
+      "noFile": "Keine Datei",
+      "noFileExplanation": "Bitte lade zuerst eine PDF-Datei hoch.",
+      "conversionSuccess": "PDF erfolgreich in JPGs konvertiert!",
+      "conversionError": "Konvertierung in JPG fehlgeschlagen. Die Datei könnte beschädigt sein."
+    },
+    "loader": {
+      "converting": "Wird in JPG konvertiert..."
+    }
   },
   "pdfToPng": {
     "name": "PDF zu PNG",
-    "subtitle": "Jede PDF-Seite in ein PNG-Bild konvertieren."
+    "subtitle": "Jede PDF-Seite in ein PNG-Bild konvertieren.",
+    "imageScale": "Bildskalierung",
+    "imageScaleExplanation": "Höhere Skalierung = bessere Qualität, aber größere Dateigröße",
+    "alert": {
+      "invalidFile": "Ungültige Datei",
+      "invalidFileExplanation": "Bitte wähle eine PDF Datei aus.",
+      "noFile": "Keine Datei",
+      "noFileExplanation": "Bitte lade zuerst eine PDF-Datei hoch.",
+      "conversionSuccess": "PDF erfolgreich in PNGs konvertiert!",
+      "conversionError": "Konvertierung in PNG fehlgeschlagen. Die Datei könnte beschädigt sein."
+    },
+    "loader": {
+      "converting": "Wird in PNG konvertiert..."
+    }
   },
   "pdfToWebp": {
     "name": "PDF zu WebP",
-    "subtitle": "Jede PDF-Seite in ein WebP-Bild konvertieren."
+    "subtitle": "Jede PDF-Seite in ein WebP-Bild konvertieren.",
+    "imageQuality": "Bildqualität",
+    "imageQualityExplanation": "Höhere Qualität = größere Dateigröße",
+    "alert": {
+      "invalidFile": "Ungültige Datei",
+      "invalidFileExplanation": "Bitte wähle eine PDF Datei aus.",
+      "noFile": "Keine Datei",
+      "noFileExplanation": "Bitte lade zuerst eine PDF-Datei hoch.",
+      "conversionSuccess": "PDF erfolgreich in WebPs konvertiert!",
+      "conversionError": "Konvertierung in WebP fehlgeschlagen. Die Datei könnte beschädigt sein."
+    },
+    "loader": {
+      "converting": "Wird in WebP konvertiert..."
+    }
   },
   "pdfToBmp": {
     "name": "PDF zu BMP",
-    "subtitle": "Jede PDF-Seite in ein BMP-Bild konvertieren."
+    "subtitle": "Jede PDF-Seite in ein BMP-Bild konvertieren.",
+    "alert": {
+      "invalidFile": "Ungültige Datei",
+      "invalidFileExplanation": "Bitte wähle eine PDF Datei aus.",
+      "noFile": "Keine Datei",
+      "noFileExplanation": "Bitte lade zuerst eine PDF-Datei hoch.",
+      "conversionSuccess": "PDF erfolgreich in BMPs konvertiert!",
+      "conversionError": "Konvertierung in BMP fehlgeschlagen. Die Datei könnte beschädigt sein."
+    },
+    "loader": {
+      "converting": "Wird in BMP konvertiert..."
+    }
   },
   "pdfToTiff": {
     "name": "PDF zu TIFF",
-    "subtitle": "Jede PDF-Seite in ein TIFF-Bild konvertieren."
+    "subtitle": "Jede PDF-Seite in ein TIFF-Bild konvertieren.",
+    "dpi": "DPI (Auflösung)",
+    "dpiExplanation": "Höhere DPI = bessere Druckqualität, größere Dateigröße",
+    "compression": "Komprimierung",
+    "compressionExplanation": "LZW und Deflate sind verlustfrei. CCITT Group 4 eignet sich am besten für S/W-Scandokumente.",
+    "colorMode": "Farbmodus",
+    "multiPage": "Als mehrseitiges TIFF speichern (einzelne Datei)",
+    "loadingVips": "Bildprozessor wird geladen...",
+    "converting": "Wird in TIFF konvertiert..."
+  },
+  "pdfToCbz": {
+    "name": "PDF zu CBZ",
+    "subtitle": "Konvertieren Sie ein PDF in eine CBZ-Datei (Comic-Bucharchiv) für Comic-Reader.",
+    "imageFormat": "Bildformat",
+    "quality": "Bildqualität",
+    "qualityExplanation": "Höhere Qualität = größere Dateigröße",
+    "scale": "Skalierung",
+    "scaleExplanation": "Höhere Skalierung = bessere Qualität für hochauflösende Bildschirme",
+    "grayscale": "In Graustufen konvertieren",
+    "manga": "Manga-Modus (rechts nach links)",
+    "includeMetadata": "ComicInfo.xml-Metadaten einschließen",
+    "titleLabel": "Titel",
+    "seriesLabel": "Serie",
+    "authorLabel": "Autor(en)",
+    "numberLabel": "#",
+    "volumeLabel": "Bd.",
+    "publisherLabel": "Verlag",
+    "tagsLabel": "Tags / Genre",
+    "yearLabel": "Erscheinungsjahr",
+    "ratingLabel": "Bewertung (0-5)",
+    "converting": "Wird in CBZ konvertiert...",
+    "alert": {
+      "invalidFile": "Ungültige Datei",
+      "invalidFileExplanation": "Bitte laden Sie eine PDF-Datei hoch.",
+      "noFile": "Keine Datei",
+      "noFileExplanation": "Bitte laden Sie zuerst eine PDF-Datei hoch.",
+      "conversionSuccess": "PDF erfolgreich in CBZ konvertiert!",
+      "conversionError": "PDF konnte nicht in CBZ konvertiert werden. Die Datei ist möglicherweise beschädigt."
+    }
   },
   "pdfToGreyscale": {
     "name": "PDF zu Graustufen",
@@ -255,7 +439,47 @@
   },
   "comparePdfs": {
     "name": "PDFs vergleichen",
-    "subtitle": "Zwei PDFs nebeneinander vergleichen."
+    "subtitle": "Zwei PDFs nebeneinander vergleichen.",
+    "firstPdf": "Erste PDF",
+    "secondPdf": "Zweite PDF",
+    "clickOrDrop": "Klicken oder ablegen",
+    "page": "Seite",
+    "overlay": "Überlagerung",
+    "sideBySide": "Nebeneinander",
+    "flicker": "Flackern",
+    "syncScroll": "Synchrones Scrollen",
+    "export": "Exportieren",
+    "exportAsPdf": "Als PDF exportieren",
+    "splitView": "Geteilte Ansicht",
+    "alternating": "Abwechselnd",
+    "leftDocument": "Linkes Dokument",
+    "rightDocument": "Rechtes Dokument",
+    "original": "Original",
+    "modified": "Geändert",
+    "searchChanges": "Änderungen suchen...",
+    "deleted": "Gelöscht",
+    "added": "Hinzugefügt",
+    "prevPage": "Vorherige Seite",
+    "nextPage": "Nächste Seite",
+    "prevChange": "Vorherige Änderung",
+    "nextChange": "Nächste Änderung",
+    "uploadTwoPdfs": "Laden Sie zwei PDFs hoch, um Unterschiede zu sehen.",
+    "noDifferences": "Auf dieser Seite wurden keine Unterschiede gefunden.",
+    "noMatchingChanges": "Keine Änderungen entsprechen dem aktuellen Filter.",
+    "pageNotExist": "Seite {{page}} existiert nicht in dieser PDF.",
+    "noPairedPage": "Für diese Seite gibt es keine zugeordnete Seite.",
+    "buildingModel": "Seitenzuordnungsmodell wird erstellt...",
+    "indexingPdf": "PDF {{num}}, Seite {{page}} von {{total}} wird indiziert...",
+    "loadingComparison": "Vergleich {{current}} von {{total}} wird geladen...",
+    "runningOcr": "OCR wird auf Seite {{page}} ausgeführt...",
+    "preparingExport": "PDF-Export wird vorbereitet...",
+    "renderingPage": "Seite {{current}} von {{total}} wird gerendert...",
+    "exportError": "Exportfehler",
+    "exportFailed": "Vergleichs-PDF konnte nicht exportiert werden.",
+    "loadingFile": "{{name}} wird geladen...",
+    "invalidFile": "Ungültige Datei",
+    "invalidFileMsg": "Bitte wählen Sie eine gültige PDF-Datei aus.",
+    "loadError": "PDF konnte nicht geladen werden. Sie ist möglicherweise beschädigt oder passwortgeschützt."
   },
   "posterizePdf": {
     "name": "PDF posterisieren",
@@ -516,6 +740,15 @@
     "pageTitle": "PDF-Signatur überprüfen - Digitale Signaturen verifizieren | BentoPDF",
     "subtitle": "Überprüfen Sie digitale Signaturen in Ihren PDF-Dateien. Prüfen Sie die Zertifikatsgültigkeit, sehen Sie Unterzeichnerdetails und bestätigen Sie die Dokumentenintegrität. Die gesamte Verarbeitung erfolgt in Ihrem Browser."
   },
+  "timestampPdf": {
+    "name": "PDF mit Zeitstempel versehen",
+    "pageTitle": "PDF-Zeitstempel online kostenlos - RFC 3161 Dokumentenzeitstempel | BentoPDF",
+    "subtitle": "Fügen Sie Ihrem PDF einen RFC 3161-Zeitstempel über einen vertrauenswürdigen Zeitstempelserver (TSA) hinzu. Beweist, dass Ihr Dokument zu einem bestimmten Zeitpunkt existierte. Kein Zertifikat erforderlich.",
+    "tsaSectionTitle": "Zeitstempelserver (TSA)",
+    "selectTsa": "TSA-Server auswählen",
+    "applyTimestamp": "Zeitstempel anwenden",
+    "successMessage": "PDF erfolgreich mit Zeitstempel versehen! Der Zeitstempel kann in Adobe Acrobat und anderen PDF-Readern überprüft werden."
+  },
   "emailToPdf": {
     "name": "E-Mail zu PDF",
     "subtitle": "E-Mail-Dateien (EML, MSG) in PDF-Format konvertieren. Unterstützt Outlook-Exporte und Standard-E-Mail-Formate.",
@@ -530,32 +763,92 @@
     "name": "PDF entzerren",
     "subtitle": "Automatisch schiefe gescannte Seiten mit OpenCV begradigen."
   },
+  "pdfToWord": {
+    "name": "PDF zu Word",
+    "subtitle": "PDF-Dateien in bearbeitbare Word-Dokumente umwandeln."
+  },
   "extractImages": {
     "name": "Bilder extrahieren",
-    "subtitle": "Alle eingebetteten Bilder aus PDF-Dateien extrahieren. Einzeln oder als ZIP-Archiv herunterladen."
-  },
-  "pdfLayers": {
-    "name": "PDF-Ebenen",
-    "subtitle": "Optional Content Groups (OCG) in Ihrer PDF verwalten. Sichtbarkeit umschalten, neue Ebenen hinzufügen oder bestehende löschen."
-  },
-  "pdfToDocx": {
-    "name": "PDF zu DOCX",
-    "subtitle": "PDF-Dateien in bearbeitbare Word-Dokumente konvertieren. Text, Formatierung und Layout bleiben erhalten."
+    "subtitle": "Alle eingebetteten Bilder aus Ihren PDF-Dateien extrahieren."
   },
   "pdfToMarkdown": {
     "name": "PDF zu Markdown",
-    "subtitle": "PDF-Dateien in das Markdown-Format konvertieren. Bewahrt die Textstruktur mit optionaler Bildeinbettung."
-  },
-  "pdfToPdfa": {
-    "name": "PDF zu PDF/A",
-    "subtitle": "Ihre PDF-Dokumente für die Langzeitarchivierung in das PDF/A-Format konvertieren."
+    "subtitle": "PDF-Text und Tabellen in das Markdown-Format umwandeln."
   },
   "preparePdfForAi": {
     "name": "PDF für KI vorbereiten",
-    "subtitle": "PDF-Inhalte als LlamaIndex-kompatible JSON-Dokumente extrahieren. Ideal für RAG-Pipelines, LangChain und andere LLM-Frameworks."
+    "subtitle": "PDF-Inhalte als LlamaIndex JSON für RAG/LLM-Pipelines extrahieren."
+  },
+  "pdfOcg": {
+    "name": "PDF-Ebenen (OCG)",
+    "subtitle": "OCG-Ebenen in Ihrem PDF anzeigen, umschalten, hinzufügen und löschen."
+  },
+  "pdfToPdfa": {
+    "name": "PDF zu PDF/A",
+    "subtitle": "PDF in PDF/A für Langzeitarchivierung umwandeln."
   },
   "rasterizePdf": {
     "name": "PDF rastern",
-    "subtitle": "Vektorgrafiken und Text in Bilder umwandeln. Ideal zum Reduzieren von Ebenen, Entfernen auswählbaren Texts oder für druckfertige Dateien."
+    "subtitle": "PDF in bildbasiertes PDF umwandeln. Ebenen glätten und auswählbaren Text entfernen."
+  },
+  "pdfWorkflow": {
+    "name": "PDF-Workflow-Builder",
+    "subtitle": "Erstellen Sie individuelle PDF-Verarbeitungspipelines mit einem visuellen Node-Editor.",
+    "nodes": "Nodes",
+    "searchNodes": "Nodes suchen...",
+    "run": "Ausführen",
+    "clear": "Leeren",
+    "save": "Speichern",
+    "load": "Laden",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "ready": "Bereit",
+    "settings": "Einstellungen",
+    "processing": "Verarbeitung...",
+    "saveTemplate": "Vorlage speichern",
+    "templateName": "Vorlagenname",
+    "templatePlaceholder": "z. B. Rechnungs-Workflow",
+    "cancel": "Abbrechen",
+    "loadTemplate": "Vorlage laden",
+    "noTemplates": "Noch keine gespeicherten Vorlagen.",
+    "ok": "OK",
+    "workflowCompleted": "Workflow abgeschlossen",
+    "errorDuringExecution": "Fehler bei der Ausführung",
+    "addNodeError": "Fügen Sie mindestens einen Node hinzu, um den Workflow auszuführen.",
+    "needInputOutput": "Ihr Workflow benötigt mindestens einen Eingabe-Node und einen Ausgabe-Node.",
+    "enterName": "Bitte geben Sie einen Namen ein.",
+    "templateExists": "Eine Vorlage mit diesem Namen existiert bereits.",
+    "templateSaved": "Vorlage \"{{name}}\" gespeichert.",
+    "templateLoaded": "Vorlage \"{{name}}\" geladen.",
+    "failedLoadTemplate": "Vorlage konnte nicht geladen werden.",
+    "noSettings": "Keine konfigurierbaren Einstellungen für diesen Node.",
+    "advancedSettings": "Erweiterte Einstellungen"
+  },
+  "pdfOverlay": {
+    "name": "PDF-Überlagerung",
+    "subtitle": "Seiten eines PDFs über oder unter die Seiten eines anderen PDFs legen.",
+    "basePdfLabel": "Basis-PDF",
+    "uploadBasePdf": "Basis-PDF hochladen",
+    "overlayPdfLabel": "Überlagerungs- / Unterlagerungs-PDF",
+    "uploadOverlayPdf": "Überlagerungs-/Unterlagerungs-PDF hochladen",
+    "modeLabel": "Modus",
+    "overlayOption": "Überlagerung (über den Seiten)",
+    "underlayOption": "Unterlagerung (hinter den Seiten)",
+    "pageRangeLabel": "Auf Seiten anwenden (optional)",
+    "pageRangeHint": "Verwenden Sie \"z\" für die letzte Seite. Leer lassen, um auf alle Seiten anzuwenden.",
+    "repeatLabel": "Überlagerungs-/Unterlagerungsseiten wiederholen, wenn Basis länger ist",
+    "processButton": "Überlagerung / Unterlagerung anwenden",
+    "howItWorksUploadTitle": "Zwei PDFs hochladen",
+    "howItWorksUploadDescription": "Laden Sie Ihr Basis-PDF und das PDF hoch, das Sie überlagern oder unterlagern möchten.",
+    "howItWorksModeTitle": "Modus wählen",
+    "howItWorksModeDescription": "Wählen Sie Überlagerung (darüber) oder Unterlagerung (dahinter). Optional Seitenbereich und Wiederholung festlegen.",
+    "howItWorksDownloadTitle": "Herunterladen",
+    "howItWorksDownloadDescription": "Laden Sie Ihr PDF mit angewandter Überlagerung oder Unterlagerung herunter.",
+    "faqDifferenceQuestion": "Was ist der Unterschied zwischen Überlagerung und Unterlagerung?",
+    "faqDifferenceAnswer": "Überlagerung platziert Seiten über Ihr Basis-PDF (wie ein Wasserzeichen). Unterlagerung platziert Seiten hinter Ihr Basis-PDF (wie ein Briefkopf oder Hintergrund).",
+    "faqSinglePageQuestion": "Kann ich ein einseitiges PDF als Überlagerung für alle Seiten verwenden?",
+    "faqSinglePageAnswer": "Ja! Aktivieren Sie die Option \"Wiederholen\" und Ihre Überlagerungsseiten werden auf allen Basisseiten wiederholt. Ein einseitiges Wasserzeichen wird auf jeder Seite angewendet.",
+    "faqPrivacyQuestion": "Sind meine Dateien privat und sicher?",
+    "faqPrivacyAnswer": "Absolut! Die gesamte Verarbeitung findet in Ihrem Browser statt. Ihre Dateien verlassen niemals Ihr Gerät, was vollständige Privatsphäre gewährleistet."
   }
 }

@@ -1,30 +1,52 @@
+import { WasmProvider } from './wasm-provider';
+import type { WindowWithCoherentPdf, CpdfInstance } from '@/types';
+
 let cpdfLoaded = false;
 let cpdfLoadPromise: Promise<void> | null = null;
 
-//TODO: @ALAM,is it better to use a worker to load the cpdf library?
-// or just use the browser version?
-export async function ensureCpdfLoaded(): Promise<void> {
+function getCpdfUrl(): string | undefined {
+  const userUrl = WasmProvider.getUrl('cpdf');
+  if (userUrl) {
+    const baseUrl = userUrl.endsWith('/') ? userUrl : `${userUrl}/`;
+    return `${baseUrl}coherentpdf.browser.min.js`;
+  }
+  return undefined;
+}
+
+export function isCpdfAvailable(): boolean {
+  return WasmProvider.isConfigured('cpdf');
+}
+
+export async function isCpdfLoaded(): Promise<void> {
   if (cpdfLoaded) return;
 
   if (cpdfLoadPromise) {
     return cpdfLoadPromise;
   }
 
+  const cpdfUrl = getCpdfUrl();
+  if (!cpdfUrl) {
+    throw new Error(
+      'CoherentPDF is not configured. Please configure it in WASM Settings.'
+    );
+  }
+
   cpdfLoadPromise = new Promise((resolve, reject) => {
-    if (typeof (window as any).coherentpdf !== 'undefined') {
+    if (typeof (window as WindowWithCoherentPdf).coherentpdf !== 'undefined') {
       cpdfLoaded = true;
       resolve();
       return;
     }
 
     const script = document.createElement('script');
-    script.src = import.meta.env.BASE_URL + 'coherentpdf.browser.min.js';
+    script.src = cpdfUrl;
     script.onload = () => {
       cpdfLoaded = true;
+      console.log('[CPDF] Loaded from:', script.src);
       resolve();
     };
     script.onerror = () => {
-      reject(new Error('Failed to load CoherentPDF library'));
+      reject(new Error('Failed to load CoherentPDF library from: ' + cpdfUrl));
     };
     document.head.appendChild(script);
   });
@@ -32,11 +54,7 @@ export async function ensureCpdfLoaded(): Promise<void> {
   return cpdfLoadPromise;
 }
 
-/**
- * Gets the cpdf instance, ensuring it's loaded first
- */
-export async function getCpdf(): Promise<any> {
-  await ensureCpdfLoaded();
-  return (window as any).coherentpdf;
+export async function getCpdf(): Promise<CpdfInstance> {
+  await isCpdfLoaded();
+  return (window as WindowWithCoherentPdf).coherentpdf as CpdfInstance;
 }
-

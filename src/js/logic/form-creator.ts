@@ -6,15 +6,34 @@ import {
   PDFName,
   PDFString,
   PageSizes,
-  PDFBool,
   PDFDict,
   PDFArray,
   PDFRadioGroup,
 } from 'pdf-lib';
+
+type FormFieldAction = NonNullable<FormField['action']>;
+type FormFieldVisibilityAction = NonNullable<FormField['visibilityAction']>;
+type LucideWindow = Window & {
+  lucide?: {
+    createIcons(): void;
+  };
+};
+type PdfViewerApplicationLike = {
+  pdfViewer?: {
+    pagesCount: number;
+  };
+};
+type PdfViewerWindow = Window & {
+  PDFViewerApplication?: PdfViewerApplicationLike;
+};
+
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js';
-import { downloadFile, hexToRgb, getPDFDocument } from '../utils/helpers.js';
+import { downloadFile, hexToRgb } from '../utils/helpers.js';
+import { loadPdfWithPasswordPrompt } from '../utils/password-prompt.js';
 import { createIcons, icons } from 'lucide';
 import * as pdfjsLib from 'pdfjs-dist';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
+import * as bwipjs from 'bwip-js/browser';
 import 'pdfjs-dist/web/pdf_viewer.css';
 
 // Initialize PDF.js worker
@@ -23,7 +42,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-import { FormField, PageData } from '../types/index.js';
+import {
+  ExtractExistingFieldsResult,
+  FormCreatorFieldType,
+  FormField,
+  PageData,
+} from '@/types';
+import { extractExistingFields as extractExistingPdfFields } from './form-creator-extraction.js';
+import { loadPdfDocument } from '../utils/load-pdf-document.js';
 
 let fields: FormField[] = [];
 let selectedField: FormField | null = null;
@@ -33,11 +59,13 @@ const existingRadioGroups: Set<string> = new Set();
 let draggedElement: HTMLElement | null = null;
 let offsetX = 0;
 let offsetY = 0;
+let pendingFieldExtraction = false;
 
 let pages: PageData[] = [];
 let currentPageIndex = 0;
 let uploadedPdfDoc: PDFDocument | null = null;
-let uploadedPdfjsDoc: any = null;
+let uploadedPdfjsDoc: PDFDocumentProxy | null = null;
+let uploadedFileName: string | null = null;
 let pageSize: { width: number; height: number } = { width: 612, height: 792 };
 let currentScale = 1.333;
 let pdfViewerOffset = { x: 0, y: 0 };
@@ -292,15 +320,15 @@ toolItems.forEach((item) => {
   let touchStartY = 0;
   let isTouchDragging = false;
 
-  item.addEventListener('touchstart', (e) => {
+  item.addEventListener('touchstart', (e: TouchEvent) => {
     const touch = e.touches[0];
     touchStartX = touch.clientX;
     touchStartY = touch.clientY;
     isTouchDragging = false;
   });
 
-  item.addEventListener('touchmove', (e) => {
-    e.preventDefault(); // Prevent scrolling while dragging
+  item.addEventListener('touchmove', (e: TouchEvent) => {
+    e.preventDefault();
     const touch = e.touches[0];
     const moveX = Math.abs(touch.clientX - touchStartX);
     const moveY = Math.abs(touch.clientY - touchStartY);
@@ -311,7 +339,7 @@ toolItems.forEach((item) => {
     }
   });
 
-  item.addEventListener('touchend', (e) => {
+  item.addEventListener('touchend', (e: TouchEvent) => {
     e.preventDefault();
     if (!isTouchDragging) {
       // It was a tap, treat as click
@@ -332,8 +360,9 @@ toolItems.forEach((item) => {
     ) {
       const x = touch.clientX - canvasRect.left - 75;
       const y = touch.clientY - canvasRect.top - 15;
-      const type = (item as HTMLElement).dataset.type || 'text';
-      createField(type as any, x, y);
+      const type = ((item as HTMLElement).dataset.type ||
+        'text') as FormCreatorFieldType;
+      createField(type, x, y);
     }
   });
 });
@@ -352,8 +381,9 @@ canvas.addEventListener('drop', (e) => {
   const rect = canvas.getBoundingClientRect();
   const x = e.clientX - rect.left - 75;
   const y = e.clientY - rect.top - 15;
-  const type = e.dataTransfer?.getData('text/plain') || 'text';
-  createField(type as any, x, y);
+  const type = (e.dataTransfer?.getData('text/plain') ||
+    'text') as FormCreatorFieldType;
+  createField(type, x, y);
 });
 
 canvas.addEventListener('click', (e) => {
@@ -361,7 +391,7 @@ canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left - 75;
     const y = e.clientY - rect.top - 15;
-    createField(selectedToolType as any, x, y);
+    createField(selectedToolType as FormCreatorFieldType, x, y);
 
     toolItems.forEach((item) =>
       item.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-600')
@@ -384,8 +414,18 @@ function createField(type: FormField['type'], x: number, y: number): void {
     type: type,
     x: Math.max(0, Math.min(x, 816 - 150)),
     y: Math.max(0, Math.min(y, 1056 - 30)),
-    width: type === 'checkbox' || type === 'radio' ? 30 : 150,
-    height: type === 'checkbox' || type === 'radio' ? 30 : 30,
+    width:
+      type === 'checkbox' || type === 'radio'
+        ? 30
+        : type === 'barcode'
+          ? 150
+          : 150,
+    height:
+      type === 'checkbox' || type === 'radio'
+        ? 30
+        : type === 'barcode'
+          ? 150
+          : 30,
     name: `${type.charAt(0).toUpperCase() + type.slice(1)}_${fieldCounter}`,
     defaultValue: '',
     fontSize: 12,
@@ -417,11 +457,113 @@ function createField(type: FormField['type'], x: number, y: number): void {
     multiline: type === 'text' ? false : undefined,
     borderColor: '#000000',
     hideBorder: false,
+    transparentBackground: false,
+    barcodeFormat: type === 'barcode' ? 'qrcode' : undefined,
+    barcodeValue: type === 'barcode' ? 'https://example.com' : undefined,
   };
 
   fields.push(field);
   renderField(field);
   updateFieldCount();
+}
+
+function hasTransparentBackground(field: FormField): boolean {
+  return Boolean(field.transparentBackground);
+}
+
+function applyFieldContainerState(
+  container: HTMLElement,
+  field: FormField,
+  selected: boolean
+): void {
+  container.classList.remove(
+    'border-indigo-200',
+    'group-hover:border-dashed',
+    'group-hover:border-indigo-300',
+    'border-dashed',
+    'border-indigo-500',
+    'bg-indigo-50',
+    'bg-indigo-50/30',
+    'bg-transparent'
+  );
+
+  if (selected) {
+    container.classList.add('border-dashed', 'border-indigo-500');
+    container.classList.add(
+      hasTransparentBackground(field) ? 'bg-transparent' : 'bg-indigo-50'
+    );
+    return;
+  }
+
+  container.classList.add(
+    'border-indigo-200',
+    'group-hover:border-dashed',
+    'group-hover:border-indigo-300'
+  );
+  container.classList.add(
+    hasTransparentBackground(field) ? 'bg-transparent' : 'bg-indigo-50/30'
+  );
+}
+
+function getPreviewBackgroundColor(
+  field: FormField,
+  fallbackColor: string
+): string {
+  return hasTransparentBackground(field) ? 'transparent' : fallbackColor;
+}
+
+function getPdfBackgroundOptions(
+  field: FormField,
+  red: number,
+  green: number,
+  blue: number
+): { backgroundColor?: ReturnType<typeof rgb> } {
+  if (hasTransparentBackground(field)) {
+    return {};
+  }
+
+  return {
+    backgroundColor: rgb(red, green, blue),
+  };
+}
+
+function clearTransparentWidgetBackground(
+  field: FormField,
+  widgetDict: PDFDict,
+  pdfDoc: PDFDocument
+): void {
+  if (!hasTransparentBackground(field)) {
+    return;
+  }
+
+  widgetDict.delete(PDFName.of('BG'));
+
+  const mk = widgetDict.get(PDFName.of('MK'));
+  const mkDict = mk ? pdfDoc.context.lookupMaybe(mk, PDFDict) : undefined;
+  mkDict?.delete(PDFName.of('BG'));
+}
+
+function clearTransparentFieldWidgetBackgrounds(
+  field: FormField,
+  widgets: Array<{ dict: PDFDict }>,
+  pdfDoc: PDFDocument
+): void {
+  if (!hasTransparentBackground(field)) {
+    return;
+  }
+
+  widgets.forEach((widget) => {
+    clearTransparentWidgetBackground(field, widget.dict, pdfDoc);
+  });
+}
+
+function rerenderSelectedField(field: FormField): void {
+  const shouldReselect = selectedField?.id === field.id;
+  renderField(field);
+
+  if (shouldReselect) {
+    selectField(field);
+  }
 }
 
 // Render field on canvas
@@ -457,9 +599,10 @@ function renderField(field: FormField): void {
   // Create input container - light border by default, dashed on hover
   const fieldContainer = document.createElement('div');
   fieldContainer.className =
-    'field-container relative border-2 border-indigo-200 group-hover:border-dashed group-hover:border-indigo-300 bg-indigo-50/30 rounded transition-all';
+    'field-container relative border-2 rounded transition-all';
   fieldContainer.style.width = '100%';
   fieldContainer.style.height = field.height + 'px';
+  applyFieldContainerState(fieldContainer, field, false);
 
   // Create content based on type
   const contentEl = document.createElement('div');
@@ -505,7 +648,10 @@ function renderField(field: FormField): void {
   } else if (field.type === 'dropdown') {
     contentEl.className =
       'w-full h-full flex items-center px-2 text-sm text-black';
-    contentEl.style.backgroundColor = '#e6f0ff'; // Light blue background like Firefox
+    contentEl.style.backgroundColor = getPreviewBackgroundColor(
+      field,
+      '#e6f0ff'
+    );
 
     // Show selected option or first option or placeholder
     let displayText = 'Select...';
@@ -527,7 +673,11 @@ function renderField(field: FormField): void {
     fieldContainer.appendChild(arrow);
   } else if (field.type === 'optionlist') {
     contentEl.className =
-      'w-full h-full flex flex-col text-sm bg-white overflow-hidden border border-gray-300';
+      'w-full h-full flex flex-col text-sm overflow-hidden border border-gray-300';
+    contentEl.style.backgroundColor = getPreviewBackgroundColor(
+      field,
+      '#ffffff'
+    );
     // Render options as a list
     if (field.options && field.options.length > 0) {
       field.options.forEach((opt, index) => {
@@ -556,25 +706,74 @@ function renderField(field: FormField): void {
     }
   } else if (field.type === 'button') {
     contentEl.className =
-      'field-content w-full h-full flex items-center justify-center bg-gray-200 text-sm font-semibold';
+      'field-content w-full h-full flex items-center justify-center text-sm font-semibold';
+    contentEl.style.backgroundColor = getPreviewBackgroundColor(
+      field,
+      '#e5e7eb'
+    );
     contentEl.style.color = field.textColor || '#000000';
     contentEl.textContent = field.label || 'Button';
   } else if (field.type === 'signature') {
     contentEl.className =
-      'w-full h-full flex items-center justify-center bg-gray-50 text-gray-400';
+      'w-full h-full flex items-center justify-center text-gray-400';
+    contentEl.style.backgroundColor = getPreviewBackgroundColor(
+      field,
+      '#f9fafb'
+    );
     contentEl.innerHTML =
       '<div class="flex flex-col items-center"><i data-lucide="pen-tool" class="w-6 h-6 mb-1"></i><span class="text-[10px]">Sign Here</span></div>';
-    setTimeout(() => (window as any).lucide?.createIcons(), 0);
+    setTimeout(() => (window as LucideWindow).lucide?.createIcons(), 0);
   } else if (field.type === 'date') {
     contentEl.className =
-      'w-full h-full flex items-center justify-center bg-white text-gray-600 border border-gray-300';
+      'w-full h-full flex items-center justify-center text-gray-600 border border-gray-300';
+    contentEl.style.backgroundColor = getPreviewBackgroundColor(
+      field,
+      '#ffffff'
+    );
     contentEl.innerHTML = `<div class="flex items-center gap-2 px-2"><i data-lucide="calendar" class="w-4 h-4"></i><span class="text-sm date-format-text">${field.dateFormat || 'mm/dd/yyyy'}</span></div>`;
-    setTimeout(() => (window as any).lucide?.createIcons(), 0);
+    setTimeout(() => (window as LucideWindow).lucide?.createIcons(), 0);
   } else if (field.type === 'image') {
     contentEl.className =
-      'w-full h-full flex items-center justify-center bg-gray-100 text-gray-500 border border-gray-300';
+      'w-full h-full flex items-center justify-center text-gray-500 border border-gray-300';
+    contentEl.style.backgroundColor = getPreviewBackgroundColor(
+      field,
+      '#f3f4f6'
+    );
     contentEl.innerHTML = `<div class="flex flex-col items-center text-center p-1"><i data-lucide="image" class="w-6 h-6 mb-1"></i><span class="text-[10px] leading-tight">${field.label || 'Click to Upload Image'}</span></div>`;
-    setTimeout(() => (window as any).lucide?.createIcons(), 0);
+    setTimeout(() => (window as LucideWindow).lucide?.createIcons(), 0);
+  } else if (field.type === 'barcode') {
+    contentEl.className = 'w-full h-full flex items-center justify-center';
+    contentEl.style.backgroundColor = getPreviewBackgroundColor(
+      field,
+      '#ffffff'
+    );
+    if (field.barcodeValue) {
+      try {
+        const offscreen = document.createElement('canvas');
+        bwipjs.toCanvas(offscreen, {
+          bcid: field.barcodeFormat || 'qrcode',
+          text: field.barcodeValue,
+          scale: 2,
+          includetext:
+            field.barcodeFormat !== 'qrcode' &&
+            field.barcodeFormat !== 'datamatrix',
+        });
+        const img = document.createElement('img');
+        img.src = offscreen.toDataURL('image/png');
+        img.className = 'max-w-full max-h-full object-contain';
+        contentEl.appendChild(img);
+      } catch (error) {
+        console.warn(
+          `Failed to render barcode preview for field "${field.name}":`,
+          error
+        );
+        contentEl.innerHTML = `<div class="flex flex-col items-center text-center p-1 text-gray-400"><i data-lucide="qr-code" class="w-6 h-6 mb-1"></i><span class="text-[10px] leading-tight">Invalid data</span></div>`;
+        setTimeout(() => (window as LucideWindow).lucide?.createIcons(), 0);
+      }
+    } else {
+      contentEl.innerHTML = `<div class="flex flex-col items-center text-center p-1 text-gray-400"><i data-lucide="qr-code" class="w-6 h-6 mb-1"></i><span class="text-[10px] leading-tight">Barcode</span></div>`;
+      setTimeout(() => (window as LucideWindow).lucide?.createIcons(), 0);
+    }
   }
 
   fieldContainer.appendChild(contentEl);
@@ -659,6 +858,17 @@ function renderField(field: FormField): void {
     };
     handle.className += ` ${positions[pos]}`;
     handle.dataset.position = pos;
+    const cursorMap: Record<string, string> = {
+      nw: 'nwse-resize',
+      ne: 'nesw-resize',
+      sw: 'nesw-resize',
+      se: 'nwse-resize',
+      n: 'ns-resize',
+      s: 'ns-resize',
+      e: 'ew-resize',
+      w: 'ew-resize',
+    };
+    handle.style.cursor = cursorMap[pos] || 'pointer';
 
     handle.addEventListener('mousedown', (e) => {
       e.stopPropagation();
@@ -698,6 +908,50 @@ function startResize(e: MouseEvent, field: FormField, pos: string): void {
   e.preventDefault();
 }
 
+function applyResizeWithConstraints(
+  field: FormField,
+  pos: string,
+  dx: number,
+  dy: number
+): void {
+  const isSquareField = field.type === 'checkbox' || field.type === 'radio';
+  const minWidth = isSquareField ? 12 : 50;
+  const minHeight = isSquareField ? 12 : 20;
+
+  if (pos.includes('e')) {
+    field.width = Math.max(minWidth, startWidth + dx);
+  }
+  if (pos.includes('w')) {
+    const newWidth = Math.max(minWidth, startWidth - dx);
+    const widthDiff = startWidth - newWidth;
+    field.width = newWidth;
+    field.x = startLeft + widthDiff;
+  }
+  if (pos.includes('s')) {
+    field.height = Math.max(minHeight, startHeight + dy);
+  }
+  if (pos.includes('n')) {
+    const newHeight = Math.max(minHeight, startHeight - dy);
+    const heightDiff = startHeight - newHeight;
+    field.height = newHeight;
+    field.y = startTop + heightDiff;
+  }
+
+  if (isSquareField) {
+    const size = Math.max(minWidth, Math.min(field.width, field.height));
+
+    if (pos.includes('w')) {
+      field.x = startLeft + (startWidth - size);
+    }
+    if (pos.includes('n')) {
+      field.y = startTop + (startHeight - size);
+    }
+
+    field.width = size;
+    field.height = size;
+  }
+}
+
 // Mouse move for dragging and resizing
 document.addEventListener('mousemove', (e) => {
   if (draggedElement && !resizing) {
@@ -724,24 +978,7 @@ document.addEventListener('mousemove', (e) => {
     const dy = e.clientY - startY;
     const fieldWrapper = document.getElementById(resizeField.id);
 
-    if (resizePos!.includes('e')) {
-      resizeField.width = Math.max(50, startWidth + dx);
-    }
-    if (resizePos!.includes('w')) {
-      const newWidth = Math.max(50, startWidth - dx);
-      const widthDiff = startWidth - newWidth;
-      resizeField.width = newWidth;
-      resizeField.x = startLeft + widthDiff;
-    }
-    if (resizePos!.includes('s')) {
-      resizeField.height = Math.max(20, startHeight + dy);
-    }
-    if (resizePos!.includes('n')) {
-      const newHeight = Math.max(20, startHeight - dy);
-      const heightDiff = startHeight - newHeight;
-      resizeField.height = newHeight;
-      resizeField.y = startTop + heightDiff;
-    }
+    applyResizeWithConstraints(resizeField, resizePos!, dx, dy);
 
     if (fieldWrapper) {
       const container = fieldWrapper.querySelector(
@@ -781,24 +1018,7 @@ document.addEventListener(
       const dy = touch.clientY - startY;
       const fieldWrapper = document.getElementById(resizeField.id);
 
-      if (resizePos!.includes('e')) {
-        resizeField.width = Math.max(50, startWidth + dx);
-      }
-      if (resizePos!.includes('w')) {
-        const newWidth = Math.max(50, startWidth - dx);
-        const widthDiff = startWidth - newWidth;
-        resizeField.width = newWidth;
-        resizeField.x = startLeft + widthDiff;
-      }
-      if (resizePos!.includes('s')) {
-        resizeField.height = Math.max(20, startHeight + dy);
-      }
-      if (resizePos!.includes('n')) {
-        const newHeight = Math.max(20, startHeight - dy);
-        const heightDiff = startHeight - newHeight;
-        resizeField.height = newHeight;
-        resizeField.y = startTop + heightDiff;
-      }
+      applyResizeWithConstraints(resizeField, resizePos!, dx, dy);
 
       if (fieldWrapper) {
         const container = fieldWrapper.querySelector(
@@ -843,17 +1063,7 @@ function selectField(field: FormField): void {
     const handles = fieldWrapper.querySelectorAll('.resize-handle');
 
     if (container) {
-      // Remove hover classes and add selected classes
-      container.classList.remove(
-        'border-indigo-200',
-        'group-hover:border-dashed',
-        'group-hover:border-indigo-300'
-      );
-      container.classList.add(
-        'border-dashed',
-        'border-indigo-500',
-        'bg-indigo-50'
-      );
+      applyFieldContainerState(container, field, true);
     }
 
     if (label) {
@@ -880,17 +1090,7 @@ function deselectAll(): void {
       const handles = fieldWrapper.querySelectorAll('.resize-handle');
 
       if (container) {
-        // Revert to default/hover state
-        container.classList.remove(
-          'border-dashed',
-          'border-indigo-500',
-          'bg-indigo-50'
-        );
-        container.classList.add(
-          'border-indigo-200',
-          'group-hover:border-dashed',
-          'group-hover:border-indigo-300'
-        );
+        applyFieldContainerState(container, selectedField, false);
       }
 
       if (label) {
@@ -931,7 +1131,7 @@ function showProperties(field: FormField): void {
         </div>
         <div>
             <label class="block text-xs font-semibold text-gray-300 mb-1">Text Color</label>
-            <input type="color" id="propTextColor" value="${field.textColor}" class="w-full border border-gray-500 rounded px-2 py-1 h-10">
+            <input type="color" id="propTextColor" value="${field.textColor}">
         </div>
         <div>
             <label class="block text-xs font-semibold text-gray-300 mb-1">Alignment</label>
@@ -1114,6 +1314,26 @@ function showProperties(field: FormField): void {
             Clicking this field in the PDF will open a file picker to upload an image.
         </div>
         `;
+  } else if (field.type === 'barcode') {
+    specificProps = `
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Barcode Format</label>
+            <select id="propBarcodeFormat" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="qrcode" ${field.barcodeFormat === 'qrcode' ? 'selected' : ''}>QR Code</option>
+                <option value="code128" ${field.barcodeFormat === 'code128' ? 'selected' : ''}>Code 128</option>
+                <option value="code39" ${field.barcodeFormat === 'code39' ? 'selected' : ''}>Code 39</option>
+                <option value="ean13" ${field.barcodeFormat === 'ean13' ? 'selected' : ''}>EAN-13</option>
+                <option value="upca" ${field.barcodeFormat === 'upca' ? 'selected' : ''}>UPC-A</option>
+                <option value="datamatrix" ${field.barcodeFormat === 'datamatrix' ? 'selected' : ''}>DataMatrix</option>
+                <option value="pdf417" ${field.barcodeFormat === 'pdf417' ? 'selected' : ''}>PDF417</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Barcode Value</label>
+            <input type="text" id="propBarcodeValue" value="${field.barcodeValue || ''}" class="w-full bg-gray-600 border border-gray-500 text-white rounded px-2 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+        <div id="barcodeFormatHint" class="text-xs text-gray-400 italic"></div>
+        `;
   }
 
   propertiesPanel.innerHTML = `
@@ -1169,11 +1389,15 @@ function showProperties(field: FormField): void {
       </div>
       <div>
         <label class="block text-xs font-semibold text-gray-300 mb-1">Border Color</label>
-        <input type="color" id="propBorderColor" value="${field.borderColor || '#000000'}" class="w-full border border-gray-500 rounded px-2 py-1 h-10">
+        <input type="color" id="propBorderColor" value="${field.borderColor || '#000000'}">
       </div>
       <div class="flex items-center">
         <input type="checkbox" id="propHideBorder" ${field.hideBorder ? 'checked' : ''} class="mr-2">
         <label for="propHideBorder" class="text-xs font-semibold text-gray-300">Hide Border</label>
+      </div>
+      <div class="flex items-center">
+        <input type="checkbox" id="propTransparentBackground" ${field.transparentBackground ? 'checked' : ''} class="mr-2">
+        <label for="propTransparentBackground" class="text-xs font-semibold text-gray-300">Transparent Background</label>
       </div>
       <button id="deleteBtn" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition text-sm font-semibold">
         Delete Field
@@ -1290,6 +1514,9 @@ function showProperties(field: FormField): void {
   const propHideBorder = document.getElementById(
     'propHideBorder'
   ) as HTMLInputElement;
+  const propTransparentBackground = document.getElementById(
+    'propTransparentBackground'
+  ) as HTMLInputElement;
 
   propBorderColor.addEventListener('input', (e) => {
     field.borderColor = (e.target as HTMLInputElement).value;
@@ -1297,6 +1524,12 @@ function showProperties(field: FormField): void {
 
   propHideBorder.addEventListener('change', (e) => {
     field.hideBorder = (e.target as HTMLInputElement).checked;
+    rerenderSelectedField(field);
+  });
+
+  propTransparentBackground.addEventListener('change', (e) => {
+    field.transparentBackground = (e.target as HTMLInputElement).checked;
+    rerenderSelectedField(field);
   });
 
   deleteBtn.addEventListener('click', () => {
@@ -1614,7 +1847,9 @@ function showProperties(field: FormField): void {
     ) as HTMLDivElement;
 
     propAction.addEventListener('change', (e) => {
-      field.action = (e.target as HTMLSelectElement).value as any;
+      const actionValue = (e.target as HTMLSelectElement)
+        .value as FormFieldAction;
+      field.action = actionValue;
 
       // Show/hide containers
       propUrlContainer.classList.add('hidden');
@@ -1660,7 +1895,8 @@ function showProperties(field: FormField): void {
     ) as HTMLSelectElement;
     if (propVisibilityAction) {
       propVisibilityAction.addEventListener('change', (e) => {
-        field.visibilityAction = (e.target as HTMLSelectElement).value as any;
+        field.visibilityAction = (e.target as HTMLSelectElement)
+          .value as FormFieldVisibilityAction;
       });
     }
   } else if (field.type === 'signature') {
@@ -1770,7 +2006,7 @@ function showProperties(field: FormField): void {
             textSpan.textContent = field.dateFormat;
           }
         }
-        setTimeout(() => (window as any).lucide?.createIcons(), 0);
+        setTimeout(() => (window as LucideWindow).lucide?.createIcons(), 0);
       });
     }
 
@@ -1795,6 +2031,56 @@ function showProperties(field: FormField): void {
       field.label = (e.target as HTMLInputElement).value;
       renderField(field);
     });
+  } else if (field.type === 'barcode') {
+    const propBarcodeFormat = document.getElementById(
+      'propBarcodeFormat'
+    ) as HTMLSelectElement;
+    const propBarcodeValue = document.getElementById(
+      'propBarcodeValue'
+    ) as HTMLInputElement;
+
+    const barcodeSampleValues: Record<string, string> = {
+      qrcode: 'https://example.com',
+      code128: 'ABC-123',
+      code39: 'ABC123',
+      ean13: '590123412345',
+      upca: '01234567890',
+      datamatrix: 'https://example.com',
+      pdf417: 'https://example.com',
+    };
+
+    const barcodeFormatHints: Record<string, string> = {
+      qrcode: 'Any text, URL, or data',
+      code128: 'ASCII characters (letters, numbers, symbols)',
+      code39: 'Uppercase A-Z, digits 0-9, and - . $ / + % SPACE',
+      ean13: 'Exactly 12 or 13 digits',
+      upca: 'Exactly 11 or 12 digits',
+      datamatrix: 'Any text, URL, or data',
+      pdf417: 'Any text, URL, or data',
+    };
+
+    const hintEl = document.getElementById('barcodeFormatHint');
+    if (hintEl)
+      hintEl.textContent =
+        barcodeFormatHints[field.barcodeFormat || 'qrcode'] || '';
+
+    if (propBarcodeFormat) {
+      propBarcodeFormat.addEventListener('change', (e) => {
+        const newFormat = (e.target as HTMLSelectElement).value;
+        field.barcodeFormat = newFormat;
+        field.barcodeValue = barcodeSampleValues[newFormat] || 'hello';
+        if (propBarcodeValue) propBarcodeValue.value = field.barcodeValue;
+        if (hintEl) hintEl.textContent = barcodeFormatHints[newFormat] || '';
+        renderField(field);
+      });
+    }
+
+    if (propBarcodeValue) {
+      propBarcodeValue.addEventListener('input', (e) => {
+        field.barcodeValue = (e.target as HTMLInputElement).value;
+        renderField(field);
+      });
+    }
   }
 }
 
@@ -1846,8 +2132,7 @@ downloadBtn.addEventListener('click', async () => {
     nameCount.set(field.name, count + 1);
 
     if (existingFieldNames.has(field.name)) {
-      if (field.type === 'radio' && existingRadioGroups.has(field.name)) {
-      } else {
+      if (!(field.type === 'radio' && existingRadioGroups.has(field.name))) {
         conflictsWithPdf.push(field.name);
       }
     }
@@ -1911,6 +2196,19 @@ downloadBtn.addEventListener('click', async () => {
 
     const form = pdfDoc.getForm();
 
+    if (extractedFieldNames.size > 0) {
+      for (const fieldName of extractedFieldNames) {
+        try {
+          const existingField = form.getFieldMaybe(fieldName);
+          if (existingField) {
+            form.removeField(existingField);
+          }
+        } catch (e) {
+          console.warn(`Failed to remove existing field "${fieldName}":`, e);
+        }
+      }
+    }
+
     const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     // Set document metadata for accessibility
@@ -1918,7 +2216,10 @@ downloadBtn.addEventListener('click', async () => {
     pdfDoc.setAuthor('BentoPDF');
     pdfDoc.setLanguage('en-US');
 
-    const radioGroups = new Map<string, any>(); // Track created radio groups
+    const radioGroups = new Map<
+      string,
+      ReturnType<typeof form.createRadioGroup>
+    >();
 
     for (const field of fields) {
       const pageData = pages[field.pageIndex];
@@ -1957,7 +2258,7 @@ downloadBtn.addEventListener('click', async () => {
           height: height,
           borderWidth: field.hideBorder ? 0 : 1,
           borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
-          backgroundColor: rgb(1, 1, 1),
+          ...getPdfBackgroundOptions(field, 1, 1, 1),
           textColor: rgb(rgbColor.r, rgbColor.g, rgbColor.b),
         });
 
@@ -1996,6 +2297,11 @@ downloadBtn.addEventListener('click', async () => {
             widget.dict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
           });
         }
+        clearTransparentFieldWidgetBackgrounds(
+          field,
+          textField.acroField.getWidgets(),
+          pdfDoc
+        );
       } else if (field.type === 'checkbox') {
         const checkBox = form.createCheckBox(field.name);
         const borderRgb = hexToRgb(field.borderColor || '#000000');
@@ -2006,7 +2312,7 @@ downloadBtn.addEventListener('click', async () => {
           height: height,
           borderWidth: field.hideBorder ? 0 : 1,
           borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
-          backgroundColor: rgb(1, 1, 1),
+          ...getPdfBackgroundOptions(field, 1, 1, 1),
         });
         if (field.checked) checkBox.check();
         if (field.required) checkBox.enableRequired();
@@ -2016,6 +2322,11 @@ downloadBtn.addEventListener('click', async () => {
             widget.dict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
           });
         }
+        clearTransparentFieldWidgetBackgrounds(
+          field,
+          checkBox.acroField.getWidgets(),
+          pdfDoc
+        );
       } else if (field.type === 'radio') {
         const groupName = field.name;
         let radioGroup;
@@ -2026,7 +2337,7 @@ downloadBtn.addEventListener('click', async () => {
           const existingField = form.getFieldMaybe(groupName);
 
           if (existingField) {
-            radioGroup = existingField;
+            radioGroup = existingField as PDFRadioGroup;
             radioGroups.set(groupName, radioGroup);
             console.log(`Using existing radio group from PDF: ${groupName}`);
           } else {
@@ -2037,23 +2348,28 @@ downloadBtn.addEventListener('click', async () => {
         }
 
         const borderRgb = hexToRgb(field.borderColor || '#000000');
-        radioGroup.addOptionToPage(field.exportValue || 'Yes', pdfPage as any, {
+        radioGroup.addOptionToPage(field.exportValue || 'Yes', pdfPage, {
           x: x,
           y: y,
           width: width,
           height: height,
           borderWidth: field.hideBorder ? 0 : 1,
           borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
-          backgroundColor: rgb(1, 1, 1),
+          ...getPdfBackgroundOptions(field, 1, 1, 1),
         });
         if (field.checked) radioGroup.select(field.exportValue || 'Yes');
         if (field.required) radioGroup.enableRequired();
         if (field.readOnly) radioGroup.enableReadOnly();
         if (field.tooltip) {
-          radioGroup.acroField.getWidgets().forEach((widget: any) => {
+          radioGroup.acroField.getWidgets().forEach((widget) => {
             widget.dict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
           });
         }
+        clearTransparentFieldWidgetBackgrounds(
+          field,
+          radioGroup.acroField.getWidgets(),
+          pdfDoc
+        );
       } else if (field.type === 'dropdown') {
         const dropdown = form.createDropdown(field.name);
         const borderRgb = hexToRgb(field.borderColor || '#000000');
@@ -2064,7 +2380,7 @@ downloadBtn.addEventListener('click', async () => {
           height: height,
           borderWidth: field.hideBorder ? 0 : 1,
           borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
-          backgroundColor: rgb(1, 1, 1), // Light blue not supported in standard PDF appearance easily without streams
+          ...getPdfBackgroundOptions(field, 1, 1, 1),
         });
         if (field.options) dropdown.setOptions(field.options);
         if (field.defaultValue && field.options?.includes(field.defaultValue))
@@ -2085,6 +2401,11 @@ downloadBtn.addEventListener('click', async () => {
             widget.dict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
           });
         }
+        clearTransparentFieldWidgetBackgrounds(
+          field,
+          dropdown.acroField.getWidgets(),
+          pdfDoc
+        );
       } else if (field.type === 'optionlist') {
         const optionList = form.createOptionList(field.name);
         const borderRgb = hexToRgb(field.borderColor || '#000000');
@@ -2095,7 +2416,7 @@ downloadBtn.addEventListener('click', async () => {
           height: height,
           borderWidth: field.hideBorder ? 0 : 1,
           borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
-          backgroundColor: rgb(1, 1, 1),
+          ...getPdfBackgroundOptions(field, 1, 1, 1),
         });
         if (field.options) optionList.setOptions(field.options);
         if (field.defaultValue && field.options?.includes(field.defaultValue))
@@ -2116,6 +2437,11 @@ downloadBtn.addEventListener('click', async () => {
             widget.dict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
           });
         }
+        clearTransparentFieldWidgetBackgrounds(
+          field,
+          optionList.acroField.getWidgets(),
+          pdfDoc
+        );
       } else if (field.type === 'button') {
         const button = form.createButton(field.name);
         const borderRgb = hexToRgb(field.borderColor || '#000000');
@@ -2126,7 +2452,7 @@ downloadBtn.addEventListener('click', async () => {
           height: height,
           borderWidth: field.hideBorder ? 0 : 1,
           borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
-          backgroundColor: rgb(0.8, 0.8, 0.8), // Light gray
+          ...getPdfBackgroundOptions(field, 0.8, 0.8, 0.8),
         });
 
         // Add Action
@@ -2134,7 +2460,7 @@ downloadBtn.addEventListener('click', async () => {
           const widgets = button.acroField.getWidgets();
 
           widgets.forEach((widget) => {
-            let actionDict: any;
+            let actionDict: PDFDict | PDFArray | undefined;
 
             if (field.action === 'reset') {
               actionDict = pdfDoc.context.obj({
@@ -2175,7 +2501,7 @@ downloadBtn.addEventListener('click', async () => {
               });
             } else if (field.action === 'showHide' && field.targetFieldName) {
               const target = field.targetFieldName;
-              let script = '';
+              let script: string;
 
               if (field.visibilityAction === 'show') {
                 script = `var f = this.getField("${target}"); if(f) f.display = display.visible;`;
@@ -2204,16 +2530,22 @@ downloadBtn.addEventListener('click', async () => {
             widget.dict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
           });
         }
+        clearTransparentFieldWidgetBackgrounds(
+          field,
+          button.acroField.getWidgets(),
+          pdfDoc
+        );
       } else if (field.type === 'date') {
         const dateField = form.createTextField(field.name);
+        const borderRgb = hexToRgb(field.borderColor || '#000000');
         dateField.addToPage(pdfPage, {
           x: x,
           y: y,
           width: width,
           height: height,
-          borderWidth: 1,
-          borderColor: rgb(0, 0, 0),
-          backgroundColor: rgb(1, 1, 1),
+          borderWidth: field.hideBorder ? 0 : 1,
+          borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
+          ...getPdfBackgroundOptions(field, 1, 1, 1),
         });
 
         // Add Date Format and Keystroke Actions to the FIELD (not widget)
@@ -2245,16 +2577,22 @@ downloadBtn.addEventListener('click', async () => {
             widget.dict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
           });
         }
+        clearTransparentFieldWidgetBackgrounds(
+          field,
+          dateField.acroField.getWidgets(),
+          pdfDoc
+        );
       } else if (field.type === 'image') {
         const imageBtn = form.createButton(field.name);
+        const borderRgb = hexToRgb(field.borderColor || '#000000');
         imageBtn.addToPage(field.label || 'Click to Upload Image', pdfPage, {
           x: x,
           y: y,
           width: width,
           height: height,
-          borderWidth: 1,
-          borderColor: rgb(0, 0, 0),
-          backgroundColor: rgb(0.9, 0.9, 0.9),
+          borderWidth: field.hideBorder ? 0 : 1,
+          borderColor: rgb(borderRgb.r, borderRgb.g, borderRgb.b),
+          ...getPdfBackgroundOptions(field, 0.9, 0.9, 0.9),
         });
 
         // Add Import Icon Action
@@ -2272,7 +2610,6 @@ downloadBtn.addEventListener('click', async () => {
           // IF (Icon Fit) -> SW: A (Always Scale), S: A (Anamorphic/Fill)
           const mkDict = pdfDoc.context.obj({
             TP: 1,
-            BG: [0.9, 0.9, 0.9], // Background color (Light Gray)
             BC: [0, 0, 0], // Border color (Black)
             IF: {
               SW: PDFName.of('A'),
@@ -2280,6 +2617,9 @@ downloadBtn.addEventListener('click', async () => {
               FB: true,
             },
           });
+          if (!hasTransparentBackground(field)) {
+            mkDict.set(PDFName.of('BG'), pdfDoc.context.obj([0.9, 0.9, 0.9]));
+          }
           widget.dict.set(PDFName.of('MK'), mkDict);
         });
 
@@ -2288,6 +2628,11 @@ downloadBtn.addEventListener('click', async () => {
             widget.dict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
           });
         }
+        clearTransparentFieldWidgetBackgrounds(
+          field,
+          imageBtn.acroField.getWidgets(),
+          pdfDoc
+        );
       } else if (field.type === 'signature') {
         const context = pdfDoc.context;
 
@@ -2311,12 +2656,18 @@ downloadBtn.addEventListener('click', async () => {
 
         // Add border and background appearance
         const borderStyle = context.obj({
-          W: 1, // Border width
+          W: field.hideBorder ? 0 : 1, // Border width
           S: PDFName.of('S'), // Solid border
         }) as PDFDict;
         widgetDict.set(PDFName.of('BS'), borderStyle);
-        widgetDict.set(PDFName.of('BC'), context.obj([0, 0, 0])); // Border color (black)
-        widgetDict.set(PDFName.of('BG'), context.obj([0.95, 0.95, 0.95])); // Background color
+        const borderRgb = hexToRgb(field.borderColor || '#000000');
+        widgetDict.set(
+          PDFName.of('BC'),
+          context.obj([borderRgb.r, borderRgb.g, borderRgb.b])
+        ); // Border color
+        if (!hasTransparentBackground(field)) {
+          widgetDict.set(PDFName.of('BG'), context.obj([0.95, 0.95, 0.95]));
+        }
 
         const widgetRef = context.register(widgetDict);
 
@@ -2332,6 +2683,32 @@ downloadBtn.addEventListener('click', async () => {
         if (field.tooltip) {
           widgetDict.set(PDFName.of('TU'), PDFString.of(field.tooltip));
         }
+      } else if (field.type === 'barcode') {
+        if (field.barcodeValue) {
+          try {
+            const offscreen = document.createElement('canvas');
+            bwipjs.toCanvas(offscreen, {
+              bcid: field.barcodeFormat || 'qrcode',
+              text: field.barcodeValue,
+              scale: 3,
+              includetext:
+                field.barcodeFormat !== 'qrcode' &&
+                field.barcodeFormat !== 'datamatrix',
+            });
+            const dataUrl = offscreen.toDataURL('image/png');
+            const base64 = dataUrl.split(',')[1];
+            const pngBytes = Uint8Array.from(atob(base64), (c) =>
+              c.charCodeAt(0)
+            );
+            const pngImage = await pdfDoc.embedPng(pngBytes);
+            pdfPage.drawImage(pngImage, { x, y, width, height });
+          } catch (e) {
+            console.warn(
+              `Failed to generate barcode for field "${field.name}":`,
+              e
+            );
+          }
+        }
       }
     }
 
@@ -2341,7 +2718,7 @@ downloadBtn.addEventListener('click', async () => {
     const blob = new Blob([new Uint8Array(pdfBytes)], {
       type: 'application/pdf',
     });
-    downloadFile(blob, 'fillable-form.pdf');
+    downloadFile(blob, uploadedFileName || 'document.pdf');
     showModal(
       'Success',
       'Your PDF has been downloaded successfully.',
@@ -2411,11 +2788,11 @@ function getPageDimensions(size: string): { width: number; height: number } {
     case 'a3':
       dimensions = PageSizes.A3;
       break;
-    case 'custom':
-      // Get custom dimensions from inputs
+    case 'custom': {
       const width = parseInt(customWidth.value) || 612;
       const height = parseInt(customHeight.value) || 792;
       return { width, height };
+    }
     default:
       dimensions = PageSizes.Letter;
   }
@@ -2429,6 +2806,8 @@ function resetToInitial(): void {
   currentPageIndex = 0;
   uploadedPdfDoc = null;
   selectedField = null;
+  extractedFieldNames.clear();
+  pendingFieldExtraction = false;
 
   canvas.innerHTML = '';
 
@@ -2504,7 +2883,7 @@ async function renderCanvas(): Promise<void> {
 
       iframe.onload = () => {
         try {
-          const viewerWindow = iframe.contentWindow as any;
+          const viewerWindow = iframe.contentWindow as PdfViewerWindow | null;
           if (viewerWindow && viewerWindow.PDFViewerApplication) {
             const app = viewerWindow.PDFViewerApplication;
 
@@ -2563,7 +2942,7 @@ async function renderCanvas(): Promise<void> {
                 clearInterval(checkRender);
 
                 const pageContainer =
-                  viewerWindow.document.querySelector('.page');
+                  viewerWindow.document.querySelector<HTMLElement>('.page');
                 if (pageContainer) {
                   const initialRect = pageContainer.getBoundingClientRect();
 
@@ -2611,6 +2990,32 @@ async function renderCanvas(): Promise<void> {
                         height: currentPage.height,
                       },
                     });
+
+                    if (pendingFieldExtraction && uploadedPdfDoc) {
+                      pendingFieldExtraction = false;
+                      extractExistingFields(uploadedPdfDoc);
+                      extractedFieldNames.forEach((name) =>
+                        existingFieldNames.delete(name)
+                      );
+
+                      const form = uploadedPdfDoc.getForm();
+                      for (const name of extractedFieldNames) {
+                        try {
+                          const existingField = form.getFieldMaybe(name);
+                          if (existingField) {
+                            form.removeField(existingField);
+                          }
+                        } catch (error) {
+                          console.warn(
+                            `Failed to remove extracted field "${name}" after import:`,
+                            error
+                          );
+                        }
+                      }
+
+                      renderCanvas();
+                      updateFieldCount();
+                    }
                   }, 50);
                 }
               }
@@ -2701,10 +3106,43 @@ confirmBlankBtn.addEventListener('click', () => {
   setTimeout(() => createIcons({ icons }), 100);
 });
 
+const extractedFieldNames: Set<string> = new Set();
+
+function extractExistingFields(pdfDoc: PDFDocument): void {
+  try {
+    const extractionResult: ExtractExistingFieldsResult =
+      extractExistingPdfFields({
+        pdfDoc,
+        fieldCounterStart: fieldCounter,
+        metrics: {
+          pdfViewerOffset,
+          pdfViewerScale,
+        },
+      });
+
+    fields.push(...extractionResult.fields);
+    fieldCounter = extractionResult.nextFieldCounter;
+
+    extractionResult.extractedFieldNames.forEach((name) => {
+      extractedFieldNames.add(name);
+    });
+
+    console.log(
+      `Extracted ${extractionResult.extractedFieldNames.size} existing fields for editing`
+    );
+  } catch (error) {
+    console.warn('Error extracting existing fields:', error);
+  }
+}
+
 async function handlePdfUpload(file: File) {
   try {
-    const arrayBuffer = await file.arrayBuffer();
-    uploadedPdfDoc = await PDFDocument.load(arrayBuffer);
+    const result = await loadPdfWithPasswordPrompt(file);
+    if (!result) return;
+    const arrayBuffer = result.bytes;
+    uploadedPdfjsDoc = result.pdf;
+    uploadedPdfDoc = await loadPdfDocument(arrayBuffer);
+    uploadedFileName = file.name;
 
     // Check for existing fields and update counter
     existingFieldNames.clear();
@@ -2741,8 +3179,6 @@ async function handlePdfUpload(file: File) {
       console.log('No form fields found or error reading fields:', e);
     }
 
-    uploadedPdfjsDoc = await getPDFDocument({ data: arrayBuffer }).promise;
-
     const pageCount = uploadedPdfDoc.getPageCount();
     pages = [];
 
@@ -2759,6 +3195,9 @@ async function handlePdfUpload(file: File) {
     }
 
     currentPageIndex = 0;
+
+    pendingFieldExtraction = true;
+
     renderCanvas();
     updatePageNavigation();
 

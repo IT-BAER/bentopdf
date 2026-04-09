@@ -86,9 +86,73 @@
     "name": "Nomor Halaman",
     "subtitle": "Sisipkan nomor halaman ke dokumen Anda."
   },
+  "addPageLabels": {
+    "name": "Tambahkan label halaman",
+    "subtitle": "Terapkan label halaman PDF dengan angka Romawi, prefiks, dan nilai awal khusus.",
+    "uploadHint": "File PDF",
+    "howLabelsWorkTitle": "Cara kerja label",
+    "howLabelsWorkStep1": "Biarkan Rentang Halaman kosong untuk memberi label pada semua halaman.",
+    "howLabelsWorkStep2": "Gunakan gaya seperti angka Romawi untuk halaman awal dan penomoran desimal untuk isi utama.",
+    "howLabelsWorkStep3": "Gunakan Prefiks dengan Nilai Awal 0 untuk membuat label seperti A-0, A-1, A-2.",
+    "howLabelsWorkStep4": "Aktifkan progres saat satu aturan menggunakan rentang terputus seperti 1-9,30-40 atau halaman ganjil.",
+    "labelRulesTitle": "Aturan Label",
+    "addRule": "Tambah Aturan",
+    "removeExistingLabels": "Hapus label halaman yang ada sebelum menerapkan aturan ini",
+    "cpdfNote": "Alat ini menggunakan CoherentPDF di browser Anda. Jika CoherentPDF belum dikonfigurasi, Anda akan diminta menyiapkannya di Pengaturan WASM.",
+    "processButton": "Tambahkan label halaman",
+    "howItWorksUploadTitle": "Unggah File",
+    "howItWorksUploadDescription": "Pilih PDF yang ingin Anda beri label ulang.",
+    "howItWorksDefineTitle": "Tentukan Aturan",
+    "howItWorksDefineDescription": "Atur satu atau lebih aturan label halaman dengan rentang halaman, gaya, prefiks, dan nilai awal.",
+    "howItWorksDownloadTitle": "Unduh",
+    "howItWorksDownloadDescription": "Simpan PDF yang telah diperbarui dengan label halamannya yang baru.",
+    "relatedToolsTitle": "Alat PDF Terkait",
+    "faqWhatIsQuestion": "Apa itu label halaman?",
+    "faqWhatIsAnswer": "Label halaman adalah penomoran yang ditampilkan pembaca PDF di thumbnail, navigasi halaman, dan dialog cetak. Ini tidak mencetak teks baru ke halaman itu sendiri.",
+    "faqMixQuestion": "Bisakah saya mencampur angka Romawi dan angka biasa?",
+    "faqMixAnswer": "Ya. Tambahkan beberapa aturan, misalnya 1-4 dengan LowercaseRoman dan 5-20 dengan DecimalArabic.",
+    "faqPrivacyQuestion": "Apakah file saya tetap pribadi?",
+    "faqPrivacyAnswer": "Ya. Pemrosesan terjadi di browser Anda menggunakan CoherentPDF WASM. PDF Anda tidak meninggalkan perangkat Anda.",
+    "invalidFileTitle": "File Tidak Valid",
+    "invalidFileMessage": "Silakan unggah file PDF yang valid.",
+    "loadingPdf": "Memuat PDF...",
+    "protectedPdfTitle": "PDF Terproteksi",
+    "protectedPdfMessage": "PDF ini dilindungi kata sandi. Gunakan alat Dekripsi atau Ubah Izin terlebih dahulu.",
+    "loadErrorMessage": "Gagal memuat file PDF. File mungkin tidak valid, rusak, atau dilindungi kata sandi.",
+    "fileMeta": "{{size}} • {{count}} halaman",
+    "ruleTitle": "Aturan Label {{number}}",
+    "pageRangeLabel": "Rentang Halaman",
+    "pageRangePlaceholder": "Semua halaman, atau mis. 1-4, 7, ganjil",
+    "labelStyleLabel": "Gaya Label",
+    "labelPrefixLabel": "Prefiks Label",
+    "labelPrefixPlaceholder": "Prefiks opsional, mis. A-",
+    "startValueLabel": "Nilai Awal",
+    "continueNumbering": "Lanjutkan penomoran di rentang yang terputus",
+    "examplesNote": "Contoh: 1-4 untuk bagian depan dengan angka Romawi, 15-20 dengan prefiks A- dan nilai awal 0, atau halaman ganjil dengan progres diaktifkan.",
+    "uploadFirstMessage": "Silakan unggah file PDF terlebih dahulu.",
+    "applyingLabels": "Menerapkan label halaman...",
+    "invalidRangeMessage": "Aturan {{number}} memiliki rentang halaman yang tidak valid: {{range}}",
+    "allPages": "semua halaman",
+    "emptyOutputMessage": "CoherentPDF menghasilkan file kosong.",
+    "successMessage": "Label halaman berhasil ditambahkan!",
+    "processErrorMessage": "Tidak dapat menambahkan label halaman.",
+    "styleOptions": {
+      "DecimalArabic": "Angka desimal",
+      "LowercaseRoman": "Angka Romawi huruf kecil",
+      "UppercaseRoman": "Angka Romawi huruf besar",
+      "LowercaseLetters": "Huruf kecil",
+      "UppercaseLetters": "Huruf besar",
+      "NoLabelPrefixOnly": "Hanya prefiks tanpa nomor"
+    }
+  },
+  "batesNumbering": {
+    "name": "Penomoran Bates",
+    "subtitle": "Tambahkan nomor Bates berurutan pada satu atau lebih file PDF."
+  },
   "addWatermark": {
     "name": "Tambah Watermark",
-    "subtitle": "Cap teks atau gambar di atas halaman PDF Anda."
+    "subtitle": "Cap teks atau gambar di atas halaman PDF Anda.",
+    "applyToAllPages": "Terapkan ke semua halaman"
   },
   "headerFooter": {
     "name": "Header & Footer",
@@ -97,6 +161,37 @@
   "invertColors": {
     "name": "Balik Warna",
     "subtitle": "Buat versi \"mode gelap\" dari PDF Anda."
+  },
+  "scannerEffect": {
+    "name": "Efek Pemindai",
+    "subtitle": "Buat PDF Anda terlihat seperti dokumen yang dipindai.",
+    "scanSettings": "Pengaturan Pemindaian",
+    "colorspace": "Ruang Warna",
+    "gray": "Skala Abu-abu",
+    "border": "Batas",
+    "rotate": "Putar",
+    "rotateVariance": "Variasi Putaran",
+    "brightness": "Kecerahan",
+    "contrast": "Kontras",
+    "blur": "Blur",
+    "noise": "Noise",
+    "yellowish": "Kekuningan",
+    "resolution": "Resolusi",
+    "processButton": "Terapkan Efek Pemindai"
+  },
+  "adjustColors": {
+    "name": "Sesuaikan Warna",
+    "subtitle": "Sesuaikan kecerahan, kontras, saturasi dan lainnya pada PDF Anda.",
+    "colorSettings": "Pengaturan Warna",
+    "brightness": "Kecerahan",
+    "contrast": "Kontras",
+    "saturation": "Saturasi",
+    "hueShift": "Pergeseran Rona",
+    "temperature": "Suhu",
+    "tint": "Pewarnaan",
+    "gamma": "Gamma",
+    "sepia": "Sepia",
+    "processButton": "Terapkan Penyesuaian Warna"
   },
   "backgroundColor": {
     "name": "Warna Latar Belakang",
@@ -127,7 +222,8 @@
   },
   "removeBlankPages": {
     "name": "Hapus Halaman Kosong",
-    "subtitle": "Deteksi dan hapus halaman kosong secara otomatis."
+    "subtitle": "Deteksi dan hapus halaman kosong secara otomatis.",
+    "sensitivityHint": "Lebih tinggi = lebih ketat, hanya halaman yang benar-benar kosong. Lebih rendah = mengizinkan halaman dengan sedikit konten."
   },
   "imageToPdf": {
     "name": "Gambar ke PDF",
@@ -183,7 +279,45 @@
   },
   "pdfToTiff": {
     "name": "PDF ke TIFF",
-    "subtitle": "Konversi setiap halaman PDF menjadi gambar TIFF."
+    "subtitle": "Konversi setiap halaman PDF menjadi gambar TIFF.",
+    "dpi": "DPI (Resolusi)",
+    "dpiExplanation": "DPI lebih tinggi = kualitas lebih baik untuk cetak, ukuran file lebih besar",
+    "compression": "Kompresi",
+    "compressionExplanation": "LZW dan Deflate adalah lossless. CCITT Group 4 paling cocok untuk dokumen pindaian hitam putih.",
+    "colorMode": "Mode Warna",
+    "multiPage": "Simpan sebagai TIFF multi-halaman (satu file)",
+    "loadingVips": "Memuat prosesor gambar...",
+    "converting": "Mengonversi ke TIFF..."
+  },
+  "pdfToCbz": {
+    "name": "PDF ke CBZ",
+    "subtitle": "Konversi PDF menjadi file CBZ (Arsip Buku Komik) untuk pembaca komik.",
+    "imageFormat": "Format Gambar",
+    "quality": "Kualitas Gambar",
+    "qualityExplanation": "Kualitas lebih tinggi = ukuran file lebih besar",
+    "scale": "Skala",
+    "scaleExplanation": "Skala lebih tinggi = kualitas lebih baik untuk layar resolusi tinggi",
+    "grayscale": "Konversi ke skala abu-abu",
+    "manga": "Mode manga (kanan-ke-kiri)",
+    "includeMetadata": "Sertakan metadata ComicInfo.xml",
+    "titleLabel": "Judul",
+    "seriesLabel": "Seri",
+    "authorLabel": "Penulis",
+    "numberLabel": "#",
+    "volumeLabel": "Vol.",
+    "publisherLabel": "Penerbit",
+    "tagsLabel": "Tag / Genre",
+    "yearLabel": "Tahun Terbit",
+    "ratingLabel": "Peringkat (0-5)",
+    "converting": "Mengonversi ke CBZ...",
+    "alert": {
+      "invalidFile": "File Tidak Valid",
+      "invalidFileExplanation": "Silakan unggah file PDF.",
+      "noFile": "Tidak Ada File",
+      "noFileExplanation": "Silakan unggah file PDF terlebih dahulu.",
+      "conversionSuccess": "PDF berhasil dikonversi ke CBZ!",
+      "conversionError": "Gagal mengonversi PDF ke CBZ. File mungkin rusak."
+    }
   },
   "pdfToGreyscale": {
     "name": "PDF ke Skala Abu-abu",
@@ -255,7 +389,47 @@
   },
   "comparePdfs": {
     "name": "Bandingkan PDF",
-    "subtitle": "Bandingkan dua PDF berdampingan."
+    "subtitle": "Bandingkan dua PDF berdampingan.",
+    "firstPdf": "PDF pertama",
+    "secondPdf": "PDF kedua",
+    "clickOrDrop": "Klik atau letakkan",
+    "page": "Halaman",
+    "overlay": "Hamparan",
+    "sideBySide": "Berdampingan",
+    "flicker": "Kedip",
+    "syncScroll": "Sinkronkan gulir",
+    "export": "Ekspor",
+    "exportAsPdf": "Ekspor sebagai PDF",
+    "splitView": "Tampilan terbagi",
+    "alternating": "Bergantian",
+    "leftDocument": "Dokumen kiri",
+    "rightDocument": "Dokumen kanan",
+    "original": "Asli",
+    "modified": "Diubah",
+    "searchChanges": "Cari perubahan...",
+    "deleted": "Dihapus",
+    "added": "Ditambahkan",
+    "prevPage": "Halaman sebelumnya",
+    "nextPage": "Halaman berikutnya",
+    "prevChange": "Perubahan sebelumnya",
+    "nextChange": "Perubahan berikutnya",
+    "uploadTwoPdfs": "Unggah dua PDF untuk melihat perbedaannya.",
+    "noDifferences": "Tidak ada perbedaan yang terdeteksi pada halaman ini.",
+    "noMatchingChanges": "Tidak ada perubahan yang cocok dengan filter saat ini.",
+    "pageNotExist": "Halaman {{page}} tidak ada di PDF ini.",
+    "noPairedPage": "Tidak ada halaman pasangan untuk sisi ini.",
+    "buildingModel": "Membangun model pemasangan halaman...",
+    "indexingPdf": "Mengindeks PDF {{num}} halaman {{page}} dari {{total}}...",
+    "loadingComparison": "Memuat perbandingan {{current}} dari {{total}}...",
+    "runningOcr": "Menjalankan OCR pada halaman {{page}}...",
+    "preparingExport": "Menyiapkan ekspor PDF...",
+    "renderingPage": "Merender halaman {{current}} dari {{total}}...",
+    "exportError": "Kesalahan ekspor",
+    "exportFailed": "Tidak dapat mengekspor PDF perbandingan.",
+    "loadingFile": "Memuat {{name}}...",
+    "invalidFile": "File tidak valid",
+    "invalidFileMsg": "Silakan pilih file PDF yang valid.",
+    "loadError": "Tidak dapat memuat PDF. Mungkin rusak atau dilindungi kata sandi."
   },
   "posterizePdf": {
     "name": "Posterisasi PDF",
@@ -516,6 +690,15 @@
     "pageTitle": "Validasi Tanda Tangan PDF - Verifikasi Tanda Tangan Digital | BentoPDF",
     "subtitle": "Verifikasi tanda tangan digital di file PDF Anda. Periksa validitas sertifikat, lihat detail penandatangan, dan konfirmasi integritas dokumen. Semua pemrosesan terjadi di browser Anda."
   },
+  "timestampPdf": {
+    "name": "Stempel Waktu PDF",
+    "pageTitle": "Stempel Waktu PDF Gratis Online - RFC 3161 | BentoPDF",
+    "subtitle": "Tambahkan stempel waktu RFC 3161 ke PDF Anda menggunakan server TSA tepercaya. Membuktikan dokumen Anda ada pada waktu tertentu. Tidak memerlukan sertifikat.",
+    "tsaSectionTitle": "Server Stempel Waktu (TSA)",
+    "selectTsa": "Pilih server TSA",
+    "applyTimestamp": "Terapkan Stempel Waktu",
+    "successMessage": "PDF berhasil diberi stempel waktu! Stempel waktu dapat diverifikasi di Adobe Acrobat dan pembaca PDF lainnya."
+  },
   "emailToPdf": {
     "name": "Email ke PDF",
     "subtitle": "Konversi file email (EML, MSG) ke format PDF. Mendukung ekspor Outlook dan format email standar.",
@@ -529,5 +712,93 @@
   "deskewPdf": {
     "name": "Luruskan PDF",
     "subtitle": "Otomatis meluruskan halaman hasil pindai yang miring menggunakan OpenCV."
+  },
+  "pdfToWord": {
+    "name": "PDF ke Word",
+    "subtitle": "Konversi file PDF ke dokumen Word yang dapat diedit."
+  },
+  "extractImages": {
+    "name": "Ekstrak Gambar",
+    "subtitle": "Ekstrak semua gambar yang tertanam dari file PDF Anda."
+  },
+  "pdfToMarkdown": {
+    "name": "PDF ke Markdown",
+    "subtitle": "Konversi teks dan tabel PDF ke format Markdown."
+  },
+  "preparePdfForAi": {
+    "name": "Siapkan PDF untuk AI",
+    "subtitle": "Ekstrak konten PDF sebagai JSON LlamaIndex untuk pipeline RAG/LLM."
+  },
+  "pdfOcg": {
+    "name": "Lapisan PDF (OCG)",
+    "subtitle": "Lihat, beralih, tambah, dan hapus lapisan OCG di PDF Anda."
+  },
+  "pdfToPdfa": {
+    "name": "PDF ke PDF/A",
+    "subtitle": "Konversi PDF ke PDF/A untuk pengarsipan jangka panjang."
+  },
+  "rasterizePdf": {
+    "name": "Rasterisasi PDF",
+    "subtitle": "Konversi PDF ke PDF berbasis gambar. Ratakan lapisan dan hapus teks yang dapat dipilih."
+  },
+  "pdfWorkflow": {
+    "name": "Pembangun Alur Kerja PDF",
+    "subtitle": "Bangun alur pemrosesan PDF kustom dengan editor node visual.",
+    "nodes": "Node",
+    "searchNodes": "Cari node...",
+    "run": "Jalankan",
+    "clear": "Bersihkan",
+    "save": "Simpan",
+    "load": "Muat",
+    "export": "Ekspor",
+    "import": "Impor",
+    "ready": "Siap",
+    "settings": "Pengaturan",
+    "processing": "Memproses...",
+    "saveTemplate": "Simpan Template",
+    "templateName": "Nama Template",
+    "templatePlaceholder": "mis. Alur Kerja Faktur",
+    "cancel": "Batal",
+    "loadTemplate": "Muat Template",
+    "noTemplates": "Belum ada template tersimpan.",
+    "ok": "OK",
+    "workflowCompleted": "Alur kerja selesai",
+    "errorDuringExecution": "Kesalahan saat eksekusi",
+    "addNodeError": "Tambahkan setidaknya satu node untuk menjalankan alur kerja.",
+    "needInputOutput": "Alur kerja Anda memerlukan setidaknya satu node input dan satu node output untuk dijalankan.",
+    "enterName": "Silakan masukkan nama.",
+    "templateExists": "Template dengan nama ini sudah ada.",
+    "templateSaved": "Template \"{{name}}\" tersimpan.",
+    "templateLoaded": "Template \"{{name}}\" dimuat.",
+    "failedLoadTemplate": "Gagal memuat template.",
+    "noSettings": "Tidak ada pengaturan yang dapat dikonfigurasi untuk node ini.",
+    "advancedSettings": "Pengaturan Lanjutan"
+  },
+  "pdfOverlay": {
+    "name": "Overlay PDF",
+    "subtitle": "Tumpangkan atau sisipkan halaman dari satu PDF ke PDF lainnya.",
+    "basePdfLabel": "PDF Dasar",
+    "uploadBasePdf": "Unggah PDF dasar",
+    "overlayPdfLabel": "PDF Overlay / Underlay",
+    "uploadOverlayPdf": "Unggah PDF overlay/underlay",
+    "modeLabel": "Mode",
+    "overlayOption": "Overlay (di atas halaman)",
+    "underlayOption": "Underlay (di belakang halaman)",
+    "pageRangeLabel": "Terapkan ke halaman (opsional)",
+    "pageRangeHint": "Gunakan \"z\" untuk halaman terakhir. Kosongkan untuk menerapkan ke semua halaman.",
+    "repeatLabel": "Ulangi halaman overlay/underlay jika dasar lebih panjang",
+    "processButton": "Terapkan Overlay / Underlay",
+    "howItWorksUploadTitle": "Unggah Dua PDF",
+    "howItWorksUploadDescription": "Unggah PDF dasar Anda dan PDF yang ingin Anda tumpangkan atau sisipkan.",
+    "howItWorksModeTitle": "Pilih Mode",
+    "howItWorksModeDescription": "Pilih overlay (di atas) atau underlay (di belakang). Atur rentang halaman dan pengulangan secara opsional.",
+    "howItWorksDownloadTitle": "Unduh",
+    "howItWorksDownloadDescription": "Unduh PDF Anda dengan overlay atau underlay yang diterapkan.",
+    "faqDifferenceQuestion": "Apa perbedaan antara overlay dan underlay?",
+    "faqDifferenceAnswer": "Overlay menempatkan halaman di atas PDF dasar Anda (seperti watermark). Underlay menempatkan halaman di belakang PDF dasar Anda (seperti kop surat atau latar belakang).",
+    "faqSinglePageQuestion": "Bisakah saya menggunakan PDF satu halaman sebagai overlay untuk semua halaman?",
+    "faqSinglePageAnswer": "Ya! Aktifkan opsi \"Ulangi\" dan halaman overlay Anda akan berulang di semua halaman dasar. Watermark satu halaman akan diterapkan ke setiap halaman.",
+    "faqPrivacyQuestion": "Apakah file saya pribadi dan aman?",
+    "faqPrivacyAnswer": "Tentu saja! Semua pemrosesan terjadi di browser Anda. File Anda tidak pernah meninggalkan perangkat Anda, memastikan privasi penuh."
   }
 }

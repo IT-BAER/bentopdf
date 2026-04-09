@@ -5,6 +5,7 @@ import {
   hexToRgb,
   formatBytes,
   parsePageRanges,
+  sanitizeEmailHtml,
 } from '../js/utils/helpers';
 
 describe('helpers', () => {
@@ -209,6 +210,28 @@ describe('helpers', () => {
     it('should skip non-numeric values', () => {
       const result = parsePageRanges('1,abc,5', totalPages);
       expect(result).toEqual([0, 4]);
+    });
+  });
+
+  describe('sanitizeEmailHtml', () => {
+    it('removes remote resource loads and event handlers', () => {
+      const result = sanitizeEmailHtml(
+        '<div><img src="https://tracker.example/pixel.png" onload="alert(1)" width="2" height="2"><img src="cid:logo"></div>'
+      );
+
+      expect(result).not.toContain('https://tracker.example/pixel.png');
+      expect(result).not.toContain('onload');
+      expect(result).toContain('src="cid:logo"');
+    });
+
+    it('removes active content while keeping safe links', () => {
+      const result = sanitizeEmailHtml(
+        '<div><iframe src="https://evil.example"></iframe><a href="javascript:alert(1)">bad</a><a href="https://example.com/path?x=1">good</a></div>'
+      );
+
+      expect(result).not.toContain('iframe');
+      expect(result).not.toContain('javascript:alert(1)');
+      expect(result).toContain('href="https://example.com/path?x=1"');
     });
   });
 });

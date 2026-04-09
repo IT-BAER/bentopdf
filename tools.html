@@ -160,7 +160,6 @@
     {{> footer }}
 
     <script type="module" src="/src/js/utils/lucide-init.ts"></script>
-    <script type="module" src="/src/version.ts"></script>
     <script type="module">
       import {
         initI18n,
@@ -551,6 +550,12 @@
           icon: 'list-numbers',
         },
         {
+          name: 'bates-numbering',
+          title: 'Bates Numbering',
+          category: 'editor',
+          icon: 'hash',
+        },
+        {
           name: 'background-color',
           title: 'Background Color',
           category: 'editor',
@@ -865,7 +870,7 @@
           .map((tool) => {
             const localizedTitle = getLocalizedToolTitle(tool);
             return `
-                <a href="/src/pages/${tool.name}.html" class="tool-card">
+                <a href="/${tool.name}.html" class="tool-card">
                     <i class="ph ph-${tool.icon} text-4xl text-indigo-400 mb-2"></i>
                     <h3 class="font-semibold text-white text-sm">${localizedTitle}</h3>
                 </a>

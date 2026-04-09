@@ -13,8 +13,6 @@ export interface RenderConfig {
   useLazyLoading?: boolean;
   lazyLoadMargin?: string;
   eagerLoadBatches?: number; // Number of batches to load ahead eagerly (default: 2)
-  scale?: number;
-  lazyScale?: number;
   onProgress?: (current: number, total: number) => void;
   onPageRendered?: (pageIndex: number, element: HTMLElement) => void;
   onBatchComplete?: () => void;
@@ -26,7 +24,7 @@ export interface RenderConfig {
  */
 interface PageTask {
   pageNumber: number;
-  pdfjsDoc: any;
+  pdfjsDoc: pdfjsLib.PDFDocumentProxy;
   fileName?: string;
   container: HTMLElement;
   scale?: number;
@@ -35,6 +33,7 @@ interface PageTask {
     pageNumber: number,
     fileName?: string
   ) => HTMLElement;
+  placeholderElement?: HTMLElement;
 }
 
 /**
@@ -43,6 +42,7 @@ interface PageTask {
 interface LazyLoadState {
   observer: IntersectionObserver | null;
   pendingTasks: Map<HTMLElement, PageTask>;
+  pendingTasksByPageNumber: Map<number, PageTask>;
   isRendering: boolean;
   eagerLoadQueue: PageTask[];
   nextEagerIndex: number;
@@ -51,6 +51,7 @@ interface LazyLoadState {
 const lazyLoadState: LazyLoadState = {
   observer: null,
   pendingTasks: new Map(),
+  pendingTasksByPageNumber: new Map(),
   isRendering: false,
   eagerLoadQueue: [],
   nextEagerIndex: 0,
@@ -75,7 +76,7 @@ export function createPlaceholder(
   // Create skeleton loader
   const skeletonContainer = document.createElement('div');
   skeletonContainer.className =
-    'relative w-full h-80 sm:h-96 md:h-[28rem] bg-gray-700 rounded-md animate-pulse flex items-center justify-center';
+    'relative w-full h-36 bg-gray-700 rounded-md animate-pulse flex items-center justify-center';
 
   const loadingText = document.createElement('span');
   loadingText.className = 'text-gray-500 text-xs';
@@ -91,9 +92,9 @@ export function createPlaceholder(
  * Renders a single page to canvas
  */
 export async function renderPageToCanvas(
-  pdfjsDoc: any,
+  pdfjsDoc: pdfjsLib.PDFDocumentProxy,
   pageNumber: number,
-  scale: number = 1.0
+  scale: number = 1
 ): Promise<HTMLCanvasElement> {
   const page = await pdfjsDoc.getPage(pageNumber);
   const viewport = page.getViewport({ scale });
@@ -102,7 +103,10 @@ export async function renderPageToCanvas(
   canvas.height = viewport.height;
   canvas.width = viewport.width;
 
-  const context = canvas.getContext('2d')!;
+  const context = canvas.getContext('2d');
+  if (!context) {
+    throw new Error(`Failed to get 2D context for page ${pageNumber}`);
+  }
 
   await page.render({
     canvasContext: context,
@@ -114,18 +118,15 @@ export async function renderPageToCanvas(
 }
 
 /**
- * Renders a batch of pages in parallel
+ * Renders a batch of pages
  */
-async function renderPageBatch(
-  tasks: PageTask[],
-  onProgress?: (current: number, total: number) => void
-): Promise<void> {
-  const renderPromises = tasks.map(async (task) => {
+async function renderPageBatch(tasks: PageTask[]): Promise<void> {
+  for (const task of tasks) {
     try {
       const canvas = await renderPageToCanvas(
         task.pdfjsDoc,
         task.pageNumber,
-        task.scale || 1.0
+        task.scale || 0.5
       );
 
       const wrapper = task.createWrapper(
@@ -134,30 +135,51 @@ async function renderPageBatch(
         task.fileName
       );
 
-      // Find and replace the placeholder for this specific page number
-      const placeholder = task.container.querySelector(
-        `[data-page-number="${task.pageNumber}"][data-lazy-load="true"]`
-      );
-
-      if (placeholder) {
-        // Replace placeholder with rendered page
-        task.container.replaceChild(wrapper, placeholder);
-      } else {
-        // Fallback: shouldn't happen with new approach, but just in case
-        console.warn(
-          `No placeholder found for page ${task.pageNumber}, appending instead`
+      let placeholder: Element | null = task.placeholderElement || null;
+      if (!placeholder) {
+        placeholder = task.container.querySelector(
+          `[data-page-number="${task.pageNumber}"][data-lazy-load="true"]`
         );
-        task.container.appendChild(wrapper);
       }
 
-      return wrapper;
+      if (placeholder && placeholder.parentNode) {
+        const parent = placeholder.parentNode;
+        parent.insertBefore(wrapper, placeholder);
+        parent.removeChild(placeholder);
+      } else {
+        const existingRendered = task.container.querySelector(
+          `[data-page-number="${task.pageNumber}"]:not([data-lazy-load="true"])`
+        );
+        if (existingRendered) {
+          continue;
+        }
+
+        const allChildren = Array.from(
+          task.container.children
+        ) as HTMLElement[];
+        let insertBefore: Element | null = null;
+
+        for (const child of allChildren) {
+          const childPageNum = parseInt(child.dataset.pageNumber || '0', 10);
+          if (childPageNum > task.pageNumber) {
+            insertBefore = child;
+            break;
+          }
+        }
+
+        if (insertBefore) {
+          task.container.insertBefore(wrapper, insertBefore);
+        } else {
+          task.container.appendChild(wrapper);
+        }
+        console.warn(
+          `Placeholder not found for page ${task.pageNumber}, inserted at calculated position`
+        );
+      }
     } catch (error) {
       console.error(`Error rendering page ${task.pageNumber}:`, error);
-      return null;
     }
-  });
-
-  await Promise.all(renderPromises);
+  }
 }
 
 /**
@@ -177,15 +199,22 @@ function setupLazyRendering(
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const placeholder = entry.target as HTMLElement;
-        const task = lazyLoadState.pendingTasks.get(placeholder);
+        const pageNumberStr = placeholder.dataset.pageNumber;
+        if (!pageNumberStr) return;
+
+        const pageNumber = parseInt(pageNumberStr, 10);
+        const task = lazyLoadState.pendingTasksByPageNumber.get(pageNumber);
 
         if (task) {
           // Immediately unobserve to prevent multiple triggers
           observer.unobserve(placeholder);
           lazyLoadState.pendingTasks.delete(placeholder);
+          lazyLoadState.pendingTasksByPageNumber.delete(pageNumber);
+
+          task.placeholderElement = placeholder;
 
           // Render this page immediately (not waiting for isRendering flag)
-          renderPageBatch([task], config.onProgress)
+          renderPageBatch([task])
             .then(() => {
               // Trigger callback after lazy load batch
               if (config.onBatchComplete) {
@@ -231,7 +260,7 @@ function requestIdleCallbackPolyfill(callback: () => void): void {
  * Main function to render pages progressively with optional lazy loading
  */
 export async function renderPagesProgressively(
-  pdfjsDoc: any,
+  pdfjsDoc: pdfjsLib.PDFDocumentProxy,
   container: HTMLElement,
   createWrapper: (
     canvas: HTMLCanvasElement,
@@ -241,21 +270,19 @@ export async function renderPagesProgressively(
   config: RenderConfig = {}
 ): Promise<void> {
   const {
-    batchSize = 8, // Increased from 5 to 8 for faster initial render
+    batchSize = 8,
     useLazyLoading = true,
-    eagerLoadBatches = 2, // Eagerly load 1 batch ahead by default
+    eagerLoadBatches = 2,
     onProgress,
     onBatchComplete,
   } = config;
 
   const totalPages = pdfjsDoc.numPages;
 
-  // Render more pages initially to reduce lazy loading issues
   const initialRenderCount = useLazyLoading
-    ? Math.min(20, totalPages) // Increased from 12 to 20 pages
+    ? Math.min(20, totalPages)
     : totalPages;
 
-  // CRITICAL FIX: Create placeholders for ALL pages first to maintain order
   const placeholders: HTMLElement[] = [];
   for (let i = 1; i <= totalPages; i++) {
     const placeholder = createPlaceholder(i);
@@ -264,17 +291,16 @@ export async function renderPagesProgressively(
   }
 
   const tasks: PageTask[] = [];
-  const baseScale = config.scale ?? 1.0;
-  const baseLazyScale = config.lazyScale ?? Math.max(0.8, baseScale * 0.85);
 
-  // Create tasks for all pages
+  // Create tasks for all pages with direct placeholder references
   for (let i = 1; i <= totalPages; i++) {
     tasks.push({
       pageNumber: i,
       pdfjsDoc,
       container,
-      scale: config.useLazyLoading ? baseLazyScale : baseScale,
+      scale: useLazyLoading ? 0.5 : 1,
       createWrapper,
+      placeholderElement: placeholders[i - 1],
     });
   }
 
@@ -284,8 +310,10 @@ export async function renderPagesProgressively(
 
     for (let i = initialRenderCount + 1; i <= totalPages; i++) {
       const placeholder = placeholders[i - 1];
+      const task = tasks[i - 1];
       // Store the task for lazy rendering
-      lazyLoadState.pendingTasks.set(placeholder, tasks[i - 1]);
+      lazyLoadState.pendingTasks.set(placeholder, task);
+      lazyLoadState.pendingTasksByPageNumber.set(task.pageNumber, task);
       observer.observe(placeholder);
     }
 
@@ -307,19 +335,24 @@ export async function renderPagesProgressively(
 
     const batch = initialTasks.slice(i, i + batchSize);
 
-    await new Promise<void>((resolve) => {
-      requestIdleCallbackPolyfill(async () => {
-        await renderPageBatch(batch, onProgress);
+    await new Promise<void>((resolve, reject) => {
+      requestIdleCallbackPolyfill(() => {
+        renderPageBatch(batch)
+          .then(() => {
+            if (onProgress) {
+              onProgress(
+                Math.min(i + batchSize, initialRenderCount),
+                totalPages
+              );
+            }
 
-        if (onProgress) {
-          onProgress(Math.min(i + batchSize, initialRenderCount), totalPages);
-        }
+            if (onBatchComplete) {
+              onBatchComplete();
+            }
 
-        if (onBatchComplete) {
-          onBatchComplete();
-        }
-
-        resolve();
+            resolve();
+          })
+          .catch(reject);
       });
     });
   }
@@ -346,6 +379,7 @@ export function observePlaceholder(
     return;
   }
   lazyLoadState.pendingTasks.set(placeholder, task);
+  lazyLoadState.pendingTasksByPageNumber.set(task.pageNumber, task);
   lazyLoadState.observer.observe(placeholder);
 }
 
@@ -373,18 +407,31 @@ function renderEagerBatch(config: RenderConfig): void {
   requestIdleCallbackPolyfill(async () => {
     if (config.shouldCancel?.()) return;
 
-    // Remove these tasks from pending since we're rendering them eagerly
-    batch.forEach((task) => {
-      const placeholder = Array.from(lazyLoadState.pendingTasks.entries()).find(
-        ([_, t]) => t.pageNumber === task.pageNumber
-      )?.[0];
+    const tasksToRender = batch.filter((task) =>
+      lazyLoadState.pendingTasksByPageNumber.has(task.pageNumber)
+    );
+
+    tasksToRender.forEach((task) => {
+      const placeholder = task.placeholderElement;
       if (placeholder && lazyLoadState.observer) {
         lazyLoadState.observer.unobserve(placeholder);
         lazyLoadState.pendingTasks.delete(placeholder);
+        lazyLoadState.pendingTasksByPageNumber.delete(task.pageNumber);
       }
     });
 
-    await renderPageBatch(batch, config.onProgress);
+    if (tasksToRender.length === 0) {
+      lazyLoadState.nextEagerIndex = batchEnd;
+      const remainingBatches = Math.ceil(
+        (eagerLoadQueue.length - batchEnd) / batchSize
+      );
+      if (remainingBatches > 0 && remainingBatches < eagerLoadBatches) {
+        renderEagerBatch(config);
+      }
+      return;
+    }
+
+    await renderPageBatch(tasksToRender);
 
     if (config.onBatchComplete) {
       config.onBatchComplete();
@@ -398,7 +445,6 @@ function renderEagerBatch(config: RenderConfig): void {
       (eagerLoadQueue.length - batchEnd) / batchSize
     );
     if (remainingBatches > 0 && remainingBatches < eagerLoadBatches) {
-      // Continue eager loading if we have more batches within the eager threshold
       renderEagerBatch(config);
     }
   });
@@ -413,6 +459,7 @@ export function cleanupLazyRendering(): void {
     lazyLoadState.observer = null;
   }
   lazyLoadState.pendingTasks.clear();
+  lazyLoadState.pendingTasksByPageNumber.clear();
   lazyLoadState.isRendering = false;
   lazyLoadState.eagerLoadQueue = [];
   lazyLoadState.nextEagerIndex = 0;

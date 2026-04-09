@@ -7,12 +7,13 @@ import '../../css/bookmark.css';
 import { initializeGlobalShortcuts } from '../utils/shortcuts-init.js';
 import {
   truncateFilename,
-  getPDFDocument,
   formatBytes,
   downloadFile,
   escapeHtml,
   hexToRgb,
 } from '../utils/helpers.js';
+import { loadPdfWithPasswordPrompt } from '../utils/password-prompt.js';
+import { loadPdfDocument } from '../utils/load-pdf-document.js';
 import {
   BookmarkNode,
   BookmarkTree,
@@ -44,7 +45,6 @@ let isPickingDestination = false;
 let currentPickingCallback: DestinationCallback | null = null;
 let destinationMarker: HTMLDivElement | null = null;
 let savedModalOverlay: HTMLDivElement | null = null;
-let savedModal: HTMLDivElement | null = null;
 let currentViewport: PageViewport | null = null;
 let currentZoom = 1.0;
 const fileInput = document.getElementById(
@@ -253,7 +253,7 @@ placeholder="${field.placeholder || ''}" />
           )
           .join('')}
 </select>
-                                ${field.name === 'color' ? '<input type="color" id="modal-color-picker" class="hidden w-full h-10 mt-2 rounded cursor-pointer border border-gray-300" value="#000000" />' : ''}
+                                ${field.name === 'color' ? '<input type="color" id="modal-color-picker" class="hidden mt-2" value="#000000" />' : ''}
 </div>
   `;
         } else if (field.type === 'destination') {
@@ -461,7 +461,6 @@ class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-gray-900" />
     if (pickDestBtn) {
       pickDestBtn.addEventListener('click', () => {
         savedModalOverlay = overlay;
-        savedModal = modal;
         overlay.style.display = 'none';
 
         startDestinationPicking((page: number, pdfX: number, pdfY: number) => {
@@ -697,7 +696,6 @@ function cancelDestinationPicking(): void {
   if (savedModalOverlay) {
     savedModalOverlay.style.display = '';
     savedModalOverlay = null;
-    savedModal = null;
   }
 }
 
@@ -822,6 +820,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showConfirmModal(message: string): Promise<boolean> {
   return new Promise((resolve) => {
+    const previousActiveEl = document.activeElement as HTMLElement | null;
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
 
@@ -842,19 +841,30 @@ function showConfirmModal(message: string): Promise<boolean> {
     overlay.appendChild(modal);
     modalContainer?.appendChild(overlay);
 
-    modal.querySelector('#modal-cancel')?.addEventListener('click', () => {
+    const modalCancelBtn = modal.querySelector(
+      '#modal-cancel'
+    ) as HTMLButtonElement | null;
+    const modalConfirmBtn = modal.querySelector(
+      '#modal-confirm'
+    ) as HTMLButtonElement | null;
+    modalCancelBtn?.focus();
+
+    modalCancelBtn?.addEventListener('click', () => {
       modalContainer?.removeChild(overlay);
+      previousActiveEl?.focus();
       resolve(false);
     });
 
-    modal.querySelector('#modal-confirm')?.addEventListener('click', () => {
+    modalConfirmBtn?.addEventListener('click', () => {
       modalContainer?.removeChild(overlay);
+      previousActiveEl?.focus();
       resolve(true);
     });
 
     overlay.addEventListener('click', (e: MouseEvent) => {
       if (e.target === overlay) {
         modalContainer?.removeChild(overlay);
+        previousActiveEl?.focus();
         resolve(false);
       }
     });
@@ -863,6 +873,7 @@ function showConfirmModal(message: string): Promise<boolean> {
 
 function showAlertModal(title: string, message: string): Promise<boolean> {
   return new Promise((resolve) => {
+    const previousActiveEl = document.activeElement as HTMLElement | null;
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
 
@@ -882,14 +893,19 @@ function showAlertModal(title: string, message: string): Promise<boolean> {
     overlay.appendChild(modal);
     modalContainer?.appendChild(overlay);
 
-    modal.querySelector('#modal-ok')?.addEventListener('click', () => {
+    const okBtn = modal.querySelector('#modal-ok') as HTMLButtonElement | null;
+    okBtn?.focus();
+
+    okBtn?.addEventListener('click', () => {
       modalContainer?.removeChild(overlay);
+      previousActiveEl?.focus();
       resolve(true);
     });
 
     overlay.addEventListener('click', (e: MouseEvent) => {
       if (e.target === overlay) {
         modalContainer?.removeChild(overlay);
+        previousActiveEl?.focus();
         resolve(true);
       }
     });
@@ -1057,6 +1073,12 @@ document.addEventListener('keydown', (e: KeyboardEvent) => {
       e.preventDefault();
       redo();
     }
+  } else if (e.key === 'PageUp') {
+    e.preventDefault();
+    prevPageBtn?.click();
+  } else if (e.key === 'PageDown') {
+    e.preventDefault();
+    nextPageBtn?.click();
   }
 });
 
@@ -1217,7 +1239,14 @@ async function loadPDF(e?: Event): Promise<void> {
   if (filenameDisplay)
     filenameDisplay.textContent = truncateFilename(file.name);
   renderFileDisplay(file);
-  const arrayBuffer = await file.arrayBuffer();
+
+  loaderModal?.classList.add('hidden');
+  const result = await loadPdfWithPasswordPrompt(file);
+  if (!result) {
+    loaderModal?.classList.add('hidden');
+    return;
+  }
+  loaderModal?.classList.remove('hidden');
 
   currentPage = 1;
   bookmarkTree = [];
@@ -1226,12 +1255,8 @@ async function loadPDF(e?: Event): Promise<void> {
   selectedBookmarks.clear();
   collapsedNodes.clear();
 
-  pdfLibDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-
-  const loadingTask = getPDFDocument({
-    data: new Uint8Array(arrayBuffer),
-  });
-  pdfJsDoc = await loadingTask.promise;
+  pdfLibDoc = await loadPdfDocument(result.bytes, { ignoreEncryption: true });
+  pdfJsDoc = result.pdf;
 
   if (gotoPageInput) gotoPageInput.max = String(pdfJsDoc.numPages);
 
@@ -1288,7 +1313,7 @@ jsonInput?.addEventListener('change', async (e: Event) => {
       'JSON Loaded',
       'Loaded bookmarks from JSON. Now upload your PDF.'
     );
-  } catch (err) {
+  } catch {
     await showAlertModal('Error', 'Invalid JSON format');
   }
 });
@@ -1989,7 +2014,7 @@ jsonImportHidden?.addEventListener('change', async (e: Event) => {
     saveState();
     renderBookmarkTree();
     await showAlertModal('Success', 'Bookmarks imported from JSON!');
-  } catch (err) {
+  } catch {
     await showAlertModal('Error', 'Invalid JSON format');
   }
 
@@ -2281,7 +2306,7 @@ downloadBtn?.addEventListener('click', async () => {
     const blob = new Blob([new Uint8Array(pdfBytes)], {
       type: 'application/pdf',
     });
-    downloadFile(blob, `${originalFileName}-bookmarked.pdf`);
+    downloadFile(blob, `${originalFileName}.pdf`);
 
     await showAlertModal('Success', 'PDF saved successfully!');
 

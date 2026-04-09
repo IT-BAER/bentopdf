@@ -7,12 +7,15 @@
         id="home-logo"
       >
         <img
-          src="{{baseUrl}}images/favicon-no-bg.svg"
-          alt="Bento PDF Logo"
+          id="nav-logo"
+          src="{{baseUrl}}{{#if brandLogo}}{{brandLogo}}{{else}}images/favicon-no-bg.svg{{/if}}"
+          alt="{{#if brandName}}{{brandName}}{{else}}Bento PDF{{/if}} Logo"
           class="h-8 w-8"
         />
-        <span class="text-white font-bold text-xl ml-2">
-          <a href="index.html">BentoPDF</a>
+        <span id="nav-brand" class="text-white font-bold text-xl ml-2">
+          <a href="index.html"
+            >{{#if brandName}}{{brandName}}{{else}}BentoPDF{{/if}}</a
+          >
         </span>
       </div>
 
@@ -27,10 +30,10 @@
           >Licensing</a
         >
         <a
-          href="index.html#tools-header"
+          href="https://bentopdf.com/docs/"
           class="nav-link"
-          data-i18n="nav.allTools"
-          >All Tools</a
+          data-i18n="nav.docs"
+          >Docs</a
         >
         <a
           href="https://github.com/alam00000/bentopdf/"
@@ -142,10 +145,10 @@
         >Licensing</a
       >
       <a
-        href="index.html#tools-header"
+        href="https://bentopdf.com/docs/"
         class="mobile-nav-link"
-        data-i18n="nav.allTools"
-        >All Tools</a
+        data-i18n="nav.docs"
+        >Docs</a
       >
     </div>
   </div>

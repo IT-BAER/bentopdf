@@ -27,5 +27,15 @@ dist-ssr
 coverage/
 *.lcov
 
-dist-1.9.3.zip
-.github/copilot-instructions.md
+# Generated sitemap
+public/sitemap.xml
+
+#backup
+.seo-backup
+libreoffice-wasm-package
+
+# helm chart
+bentopdf-*.tgz
+
+# test 
+dist-test
