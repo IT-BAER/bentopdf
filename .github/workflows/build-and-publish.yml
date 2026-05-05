@@ -126,6 +126,7 @@ jobs:
 
   build-arm64:
     runs-on: ubuntu-24.04-arm  # Native ARM64 runner
+    if: github.repository == 'alam00000/bentopdf'
     permissions:
       contents: read
       packages: write
@@ -197,6 +198,7 @@ jobs:
   merge-manifests-ghcr:
     runs-on: ubuntu-latest
     needs: [build-amd64, build-arm64]
+    if: github.repository == 'alam00000/bentopdf'
     permissions:
       packages: write
     strategy:
@@ -259,6 +261,7 @@ jobs:
   push-to-dockerhub:
     runs-on: ubuntu-latest
     needs: [merge-manifests-ghcr]
+    if: github.repository == 'alam00000/bentopdf'
     continue-on-error: true
     permissions:
       contents: read
