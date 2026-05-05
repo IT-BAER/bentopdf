@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { buildRotateOutputNames } from '../js/logic/rotate-pdf-helpers.js';
 
 interface RotateState {
   rotations: number[];
@@ -22,7 +23,7 @@ function createPageWrapper(
 
   const canvasWrapper = document.createElement('div');
   canvasWrapper.className =
-    'thumbnail-wrapper flex items-center justify-center p-2 h-36';
+    'thumbnail-wrapper flex items-center justify-center p-4 h-56 md:h-72';
   canvasWrapper.style.transition = 'transform 0.3s ease';
   const initialRotation = state.rotations[pageIndex] || 0;
   canvasWrapper.style.transform = `rotate(${initialRotation}deg)`;
@@ -321,6 +322,17 @@ describe('rotate-pdf-page – page wrapper', () => {
     expect(rightBtn.classList.contains('cursor-pointer')).toBe(true);
   });
 
+  it('should use larger preview classes for thumbnails', () => {
+    const state = createTestState(1);
+    const wrapper = createPageWrapper(1, state);
+    const thumbnailWrapper = wrapper.querySelector(
+      '.thumbnail-wrapper'
+    ) as HTMLElement;
+
+    expect(thumbnailWrapper.classList.contains('h-56')).toBe(true);
+    expect(thumbnailWrapper.classList.contains('md:h-72')).toBe(true);
+  });
+
   it('should handle rapid successive clicks without losing state', () => {
     const state = createTestState(1);
     const wrapper = createPageWrapper(1, state);
@@ -376,5 +388,21 @@ describe('rotate-pdf-page – page wrapper', () => {
 
     leftBtn.click();
     expect(state.rotations[0]).toBe(-270);
+  });
+
+  it('should deduplicate rotate output names for zip downloads', () => {
+    expect(
+      buildRotateOutputNames([
+        'report.pdf',
+        'report.pdf',
+        'report.pdf',
+        'summary.pdf',
+      ])
+    ).toEqual([
+      'report.pdf',
+      'report (1).pdf',
+      'report (2).pdf',
+      'summary.pdf',
+    ]);
   });
 });
