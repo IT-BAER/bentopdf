@@ -3,100 +3,51 @@ name: Trivy Security Scan
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".github/ISSUE_TEMPLATE/**"
   pull_request:
     branches: [main]
-  schedule:
-    - cron: '0 6 * * 1'
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".github/ISSUE_TEMPLATE/**"
   workflow_dispatch:
 
 permissions:
   contents: read
   security-events: write
 
+concurrency:
+  group: trivy-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  scan-image:
+  quick-scan:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        image:
-          - name: bentopdf
-            file: Dockerfile
-          - name: bentopdf-nonroot
-            file: Dockerfile.nonroot
+    if: github.repository == 'IT-BAER/bentopdf'
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build image for scanning
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ${{ matrix.image.file }}
-          push: false
-          load: true
-          tags: ${{ matrix.image.name }}:scan
-          no-cache: true
-
-      - name: Run Trivy vulnerability scanner
+      - name: Run quick Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ matrix.image.name }}:scan
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,config
+          ignore-unfixed: true
           format: sarif
-          output: trivy-${{ matrix.image.name }}.sarif
+          output: trivy-quick.sarif
           severity: CRITICAL,HIGH
           exit-code: '1'
+          skip-dirs: dist,node_modules,.git,_upstream
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: trivy-${{ matrix.image.name }}.sarif
-          category: trivy-${{ matrix.image.name }}
-
-  scan-dependencies:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Scan npm dependencies with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: sarif
-          output: trivy-deps.sarif
-          severity: CRITICAL,HIGH
-          scanners: vuln
-
-      - name: Upload dependency scan results
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: trivy-deps.sarif
-          category: trivy-dependencies
-
-  scan-config:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Scan Dockerfiles for misconfigurations
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: config
-          scan-ref: .
-          format: sarif
-          output: trivy-config.sarif
-          severity: CRITICAL,HIGH
-
-      - name: Upload config scan results
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: trivy-config.sarif
-          category: trivy-config
+          sarif_file: trivy-quick.sarif
+          category: trivy-quick

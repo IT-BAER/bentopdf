@@ -1,22 +1,36 @@
-# Build verification and automatic release workflow
-# Only triggers when a version tag is pushed (e.g., v1.16.0)
-name: CI
+# Lean code quality workflow for this fork
+name: Code Quality
 
 on:
   push:
-    tags: ["v*"]
+    branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".github/ISSUE_TEMPLATE/**"
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".github/ISSUE_TEMPLATE/**"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   HUSKY: 0
 
+concurrency:
+  group: code-quality-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-release:
+  code-quality:
     runs-on: ubuntu-latest
     if: github.repository == 'IT-BAER/bentopdf'
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,30 +44,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
       - name: TypeScript check
         run: npx tsc --noEmit
 
-      - name: Build
-        run: npm run build
-
-      - name: Extract version
-        id: version
-        run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
-      - name: Create release archives
-        run: |
-          VERSION=${{ steps.version.outputs.version }}
-          cd dist && zip -r ../bentopdf-${VERSION}.zip . && cd ..
-          tar -czvf bentopdf-${VERSION}.tar.gz -C dist .
-
-      - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            bentopdf-*.zip
-            bentopdf-*.tar.gz
-          generate_release_notes: true
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tests
+        run: npm run test:run
