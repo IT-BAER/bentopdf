@@ -929,8 +929,10 @@
                 BentoPDF is available under a lifetime, one-time purchase
                 commercial license. You can purchase it directly here:
                 <a
-                  href="https://ko-fi.com/s/f32ca4cb75"
-                  class="text-indigo-400 hover:underline"
+                  href="https://buy.polar.sh/polar_cl_ThDfffbl733x7oAodcIryCzhlO57ZtcWPq6HJ1qMChd"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-indigo-400 hover:underline font-semibold"
                   >Buy Commercial License</a
                 >. <br /><br />
                 If you have specific requirements or want a custom licensing
@@ -1022,53 +1024,22 @@
             <h3
               class="text-xl font-semibold text-white mb-4 flex items-center gap-3"
             >
-              <i
-                data-lucide="alert-triangle"
-                class="w-6 h-6 text-yellow-400"
-              ></i>
-              Important Notice on Third-Party Components
+              <i data-lucide="file-text" class="w-6 h-6 text-indigo-400"></i>
+              Invoicing
             </h3>
-            <p class="text-gray-300 mb-4">
-              This software includes components licensed under the
-              <strong class="text-white">GNU AGPL v3</strong>, including:
-            </p>
-            <ul class="flex flex-wrap gap-2 mb-4">
-              <li
-                class="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300"
-              >
-                CPDF
-              </li>
-              <li
-                class="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300"
-              >
-                PyMuPDF
-              </li>
-              <li
-                class="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300"
-              >
-                Ghostscript
-              </li>
-            </ul>
             <ul class="space-y-3 text-gray-400">
               <li class="flex items-start gap-3">
                 <i
-                  data-lucide="alert-circle"
-                  class="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5"
+                  data-lucide="check-circle"
+                  class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5"
                 ></i>
                 <span
-                  >This commercial license
-                  <strong class="text-white">does not</strong> grant rights to
-                  use AGPL components in a closed-source manner.</span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <i
-                  data-lucide="alert-circle"
-                  class="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5"
-                ></i>
-                <span
-                  >Users must comply with the AGPL v3 terms for these
-                  components.</span
+                  >We use <strong class="text-white">Polar</strong> for
+                  payments, which
+                  <strong class="text-white"
+                    >automatically sends invoices</strong
+                  >
+                  via email after purchase.</span
                 >
               </li>
               <li class="flex items-start gap-3">
@@ -1077,8 +1048,23 @@
                   class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5"
                 ></i>
                 <span
-                  >Source code for all AGPL components is included in the
-                  distribution.</span
+                  >Polar handles
+                  <strong class="text-white">VAT invoices</strong> for
+                  businesses in applicable regions.</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <i
+                  data-lucide="info"
+                  class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5"
+                ></i>
+                <span
+                  >For VAT invoices, select
+                  <strong class="text-white"
+                    >"I'm purchasing as a business"</strong
+                  >
+                  during checkout and enter your billing address and Tax/VAT
+                  number.</span
                 >
               </li>
             </ul>
@@ -1088,36 +1074,76 @@
             <h3
               class="text-xl font-semibold text-white mb-4 flex items-center gap-3"
             >
-              <i data-lucide="file-text" class="w-6 h-6 text-indigo-400"></i>
-              Invoicing
+              <i
+                data-lucide="alert-triangle"
+                class="w-6 h-6 text-indigo-400"
+              ></i>
+              AGPL Components - Not Bundled
             </h3>
-            <ul class="space-y-3 text-gray-400">
+            <p class="text-gray-300 mb-4">
+              BentoPDF
+              <strong class="text-white">does not bundle</strong> AGPL-licensed
+              processing libraries. The following components must be configured
+              separately via
+              <strong class="text-white">Advanced Settings</strong> if you wish
+              to use their features:
+            </p>
+            <ul class="flex flex-wrap gap-2 mb-4">
+              <li
+                class="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300"
+              >
+                PyMuPDF (AGPL-3.0)
+              </li>
+              <li
+                class="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300"
+              >
+                Ghostscript (AGPL-3.0)
+              </li>
+              <li
+                class="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300"
+              >
+                CoherentPDF / CPDF (AGPL-3.0)
+              </li>
+            </ul>
+            <p class="text-gray-300 mb-4">
+              <strong class="text-white"
+                >To enable features powered by these libraries:</strong
+              >
+            </p>
+            <ul class="space-y-2 text-gray-400 mb-4">
               <li class="flex items-start gap-3">
-                <i
-                  data-lucide="info"
-                  class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5"
-                ></i>
-                <span>Ko-fi does not automatically issue invoices.</span>
+                <span class="text-indigo-400 font-bold">1.</span>
+                <span
+                  >Navigate to
+                  <strong class="text-white">Advanced Settings</strong> in
+                  BentoPDF</span
+                >
               </li>
               <li class="flex items-start gap-3">
-                <i
-                  data-lucide="check-circle"
-                  class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5"
-                ></i>
+                <span class="text-indigo-400 font-bold">2.</span>
+                <span>Configure the URL for each WASM module you need</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-indigo-400 font-bold">3.</span>
                 <span
-                  >An official invoice will be provided immediately upon
-                  request.</span
+                  >You can host your own files, use a
+                  <a
+                    href="https://github.com/alam00000/bentopdf/blob/main/cloudflare/WASM-PROXY.md"
+                    class="text-indigo-400 hover:underline"
+                    >WASM proxy</a
+                  >, or use any compatible CDN</span
                 >
               </li>
             </ul>
-            <p class="mt-4 text-gray-300">
-              <strong class="text-white">Contact us:</strong>
-              <a
-                href="mailto:contact@bentopdf.com"
-                class="text-indigo-400 hover:underline"
-                >contact@bentopdf.com</a
-              >
-              with your purchase details.
+            <p class="text-gray-400 text-sm mt-4">
+              <i
+                data-lucide="alert-circle"
+                class="w-4 h-4 inline-block mr-1 text-indigo-400"
+              ></i>
+              The commercial license covers
+              <strong class="text-white">BentoPDF's own code only</strong>. It
+              does not bypass the AGPL licensing of these components. Users must
+              comply with the AGPL v3 terms for these components.
             </p>
           </div>
         </div>
