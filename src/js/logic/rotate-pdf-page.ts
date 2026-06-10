@@ -25,6 +25,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 interface RotateDocumentState {
   id: string;
   file: File;
+  // Set when the file was opened via the File System Access API, so the save
+  // dialog can default back to the folder the file came from.
+  fileHandle?: FileSystemFileHandle;
   pdfDoc: PDFLibDocument;
   pdfJsDoc: pdfjsLib.PDFDocumentProxy;
   rotations: number[];
@@ -32,6 +35,11 @@ interface RotateDocumentState {
 
 interface RotateState {
   documents: RotateDocumentState[];
+}
+
+interface PickedFile {
+  file: File;
+  handle?: FileSystemFileHandle;
 }
 
 const pageState: RotateState = {
@@ -68,6 +76,38 @@ function resetState() {
   if (fileInput) fileInput.value = '';
 }
 
+// Rotating the preview with CSS `rotate()` does not re-fit the page: at 90°/270°
+// the page's width becomes its height, so it can overflow the fixed-height
+// container and get clipped. Compensate with a shrink-only `scale()` so the
+// rotated page always fits the available box.
+function applyPreviewRotation(wrapper: HTMLElement, deg: number): void {
+  const normalized = ((deg % 360) + 360) % 360;
+  let scale = 1;
+
+  if (normalized === 90 || normalized === 270) {
+    const canvas = wrapper.querySelector('canvas');
+    if (canvas && canvas.offsetWidth && canvas.offsetHeight) {
+      const styles = getComputedStyle(wrapper);
+      const padX =
+        parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
+      const padY =
+        parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom);
+      const availW = wrapper.clientWidth - padX;
+      const availH = wrapper.clientHeight - padY;
+      // After a quarter-turn, width and height swap. Never upscale (avoids
+      // blur) — only shrink enough to fit.
+      const fit = Math.min(
+        availW / canvas.offsetHeight,
+        availH / canvas.offsetWidth,
+        1
+      );
+      if (isFinite(fit) && fit > 0) scale = fit;
+    }
+  }
+
+  wrapper.style.transform = `rotate(${deg}deg) scale(${scale})`;
+}
+
 function updateRotationDisplays(documentState: RotateDocumentState) {
   const documentSection = document.getElementById(documentState.id);
   if (!documentSection) return;
@@ -81,7 +121,7 @@ function updateRotationDisplays(documentState: RotateDocumentState) {
       '.thumbnail-wrapper'
     ) as HTMLElement;
     if (wrapper) {
-      wrapper.style.transform = `rotate(${documentState.rotations[pageIndex]}deg)`;
+      applyPreviewRotation(wrapper, documentState.rotations[pageIndex]);
     }
   });
 }
@@ -134,12 +174,13 @@ function createPageWrapper(
   canvasWrapper.className =
     'thumbnail-wrapper flex items-center justify-center p-4 h-56 md:h-72 pointer-events-none';
   canvasWrapper.style.transition = 'transform 0.3s ease';
-  // Apply initial rotation if it exists
-  const initialRotation = documentState.rotations[pageIndex] || 0;
-  canvasWrapper.style.transform = `rotate(${initialRotation}deg)`;
 
   canvas.className = 'max-w-full max-h-full object-contain';
   canvasWrapper.appendChild(canvas);
+
+  // Apply initial rotation (scale is recomputed once laid out / on resize).
+  const initialRotation = documentState.rotations[pageIndex] || 0;
+  applyPreviewRotation(canvasWrapper, initialRotation);
 
   const pageLabel = document.createElement('div');
   pageLabel.className =
@@ -166,7 +207,7 @@ function createPageWrapper(
       '.thumbnail-wrapper'
     ) as HTMLElement;
     if (wrapper)
-      wrapper.style.transform = `rotate(${documentState.rotations[pageIndex]}deg)`;
+      applyPreviewRotation(wrapper, documentState.rotations[pageIndex]);
   });
 
   const rotateRightBtn = document.createElement('button');
@@ -182,7 +223,7 @@ function createPageWrapper(
       '.thumbnail-wrapper'
     ) as HTMLElement;
     if (wrapper)
-      wrapper.style.transform = `rotate(${documentState.rotations[pageIndex]}deg)`;
+      applyPreviewRotation(wrapper, documentState.rotations[pageIndex]);
   });
 
   controls.append(rotateLeftBtn, rotateRightBtn);
@@ -291,11 +332,14 @@ async function renderDocumentSection(
       eagerLoadBatches: 2,
       onBatchComplete: function () {
         createIcons({ icons });
+        // Canvases are now laid out — recompute fit-scale for any rotations.
+        updateRotationDisplays(documentState);
       },
     }
   );
 
   createIcons({ icons });
+  updateRotationDisplays(documentState);
   return documentSection;
 }
 
@@ -349,11 +393,12 @@ async function applyRotations() {
         rotatedPdfBytes.byteOffset + rotatedPdfBytes.byteLength
       ) as ArrayBuffer;
 
-      downloadFile(
+      await downloadFile(
         new Blob([rotatedBuffer], {
           type: 'application/pdf',
         }),
-        documentState.file.name
+        documentState.file.name,
+        { startIn: documentState.fileHandle }
       );
 
       showAlert(
@@ -407,7 +452,9 @@ async function applyRotations() {
 
     showLoader(t('tools:rotatePdf.preparingZip'));
     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    downloadFile(zipBlob, 'rotated-pdfs.zip');
+    await downloadFile(zipBlob, 'rotated-pdfs.zip', {
+      startIn: pageState.documents[0]?.fileHandle,
+    });
 
     const successMessage =
       failureCount > 0
@@ -431,7 +478,8 @@ async function applyRotations() {
 async function loadRotateDocument(
   file: File,
   documentIndex: number,
-  totalDocuments: number
+  totalDocuments: number,
+  handle?: FileSystemFileHandle
 ): Promise<RotateDocumentState | null> {
   showLoader(`Loading PDF ${documentIndex}/${totalDocuments}: ${file.name}...`);
 
@@ -446,24 +494,24 @@ async function loadRotateDocument(
   return {
     id: `rotate-document-${nextDocumentId++}`,
     file,
+    fileHandle: handle,
     pdfDoc,
     pdfJsDoc: result.pdf,
     rotations: new Array(pageCount).fill(0),
   };
 }
 
-async function handleFileSelect(files: FileList | null) {
-  if (!files || files.length === 0) return;
+async function ingestEntries(entries: PickedFile[]): Promise<void> {
+  if (entries.length === 0) return;
 
-  const selectedFiles = Array.from(files);
-  const pdfFiles = selectedFiles.filter((file) => isPdfFile(file));
+  const pdfEntries = entries.filter((entry) => isPdfFile(entry.file));
 
-  if (pdfFiles.length === 0) {
+  if (pdfEntries.length === 0) {
     showAlert(t('common.error'), t('tools:rotatePdf.invalidFileMessage'));
     return;
   }
 
-  if (pdfFiles.length < selectedFiles.length) {
+  if (pdfEntries.length < entries.length) {
     showAlert(
       t('tools:rotatePdf.skippedFilesTitle'),
       t('tools:rotatePdf.skippedNonPdfMessage')
@@ -473,17 +521,18 @@ async function handleFileSelect(files: FileList | null) {
   const failedFiles: string[] = [];
 
   try {
-    for (let index = 0; index < pdfFiles.length; index++) {
+    for (let index = 0; index < pdfEntries.length; index++) {
       const documentState = await loadRotateDocument(
-        pdfFiles[index],
+        pdfEntries[index].file,
         index + 1,
-        pdfFiles.length
+        pdfEntries.length,
+        pdfEntries[index].handle
       );
 
       if (documentState) {
         pageState.documents.push(documentState);
       } else {
-        failedFiles.push(pdfFiles[index].name);
+        failedFiles.push(pdfEntries[index].file.name);
       }
     }
 
@@ -505,6 +554,78 @@ async function handleFileSelect(files: FileList | null) {
   }
 }
 
+function handleFileSelect(files: FileList | null): void {
+  if (!files || files.length === 0) return;
+  void ingestEntries(Array.from(files).map((file) => ({ file })));
+}
+
+// Open files through the File System Access API when available so we keep a
+// handle to each source file and can default the save dialog to its folder.
+async function openWithPicker(): Promise<void> {
+  try {
+    const handles: FileSystemFileHandle[] = await (
+      window as any
+    ).showOpenFilePicker({
+      multiple: true,
+      types: [
+        {
+          description: 'PDF',
+          accept: { 'application/pdf': ['.pdf'] },
+        },
+      ],
+    });
+
+    const entries: PickedFile[] = [];
+    for (const handle of handles) {
+      entries.push({ file: await handle.getFile(), handle });
+    }
+    await ingestEntries(entries);
+  } catch (err) {
+    // User dismissed the picker — nothing to do.
+    if ((err as DOMException)?.name === 'AbortError') return;
+    console.error('File picker failed:', err);
+  }
+}
+
+async function handleDrop(e: DragEvent): Promise<void> {
+  const dataTransfer = e.dataTransfer;
+  if (!dataTransfer) return;
+
+  // The DataTransfer is only valid during event dispatch, so read everything
+  // synchronously before any await.
+  const droppedFiles = Array.from(dataTransfer.files);
+  const supportsHandles =
+    typeof DataTransferItem !== 'undefined' &&
+    'getAsFileSystemHandle' in DataTransferItem.prototype;
+  const handlePromises =
+    supportsHandles && dataTransfer.items
+      ? Array.from(dataTransfer.items)
+          .filter((item) => item.kind === 'file')
+          .map((item) => (item as any).getAsFileSystemHandle() as Promise<any>)
+      : [];
+
+  const entries: PickedFile[] = [];
+
+  if (handlePromises.length > 0) {
+    try {
+      const handles = await Promise.all(handlePromises);
+      for (const handle of handles) {
+        if (handle && handle.kind === 'file') {
+          entries.push({ file: await handle.getFile(), handle });
+        }
+      }
+    } catch {
+      // Ignore and fall back to plain files below.
+    }
+  }
+
+  if (entries.length === 0) {
+    for (const file of droppedFiles) entries.push({ file });
+  }
+
+  await ingestEntries(entries);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   const fileInput = document.getElementById('file-input') as HTMLInputElement;
   const dropZone = document.getElementById('drop-zone');
@@ -512,6 +633,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const backBtn = document.getElementById('back-to-tools');
   const rotateAllLeft = document.getElementById('rotate-all-left');
   const rotateAllRight = document.getElementById('rotate-all-right');
+
+  // The fit-scale of rotated previews depends on container size, so recompute
+  // when the viewport changes.
+  let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      pageState.documents.forEach((documentState) => {
+        updateRotationDisplays(documentState);
+      });
+    }, 150);
+  });
 
   if (backBtn) {
     backBtn.addEventListener('click', function () {
@@ -549,20 +682,18 @@ document.addEventListener('DOMContentLoaded', function () {
     dropZone.addEventListener('drop', function (e) {
       e.preventDefault();
       dropZone.classList.remove('bg-gray-700');
-      const files = e.dataTransfer?.files;
-      if (files && files.length > 0) {
-        const pdfFiles = Array.from(files).filter(function (file) {
-          return isPdfFile(file);
-        });
-        if (pdfFiles.length > 0) {
-          const dataTransfer = new DataTransfer();
-          pdfFiles.forEach((file) => dataTransfer.items.add(file));
-          void handleFileSelect(dataTransfer.files);
-        }
-      }
+      void handleDrop(e);
     });
 
-    fileInput.addEventListener('click', function () {
+    fileInput.addEventListener('click', function (e) {
+      // Prefer the File System Access API so we remember where the file came
+      // from and can default the save dialog back to that folder.
+      if ('showOpenFilePicker' in window) {
+        e.preventDefault();
+        void openWithPicker();
+        return;
+      }
+      // Fallback: reset so re-selecting the same file still fires `change`.
       fileInput.value = '';
     });
   }

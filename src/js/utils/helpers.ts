@@ -182,14 +182,15 @@ const getMimeTypeConfig = (
  */
 export const downloadFile = async (
   blob: Blob,
-  filename: string
+  filename: string,
+  options?: { startIn?: FileSystemHandle }
 ): Promise<void> => {
   // Check if File System Access API is available
   if ('showSaveFilePicker' in window) {
     try {
       const config = getMimeTypeConfig(filename);
 
-      const handle = await (window as any).showSaveFilePicker({
+      const pickerOptions: Record<string, unknown> = {
         suggestedName: filename,
         types: [
           {
@@ -197,7 +198,16 @@ export const downloadFile = async (
             accept: { [config.mimeType]: config.extensions },
           },
         ],
-      });
+      };
+
+      // Default the save dialog to the folder the source file came from.
+      // `startIn` accepts a FileSystemHandle and opens the picker in its
+      // containing directory (Chromium only; ignored elsewhere).
+      if (options?.startIn) {
+        pickerOptions.startIn = options.startIn;
+      }
+
+      const handle = await (window as any).showSaveFilePicker(pickerOptions);
 
       const writable = await handle.createWritable();
       await writable.write(blob);
