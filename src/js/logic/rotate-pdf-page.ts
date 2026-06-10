@@ -1,5 +1,9 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
-import { downloadFile, formatBytes } from '../utils/helpers.js';
+import {
+  downloadFile,
+  formatBytes,
+  canUseFileSystemAccess,
+} from '../utils/helpers.js';
 import { createIcons, icons } from 'lucide';
 import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 import { t } from '../i18n/index.js';
@@ -595,6 +599,7 @@ async function handleDrop(e: DragEvent): Promise<void> {
   // synchronously before any await.
   const droppedFiles = Array.from(dataTransfer.files);
   const supportsHandles =
+    canUseFileSystemAccess('showOpenFilePicker') &&
     typeof DataTransferItem !== 'undefined' &&
     'getAsFileSystemHandle' in DataTransferItem.prototype;
   const handlePromises =
@@ -687,8 +692,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     fileInput.addEventListener('click', function (e) {
       // Prefer the File System Access API so we remember where the file came
-      // from and can default the save dialog back to that folder.
-      if ('showOpenFilePicker' in window) {
+      // from and can default the save dialog back to that folder. Skip it where
+      // the picker is blocked (cross-origin iframe, e.g. embedded in a
+      // dashboard) so the native <input> file chooser still works.
+      if (canUseFileSystemAccess('showOpenFilePicker')) {
         e.preventDefault();
         void openWithPicker();
         return;

@@ -176,17 +176,40 @@ const getMimeTypeConfig = (
 };
 
 /**
+ * File System Access pickers (showOpenFilePicker / showSaveFilePicker) throw a
+ * SecurityError inside cross-origin iframes ("Cross origin sub frames aren't
+ * allowed to show a file picker"). Returns true only when the picker can
+ * actually be used: API present AND not in a cross-origin subframe.
+ */
+export function canUseFileSystemAccess(
+  apiName: 'showOpenFilePicker' | 'showSaveFilePicker'
+): boolean {
+  if (!(apiName in window)) return false;
+  try {
+    // Not framed, or same-origin top => allowed. Cross-origin => reading
+    // window.top.location.origin throws => not allowed.
+    return (
+      window.self === window.top ||
+      window.top?.location.origin === window.location.origin
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Download a file with optional "Save As" dialog
  * Uses File System Access API on supported browsers (Chrome, Edge, Opera)
  * Falls back to traditional download on unsupported browsers (Firefox, Safari)
+ * and inside cross-origin iframes (where the picker is blocked).
  */
 export const downloadFile = async (
   blob: Blob,
   filename: string,
   options?: { startIn?: FileSystemHandle }
 ): Promise<void> => {
-  // Check if File System Access API is available
-  if ('showSaveFilePicker' in window) {
+  // Use the Save As dialog only where the picker is actually allowed.
+  if (canUseFileSystemAccess('showSaveFilePicker')) {
     try {
       const config = getMimeTypeConfig(filename);
 
