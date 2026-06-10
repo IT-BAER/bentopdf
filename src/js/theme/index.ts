@@ -10,18 +10,102 @@ export interface AccentColor {
 }
 
 export const accentColors: AccentColor[] = [
-  { name: 'Indigo', value: '#6366f1', hover: '#4f46e5', ring: '#4338ca', text: '#a5b4fc', bgLight: 'rgba(99, 102, 241, 0.1)' },
-  { name: 'Blue', value: '#3b82f6', hover: '#2563eb', ring: '#1d4ed8', text: '#93c5fd', bgLight: 'rgba(59, 130, 246, 0.1)' },
-  { name: 'Cyan', value: '#06b6d4', hover: '#0891b2', ring: '#0e7490', text: '#67e8f9', bgLight: 'rgba(6, 182, 212, 0.1)' },
-  { name: 'Teal', value: '#14b8a6', hover: '#0d9488', ring: '#0f766e', text: '#5eead4', bgLight: 'rgba(20, 184, 166, 0.1)' },
-  { name: 'Green', value: '#22c55e', hover: '#16a34a', ring: '#15803d', text: '#86efac', bgLight: 'rgba(34, 197, 94, 0.1)' },
-  { name: 'Lime', value: '#84cc16', hover: '#65a30d', ring: '#4d7c0f', text: '#bef264', bgLight: 'rgba(132, 204, 22, 0.1)' },
-  { name: 'Yellow', value: '#eab308', hover: '#ca8a04', ring: '#a16207', text: '#fde047', bgLight: 'rgba(234, 179, 8, 0.1)' },
-  { name: 'Orange', value: '#f97316', hover: '#ea580c', ring: '#c2410c', text: '#fdba74', bgLight: 'rgba(249, 115, 22, 0.1)' },
-  { name: 'Red', value: '#ef4444', hover: '#dc2626', ring: '#b91c1c', text: '#fca5a5', bgLight: 'rgba(239, 68, 68, 0.1)' },
-  { name: 'Pink', value: '#ec4899', hover: '#db2777', ring: '#be185d', text: '#f9a8d4', bgLight: 'rgba(236, 72, 153, 0.1)' },
-  { name: 'Purple', value: '#a855f7', hover: '#9333ea', ring: '#7e22ce', text: '#d8b4fe', bgLight: 'rgba(168, 85, 247, 0.1)' },
-  { name: 'Violet', value: '#8b5cf6', hover: '#7c3aed', ring: '#6d28d9', text: '#c4b5fd', bgLight: 'rgba(139, 92, 246, 0.1)' },
+  {
+    name: 'Indigo',
+    value: '#6366f1',
+    hover: '#4f46e5',
+    ring: '#4338ca',
+    text: '#a5b4fc',
+    bgLight: 'rgba(99, 102, 241, 0.1)',
+  },
+  {
+    name: 'Blue',
+    value: '#3b82f6',
+    hover: '#2563eb',
+    ring: '#1d4ed8',
+    text: '#93c5fd',
+    bgLight: 'rgba(59, 130, 246, 0.1)',
+  },
+  {
+    name: 'Cyan',
+    value: '#06b6d4',
+    hover: '#0891b2',
+    ring: '#0e7490',
+    text: '#67e8f9',
+    bgLight: 'rgba(6, 182, 212, 0.1)',
+  },
+  {
+    name: 'Teal',
+    value: '#14b8a6',
+    hover: '#0d9488',
+    ring: '#0f766e',
+    text: '#5eead4',
+    bgLight: 'rgba(20, 184, 166, 0.1)',
+  },
+  {
+    name: 'Green',
+    value: '#22c55e',
+    hover: '#16a34a',
+    ring: '#15803d',
+    text: '#86efac',
+    bgLight: 'rgba(34, 197, 94, 0.1)',
+  },
+  {
+    name: 'Lime',
+    value: '#84cc16',
+    hover: '#65a30d',
+    ring: '#4d7c0f',
+    text: '#bef264',
+    bgLight: 'rgba(132, 204, 22, 0.1)',
+  },
+  {
+    name: 'Yellow',
+    value: '#eab308',
+    hover: '#ca8a04',
+    ring: '#a16207',
+    text: '#fde047',
+    bgLight: 'rgba(234, 179, 8, 0.1)',
+  },
+  {
+    name: 'Orange',
+    value: '#f97316',
+    hover: '#ea580c',
+    ring: '#c2410c',
+    text: '#fdba74',
+    bgLight: 'rgba(249, 115, 22, 0.1)',
+  },
+  {
+    name: 'Red',
+    value: '#ef4444',
+    hover: '#dc2626',
+    ring: '#b91c1c',
+    text: '#fca5a5',
+    bgLight: 'rgba(239, 68, 68, 0.1)',
+  },
+  {
+    name: 'Pink',
+    value: '#ec4899',
+    hover: '#db2777',
+    ring: '#be185d',
+    text: '#f9a8d4',
+    bgLight: 'rgba(236, 72, 153, 0.1)',
+  },
+  {
+    name: 'Purple',
+    value: '#a855f7',
+    hover: '#9333ea',
+    ring: '#7e22ce',
+    text: '#d8b4fe',
+    bgLight: 'rgba(168, 85, 247, 0.1)',
+  },
+  {
+    name: 'Violet',
+    value: '#8b5cf6',
+    hover: '#7c3aed',
+    ring: '#6d28d9',
+    text: '#c4b5fd',
+    bgLight: 'rgba(139, 92, 246, 0.1)',
+  },
 ];
 
 const ACCENT_STORAGE_KEY = 'pdftools-accent-color';
@@ -36,7 +120,9 @@ function getDefaultAccent(): AccentColor {
   const configColor = config.defaultAccentColor;
   if (configColor) {
     // Check if it matches a preset
-    const preset = accentColors.find(c => c.value.toLowerCase() === configColor.toLowerCase());
+    const preset = accentColors.find(
+      (c) => c.value.toLowerCase() === configColor.toLowerCase()
+    );
     if (preset) return preset;
     // Otherwise create from hex
     return createAccentFromHex(configColor);
@@ -51,22 +137,29 @@ function hexToHSL(hex: string): { h: number; s: number; l: number } {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return { h: 0, s: 0, l: 0 };
 
-  let r = parseInt(result[1], 16) / 255;
-  let g = parseInt(result[2], 16) / 255;
-  let b = parseInt(result[3], 16) / 255;
+  const r = parseInt(result[1], 16) / 255;
+  const g = parseInt(result[2], 16) / 255;
+  const b = parseInt(result[3], 16) / 255;
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h = 0, s = 0;
+  let h = 0,
+    s = 0;
   const l = (max + min) / 2;
 
   if (max !== min) {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
-      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-      case g: h = ((b - r) / d + 2) / 6; break;
-      case b: h = ((r - g) / d + 4) / 6; break;
+      case r:
+        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        break;
+      case g:
+        h = ((b - r) / d + 2) / 6;
+        break;
+      case b:
+        h = ((r - g) / d + 4) / 6;
+        break;
     }
   }
 
@@ -83,7 +176,9 @@ function hslToHex(h: number, s: number, l: number): string {
   const f = (n: number) => {
     const k = (n + h / 30) % 12;
     const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, '0');
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, '0');
   };
   return `#${f(0)}${f(8)}${f(4)}`;
 }
@@ -143,7 +238,7 @@ export function initTheme(): void {
         }
       } catch {
         // Try as color name for backwards compatibility
-        const found = accentColors.find(c => c.name === savedAccent);
+        const found = accentColors.find((c) => c.name === savedAccent);
         currentAccent = found || defaultAccent;
       }
     } else {
@@ -194,7 +289,8 @@ function getLuminance(hex: string): number {
   const g = parseInt(result[2], 16) / 255;
   const b = parseInt(result[3], 16) / 255;
 
-  const toLinear = (c: number) => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  const toLinear = (c: number) =>
+    c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 
   return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
 }
@@ -233,7 +329,9 @@ function applyAccentColor(color: AccentColor): void {
  * Update the color picker UI to reflect current selection
  */
 function updateColorPicker(): void {
-  const picker = document.getElementById('accent-color-picker') as HTMLInputElement | null;
+  const picker = document.getElementById(
+    'accent-color-picker'
+  ) as HTMLInputElement | null;
   if (picker) {
     picker.value = currentAccent.value;
   }
@@ -244,7 +342,7 @@ function updateColorPicker(): void {
  */
 export function findClosestAccent(hex: string): AccentColor {
   const normalized = hex.toLowerCase();
-  const exact = accentColors.find(c => c.value.toLowerCase() === normalized);
+  const exact = accentColors.find((c) => c.value.toLowerCase() === normalized);
   if (exact) return exact;
   return accentColors[0];
 }
@@ -259,7 +357,9 @@ let currentMode: ThemeMode = 'system';
  */
 function getEffectiveTheme(): 'dark' | 'light' {
   if (currentMode === 'system') {
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    return window.matchMedia('(prefers-color-scheme: light)').matches
+      ? 'light'
+      : 'dark';
   }
   return currentMode;
 }
@@ -291,11 +391,13 @@ export function initThemeMode(): void {
   applyThemeMode();
 
   // Listen for system preference changes
-  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-    if (currentMode === 'system') {
-      applyThemeMode();
-    }
-  });
+  window
+    .matchMedia('(prefers-color-scheme: light)')
+    .addEventListener('change', () => {
+      if (currentMode === 'system') {
+        applyThemeMode();
+      }
+    });
 }
 
 /**
@@ -312,7 +414,9 @@ export function setThemeMode(mode: ThemeMode): void {
   currentMode = mode;
   localStorage.setItem(THEME_MODE_KEY, mode);
   applyThemeMode();
-  window.dispatchEvent(new CustomEvent('thememodechange', { detail: { mode } }));
+  window.dispatchEvent(
+    new CustomEvent('thememodechange', { detail: { mode } })
+  );
 }
 
 /**

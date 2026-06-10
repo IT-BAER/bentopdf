@@ -11,7 +11,12 @@ export default [
       'coverage/**',
       'node_modules/**',
       '**/.vitepress/cache/**',
+      '**/.vitepress/dist/**',
       'public/**/*.min.js',
+      // Third-party vendored bundles — not our source, do not lint.
+      'public/libreoffice-wasm/**',
+      'public/pdfjs-annotation-viewer/**',
+      'public/pdfjs-viewer/**',
     ],
   },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
