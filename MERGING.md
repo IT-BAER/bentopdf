@@ -20,6 +20,30 @@ If `upstream` is missing:
 git remote add upstream https://github.com/alam00000/bentopdf.git
 ```
 
+## Operational separation from upstream
+
+This repo is technically a GitHub fork of `alam00000/bentopdf`, but it is
+operated as an independent project. We still **fetch** from upstream to merge
+in changes (above), but everything else targets our repo. Reproduce this setup
+on any fresh clone:
+
+```powershell
+# 1. Push/PR/CI tooling targets OUR repo, not the upstream parent.
+gh repo set-default IT-BAER/bentopdf
+
+# 2. Allow fetching upstream, but make accidental pushes to it impossible.
+git remote set-url --push upstream DISABLED_no_push_to_upstream
+#    Verify: `git remote -v` should show upstream (push) as DISABLED_*.
+```
+
+CI workflows are already scoped to this fork via
+`if: github.repository == 'IT-BAER/bentopdf'` (see `ci.yml`, `trivy-scan.yml`),
+so upstream never runs our jobs and vice-versa.
+
+> Full detach (removing the "forked from alam00000" relationship) is **not**
+> possible via git/gh — it requires a GitHub Support request or recreating the
+> repo as a non-fork. Not done; we keep upstream as a fetch source for merges.
+
 ## What is fork-owned (preserve on every merge)
 
 These carry fork-only logic. When a merge conflicts here, **do not** blindly
