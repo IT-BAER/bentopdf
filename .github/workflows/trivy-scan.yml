@@ -42,6 +42,10 @@ jobs:
           format: sarif
           output: trivy-quick.sarif
           severity: CRITICAL,HIGH
+          # Without this, format:sarif expands the scan to ALL severities, so
+          # exit-code:1 fires on any LOW/MEDIUM finding instead of only the
+          # CRITICAL/HIGH gate. Keep the SARIF + gate limited to severity above.
+          limit-severities-for-sarif: 'true'
           exit-code: '1'
           skip-dirs: dist,node_modules,.git,_upstream
 
